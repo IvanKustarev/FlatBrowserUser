@@ -3,6 +3,8 @@ package L6User;
 //import L6User.Commands.*;
 
 import CommonClasses.CommandsData;
+//import CommonClasses.DataBlock;
+import CommonClasses.Creator;
 import CommonClasses.DataBlock;
 import CommonClasses.Flat;
 
@@ -11,7 +13,12 @@ import java.util.Scanner;
 public class User {
 
 //    String fileAddress;
+    TransferCenter transferCenter;
 
+    public User(TransferCenter transferCenter){
+//        transferCenter = new TransferCenter();
+        this.transferCenter = transferCenter;
+    }
 
     public void startCheckingCommands(){
         boolean exit = false;
@@ -19,7 +26,6 @@ public class User {
         CommandCenter cc = new CommandCenter();
         String command = new String();
         CommandsData commandsDataForSendToServer = null;
-        TransferCenter transferCenter = new TransferCenter();
 
         System.out.println("Для просмотра списка команд необходимо ввести \"help\"");
 
@@ -40,11 +46,36 @@ public class User {
                     }
                     else {
                         cc.packingCommandInCommandsObject(command, commandsDataForSendToServer);
-                        if(commandsDataForSendToServer.isComandWithElementParameter()){
+//                        System.out.println(commandsDataForSendToServer.name());
+                        if(commandsDataForSendToServer.isCommandWithElementParameter()){
                             commandsDataForSendToServer.setFlat(Flat.createFlat(null));
                         }
-//                        transferCenter.sendObjectToServer(commandsDataForSendToServer);
+//                        commandsDataForSendToServer.getFlat().show();
+//                        commandsDataForSendToServer.setParameter("aaaa");
+//                        System.out.println(commandsDataForSendToServer.name());
+//                        DataBlock dataBlock = new DataBlock();
+//                        copyFieldsFromTo(commandsDataForSendToServer, dataBlock);
+//                        dataBlock.setCommandsData(commandsDataForSendToServer);
+////                        transferCenter.sendObjectToServer(commandsDataForSendToServer);
+//                        transferCenter.sendObjectToServer(dataBlock);
+////                        CommandsData commandsDataAnswer = (CommandsData) transferCenter.receiveObjectFromServer();
+//                        dataBlock = (DataBlock) transferCenter.receiveObjectFromServer();
+//                        CommandsData commandsDataAnswer = dataBlock.getCommandsData();
+//                        copyFieldsFromTo(dataBlock, commandsDataAnswer);
+                        communicateWithServerAboutCommand(commandsDataForSendToServer);
+//                        System.out.println(transferCenter.receiveObjectFromServer().getClass().getName());
+//                        DataBlock dataBlock = new DataBlock();
+//                        dataBlock.setFlat(commandsDataForSendToServer.getFlat());
+//                        dataBlock.setParameter(commandsDataForSendToServer.getParameter());
 
+//                        System.out.println("ttt");
+//                        transferCenter.checkConnection();
+//                        System.out.println("ttt");
+//                        transferCenter.sendObjectToServer(dataBlock);
+//                        processingMessageFromServer((DataBlock) transferCenter.receiveObjectFromServer());
+
+//                        DataBlock dataBlock = (DataBlock)transferCenter.receiveObjectFromServer();
+//                        System.out.println(dataBlock.phrase);
 
 //                        boolean commandCompleted = false;
 //                        while (!commandCompleted){
@@ -63,244 +94,177 @@ public class User {
         System.out.println("Выход из программы...");
     }
 
-//    public boolean processingTheCommand(String command, CommandCenter cc) {
-//
-//        boolean startedRecurs = false;
-//
-//        if (command.contains("exit")) {
-//            return true; //конец программы
-//        }
-//        else {
-//            boolean commandWasFind = false;
-//
-//            if(!command.equals("")){
-//                command = gettingNormalFormat(command);
-//            }
-//
-//            if(command.contains("AddIfMin")){
-//                cc.addIfMin();
-//                commandWasFind = true;
-//            }
-//            else {
-//                if(command.contains("Add")){
-//                    cc.add();
-//                    commandWasFind = true;
-//                }
-//            }
-//            if(command.contains("Clear")){
-//                cc.clear();
-//                commandWasFind = true;
-//            }
-//            if(command.contains("Help")){
-//                cc.help();
-//                commandWasFind = true;
-//            }
-//            if(command.contains("Info")){
-//                cc.info();
-//                commandWasFind = true;
-//            }
-//            if(command.contains("PrintFieldAscendingNumberOfRooms")){
-//                cc.printFieldAscendingNumberOfRooms();
-//                commandWasFind = true;
-//            }
-//            if(command.contains("RemoveHead")){
-//                cc.removeHead();
-//                commandWasFind = true;
-//            }
-//            if(command.contains("RemoveLower")){
-//                cc.removeLower();
-//                commandWasFind = true;
-//            }
-//            if(command.contains("Save")){
-//                cc.save();
-//                commandWasFind = true;
-//            }
-//            if(command.contains("Show")){
-//                cc.show();
-//                commandWasFind = true;
-//            }
-//            if(command.contains("SumOfNumberOfRooms")){
-//                cc.sumOfNumberOfRooms();
-//                commandWasFind = true;
-//            }
-//
-//            if(command.contains("ExecuteScript")){
-//                String[] comWords = command.split(" ");
-//                int index = 0;
-//                for (int i = 0; i < comWords.length; i++){
-//                    if(comWords[i].equals("ExecuteScript")){
-//                        index = i+1;
-//                        if(index==comWords.length){
-//                            comWords = new String[index+1];
-//                            comWords[index] = "";
-//                        }
-//                    }
-//                }
-//
-//                cc.executeScript(comWords[index]);
-//                commandWasFind = true;
-////                if(ExecuteScriptCommandRealization.RecursFinder.wasRecursStart(comWords[index])){
-////                    System.out.println("Неплохая попытка сделать рекурсию, но нет...");
-////                    startedRecurs = true;
-////                    System.out.println("KKK");
-////                }
-////                else {
-////                    System.out.println("TTTT");
-////                    ExecuteScriptCommandRealization.scriptStartWorking();
-////                    cc.executeScript(comWords[index]);
-////                }
-//
-//                commandWasFind = true;
-//            }
-//            if(command.contains("FilterLessThanTransport")){
-//                String[] comWords = command.split(" ");
-//                int index = 0;
-//                for (int i = 0; i < comWords.length; i++) {
-//                    if (comWords[i].equals("FilterLessThanTransport")) {
-//                        index = i + 1;
-//                        if(index==comWords.length){
-//                            comWords = new String[index+1];
-//                            comWords[index] = "";
-//                        }
-//                    }
-//                }
-//                cc.filterLessThanTransport(comWords[index]);
-//                commandWasFind = true;
-//            }
-//            if(command.contains("Update")){
-//                String[] comWords = command.split(" ");
-//                int index = 0;
-//                for (int i = 0; i < comWords.length; i++){
-//                    if(comWords[i].equals("Update")){
-//                        index = i+1;
-//                        if(index==comWords.length){
-//                            comWords = new String[index+1];
-//                            comWords[index] = "";
-//                        }
-//                    }
-//                }
-//                cc.updateId(comWords[index]);
-//                commandWasFind = true;
-//            }
-//
-//            if(command.contains("RemoveById")){
-//                String[] comWords = command.split(" ");
-//                int index = 0;
-//                for (int i = 0; i < comWords.length; i++){
-//                    if(comWords[i].equals("RemoveById")){
-//                        index = i+1;
-//                        if(index==comWords.length){
-//                            comWords = new String[index+1];
-//                            comWords[index] = "";
-//                        }
-//                    }
-//                }
-//                cc.removeById(comWords[index]);
-//                commandWasFind = true;
-//            }
-//
-//            if(!commandWasFind){
-//                System.out.println("Команда не была найдена! Чтобы увидеть список команд введите \"help\"");
-//            }
-//
-//            if(startedRecurs){
-//                return true;
-//            }
-//            else {
-//                return false;//не конец программы
-//            }
-//        }
-//    }
 
-    private String gettingNormalFormat(String str){ //меняет "_a" на "A" и тп и переводит первую букву в верхний регистр
 
-        String firstCarInCommand = str.substring(0,1);  //
-        firstCarInCommand = firstCarInCommand.toUpperCase();                    // переводит первую букву в верхний регистр
-        str = firstCarInCommand + str.substring(1);
+    private void copyFieldsFromTo(CommandsData commandsData, DataBlock dataBlock){
+        dataBlock.setCommandWithElementParameter(commandsData.isCommandWithElementParameter());
+        dataBlock.setCreator(commandsData.getCreator());
+        dataBlock.setParameter(commandsData.getParameter());
+        dataBlock.setFlat(commandsData.getFlat());
+        dataBlock.setBufferedReader(commandsData.getBufferedReader());
+        dataBlock.setOpeningFiles(commandsData.getOpeningFiles());
+        dataBlock.setCommandEnded(commandsData.isCommandEnded());
+        dataBlock.setPhrase(commandsData.getPhrase());
+        dataBlock.setServerNeedStringParameter(commandsData.isServerNeedStringParameter);
+        dataBlock.setServerNeedElementParameter(commandsData.isServerNeedElementParameter);
+        dataBlock.setUserNeedToShowFlatArr(commandsData.isUserNeedToShowFlatArr);
+        dataBlock.setFlats(commandsData.getFlats());
+    }
 
-        boolean normalFormat = false;
-        while (!normalFormat){
-            normalFormat = true;
-            int ind;
-            if(str.contains("_")){
-                ind = str.indexOf("_");
-                str = str.substring(0, ind) + str.substring(ind+1, ind+2).toUpperCase() + str.substring(ind+2);
-                normalFormat = false;
+    private void copyFieldsFromTo(DataBlock dataBlock, CommandsData commandsData){
+        commandsData.setCommandWithElementParameter(dataBlock.isCommandWithElementParameter());
+        commandsData.setCreator(dataBlock.getCreator());
+        commandsData.setParameter(dataBlock.getParameter());
+        commandsData.setFlat(dataBlock.getFlat());
+        commandsData.setFlats(dataBlock.getFlats());
+        commandsData.setBufferedReader(dataBlock.getBufferedReader());
+        commandsData.setOpeningFiles(dataBlock.getOpeningFiles());
+        commandsData.setCommandEnded(dataBlock.isCommandEnded());
+        commandsData.setPhrase(dataBlock.getPhrase());
+        commandsData.setServerNeedStringParameter(dataBlock.isServerNeedStringParameter);
+        commandsData.setServerNeedElementParameter(dataBlock.isServerNeedElementParameter);
+        commandsData.setUserNeedToShowFlatArr(dataBlock.isUserNeedToShowFlatArr);
+    }
+
+    public Boolean serverAnswer = true;
+
+    private void communicateWithServerAboutCommand(Object obj){
+        CommandsData commandsData = (CommandsData) obj;
+        boolean end = false;
+        CheckConnection checkConnection = new CheckConnection(this);
+
+        while (!end){
+
+            if(!(commandsData.getCreator() == null)){
+                if(commandsData.getCreator().equals(Creator.SCRIPT)){
+                    DataBlock dataBlock;
+                    serverAnswer = false;
+                    checkConnection.start();
+                    dataBlock = (DataBlock) transferCenter.receiveObjectFromServer();
+                    serverAnswer = true;
+                    commandsData = dataBlock.getCommandsData();
+                    copyFieldsFromTo(dataBlock, commandsData);
+                }
+                else {
+
+                    DataBlock dataBlock = new DataBlock();
+                    copyFieldsFromTo(commandsData, dataBlock);
+                    dataBlock.setCommandsData(commandsData);
+//                        transferCenter.sendObjectToServer(commandsDataForSendToServer);
+                    transferCenter.sendObjectToServer(dataBlock);
+//                        CommandsData commandsDataAnswer = (CommandsData) transferCenter.receiveObjectFromServer();
+                    serverAnswer = false;
+                    checkConnection.start();
+                    dataBlock = (DataBlock) transferCenter.receiveObjectFromServer();
+                    serverAnswer = true;
+                    commandsData = dataBlock.getCommandsData();
+                    copyFieldsFromTo(dataBlock, commandsData);
+                }
+            }
+            else {
+                DataBlock dataBlock = new DataBlock();
+                copyFieldsFromTo(commandsData, dataBlock);
+                dataBlock.setCommandsData(commandsData);
+//                        transferCenter.sendObjectToServer(commandsDataForSendToServer);
+                transferCenter.sendObjectToServer(dataBlock);
+//                        CommandsData commandsData = (CommandsData) transferCenter.receiveObjectFromServer();
+                serverAnswer = false;
+                checkConnection.start();
+                dataBlock = (DataBlock) transferCenter.receiveObjectFromServer();
+                serverAnswer = true;
+                commandsData = dataBlock.getCommandsData();
+                copyFieldsFromTo(dataBlock, commandsData);
+            }
+
+//            System.out.println(commandsData.getCreator());
+
+
+            end = commandsData.isCommandEnded();
+            System.out.println(commandsData.getPhrase());
+
+            if(commandsData.isServerNeedElementParameter){
+                System.out.println("Необходимо задать квартиру.");
+                commandsData.setFlat(Flat.createFlat(null));
+            }
+
+            if(commandsData.isServerNeedStringParameter){
+                commandsData.setParameter((new Scanner(System.in)).nextLine());
+            }
+
+            if(commandsData.isUserNeedToShowFlatArr()){
+                for(int i =0;i<commandsData.getFlats().length;i++){
+                    commandsData.getFlats()[i].show();
+                    System.out.println("");
+                }
             }
         }
-        return str;
+
     }
 
-//    public void setFileAddress(String fileAddress) {
-//        this.fileAddress = fileAddress;
-//    }
-
-//    public void setFlatCollection(FlatCollection flatCollection) {
-//        this.flatCollection = flatCollection;
-//    }
-
-//    public String gettingAddress(){
-//        System.out.println("Введите адресс файла:");
-//        Scanner scanner = new Scanner(System.in);
-//        String fileAddress = scanner.nextLine();
-//        try {
-//            BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(fileAddress));
-//            System.out.println("Файл успешно загружен.");
-//        }catch (Exception e){
-//            System.out.println("Такого файла не существует.\nПовторите попытку!");
-//            fileAddress = (new L6User.User()).gettingAddress();
-//        }
-//        return fileAddress;
-//    }
-
-    public String printAndRead(String parameter){
-        System.out.println(parameter);
-        Scanner scanner = new Scanner(System.in);
-        String str = scanner.nextLine();
-        return str;
-    }
-
-//    public String checkingFileAvailability(String parameter){
-//        String fileAddress;
-//        try {
-////            BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(parameter));
-//            File file = new File(parameter);
-//            fileAddress = parameter;
-//        }catch (Exception e){
-//            System.out.println("Такого файла не существует.");
-//            fileAddress = checkingFileAvailability(printAndRead("Необходимо корректное имя файла:"));
-//        }
-//        return fileAddress;
-//    }
 
 
 
-//    public String gettingAddress(String[] args){
+
 //
-//        String fileAddress = null;
-//
-//        if(args.length == 0) {
-//            while (fileAddress == null){
-//                fileAddress = printAndRead("Хотелось бы получить адресс файла, а не пустоту:");
+//    private void processingMessageFromServer(DataBlock dataBlock){
+//        if (dataBlock.getPhrase() != null) {
+//            print(dataBlock.getPhrase());
+//        }
+//        if (dataBlock.isUserNeedToShowFlatArr) {
+//            Flat[] flats = dataBlock.getFlats();
+//            for (Flat flat : flats) {
+//                flat.show();
 //            }
+//        }
+//        if(dataBlock.isAllRight()){
+//            return;
 //        }
 //        else {
-//            fileAddress = args[0];
-//        }
-//
-//        File file = new File(checkingFileAvailability(fileAddress));
-//        if(!(file.canRead() & file.canWrite())){
-//            if(!file.canRead()){
-//                System.out.println("У файла нет права на чтение!");
+//            DataBlock answerForServer = new DataBlock();
+//            if(dataBlock.isServerNeedStringParameter()){
+//                answerForServer.setParameter(scan());
 //            }
-//            if(!file.canWrite()){
-//                System.out.println("У файла нет права на запись!");
+//            if(dataBlock.isServerNeedElementParameter){
+//                answerForServer.setFlat(Flat.createFlat(null));
 //            }
-//            String[] arr = new String[1];
-//            arr[0] = printAndRead("Нужен другой файл:");
-//            fileAddress = gettingAddress(arr);
+//            transferCenter.sendObjectToServer(answerForServer);
+//            processingMessageFromServer((DataBlock) transferCenter.receiveObjectFromServer());
 //        }
-////        System.out.println("Файл успешно загружен.");
-//        return fileAddress;
 //    }
+//
+//    public static void print(Object object){
+//        System.out.println(object);
+//    }
+//
+//    public static String scan(){
+//        Scanner scanner = new Scanner(System.in);
+//        return  scanner.nextLine();
+//    }
+//
+//    private String gettingNormalFormat(String str){ //меняет "_a" на "A" и тп и переводит первую букву в верхний регистр
+//
+//        String firstCarInCommand = str.substring(0,1);  //
+//        firstCarInCommand = firstCarInCommand.toUpperCase();                    // переводит первую букву в верхний регистр
+//        str = firstCarInCommand + str.substring(1);
+//
+//        boolean normalFormat = false;
+//        while (!normalFormat){
+//            normalFormat = true;
+//            int ind;
+//            if(str.contains("_")){
+//                ind = str.indexOf("_");
+//                str = str.substring(0, ind) + str.substring(ind+1, ind+2).toUpperCase() + str.substring(ind+2);
+//                normalFormat = false;
+//            }
+//        }
+//        return str;
+//    }
+//
+//    public String printAndRead(String parameter){
+//        System.out.println(parameter);
+//        Scanner scanner = new Scanner(System.in);
+//        String str = scanner.nextLine();
+//        return str;
+//    }
+//
 }

@@ -1,55 +1,90 @@
 package L6User;
 
-import CommonClasses.AbstractDataBlock;
-import CommonClasses.DataBlock;
+//import CommonClasses.AbstractDataBlock;
+//import CommonClasses.DataBlock;
+
+import CommonClasses.FirstTimeConnectedData;
 
 import java.io.*;
 import java.net.*;
-import java.nio.ByteBuffer;
-import java.nio.channels.DatagramChannel;
 import java.util.Random;
 import java.util.Scanner;
 
 public class TransferCenter{
 
-    DatagramSocket datagramSocketForSend;
-    InetSocketAddress socketAddressForSend;
+    DatagramSocket datagramSocket;
+    DatagramSocket datagramSocketForWork;
 
+    InetSocketAddress mainServerSocketAddress;
     InetSocketAddress socketAddressReceive;
-    DatagramChannel datagramChannelForReceive;
+    InetSocketAddress individualServerSocketAddress;
 
     public TransferCenter(){
-        createConnection();
+        createMainServerSocketAddress();
+//        System.out.println("ttt");
         createSocketAddressForReceive();
-        DataBlock dataBlock = new DataBlock();
-        dataBlock.parameter = socketAddressReceive.getAddress().getHostAddress() + "; " + socketAddressReceive.getPort();
-        sendObjectToServer(dataBlock);
+//        DataBlock dataBlock = new DataBlock();
+//        dataBlock.parameter = socketAddressReceive.getAddress().getHostAddress() + "; " + socketAddressReceive.getPort();
+//        sendObjectToServer(dataBlock);
 
-        dataBlock = (DataBlock) receiveObjectFromServer();
+//        dataBlock = (DataBlock) receiveObjectFromServer();
+//        System.out.println("ttt");
+        RestartConnectionWithServer restartConnectionWithServer = new RestartConnectionWithServer();
+        restartConnectionWithServer.start();
+        createConnectionWithServer();
+        restartConnectionWithServer.setConnected(true);
     }
+
+    public TransferCenter(TransferCenter transferCenter){
+        this.mainServerSocketAddress = transferCenter.mainServerSocketAddress;
+        createSocketAddressForReceive();
+        createConnectionWithServer();
+    }
+
+    public void createConnectionWithServer(){
+        FirstTimeConnectedData firstTimeConnectedData = new FirstTimeConnectedData();
+//        DatagramChannel datagramChannel = DatagramChannel.open();
+//        System.out.println("1");
+        firstTimeConnectedData.setSocketAddress(socketAddressReceive);
+//        System.out.println("2");
+//        .parameter = socketAddressReceive.getAddress().getHostAddress() + "; " + socketAddressReceive.getPort();
+        sendObjectToServer(firstTimeConnectedData);
+//        System.out.println("3");
+        firstTimeConnectedData = (FirstTimeConnectedData) receiveObjectFromServer();
+//        System.out.println("4");
+//        System.out.println(firstTimeConnectedData.getSocketAddress());
+
+//        individualServerSocketAddress = new InetSocketAddress(firstTimeConnectedData.getSocketAddress());
+
+        individualServerSocketAddress = (InetSocketAddress) firstTimeConnectedData.getSocketAddress();
+//        System.out.println("5");
+    }
+
+//    public Object receiveObjectFromServer(){
+//        return receiveObjectFromServer(receiveObjectArrSize());
+//    }
 
     public Object receiveObjectFromServer(){
-        return receiveObjectFromServer(receiveObjectArrSize());
-    }
-
-    private Object receiveObjectFromServer(int objectArrSize){
-        ByteBuffer buffer = ByteBuffer.allocate(objectArrSize);
+//        ByteBuffer buffer = ByteBuffer.allocate(10000);
+        byte[] buffer = new byte[10000];
         try {
-            datagramChannelForReceive.receive(buffer);
+            DatagramPacket datagramPacket = new DatagramPacket(buffer, buffer.length);
+            datagramSocket.receive(datagramPacket);
+//            datagramChannelForReceive.receive(buffer);
         } catch (IOException e) {
             System.out.println("Проблема с переходом из канала в буфер!");
             e.printStackTrace();
         }
 //        buffer.array();
-        byte[] objectByteArr = buffer.array()/*new byte[objectArrSize]*/;
+//        byte[] objectByteArr = buffer.array()/*new byte[objectArrSize]*/;
 //        buffer.get(objectByteArr, 0, objectArrSize);
-        return deSerialize(objectByteArr);
+        return deSerialize(buffer);
     }
 
-    private int receiveObjectArrSize(){
-        AbstractDataBlock objectWithSizeParameter = (AbstractDataBlock) receiveObjectFromServer(500);
-        return Integer.valueOf(objectWithSizeParameter.parameter);
-    }
+//    private int receiveObjectArrSize(){
+//        AbstractDataBlock objectWithSizeParameter = (AbstractDataBlock) receiveObjectFromServer(500);
+//        return Integer.valueOf(objectWithSizeParameter.parameter);
+//    }
 
     private Object deSerialize(byte[] objectByteArr){
         ByteArrayInputStream inputStream = new ByteArrayInputStream(objectByteArr);
@@ -74,8 +109,23 @@ public class TransferCenter{
         return object;
     }
 
-    /**устанавливает связь с сервером (заполняет поля datagramSocket и socketAddress)*/
-    public void createConnection(){
+//    public boolean checkConnection(){
+//        CheckConnection checkConnection = new CheckConnection(this);
+//        checkConnection.start();
+//        long time = new Date().getTime() + 1000;
+////        System.out.println();
+//        while((new Date().getTime() < time) & !checkConnection.connectionWorking){
+////            System.out.println(new DataBlock());
+//        }
+//        if(!checkConnection.connectionWorking){
+//            System.out.println("Нет ответа от сервера...");
+//            checkConnection();
+//        }
+//        return false;
+//    }
+
+//    /**устанавливает связь с сервером (заполняет поля datagramSocket и socketAddress)*/
+    public void createMainServerSocketAddress(){
         Scanner scanner = new Scanner(System.in);
         Boolean err = false;
 
@@ -86,28 +136,30 @@ public class TransferCenter{
 
 
         //"192.168.1.135"
-        socketAddressForSend = null;
+        mainServerSocketAddress = null;
         //            System.out.println(InetAddress.getLocalHost().getHostAddress());
-        socketAddressForSend = new InetSocketAddress(ip, port);
+        mainServerSocketAddress = new InetSocketAddress(ip, port);
+//        System.out.println("ttt");
+//        socketAddressForSend
+//        System.out.println(socketAddressForSend.getPort());
+//        socketAddressForSend.isUnresolved()
+//        System.out.println(socketAddressForSend.isUnresolved());
 
-        datagramSocketForSend = null;
-        try {
-            datagramSocketForSend = new DatagramSocket();
-        } catch (SocketException e) {
-            err = true;
-            System.out.println("Проблемы с datagramSocket!");
-        }
+//        datagramSocket = null;
+//        try {
+//            datagramSocket = new DatagramSocket();
+////            datagramSocket.bind();
+//        } catch (SocketException e) {
+////            err = true;
+//            System.out.println("Проблемы с datagramSocket!");
+//        }
 
 
         if(err == true){
             System.out.println("Попробуем снова...");
-            createConnection();
+            createMainServerSocketAddress();
         }
 
-//        SocketAddress socketAddress = new InetSocketAddress(InetAddress.getLocalHost(), 6666);
-//        DatagramSocket datagramSocket = new DatagramSocket();
-//        DatagramPacket datagramPacket = new DatagramPacket(b, b.length, socketAddress);
-//        datagramSocket.send(datagramPacket);
     }
     private int createSocketAddressForReceive(){
         Random random = new Random();
@@ -123,13 +175,16 @@ public class TransferCenter{
                 workingSocket = true;
             } catch (IOException e) {
                 System.out.println("Проблема с созданием порта!");
-                e.printStackTrace();
+//                e.printStackTrace();
             }
 
         }
         try {
-            datagramChannelForReceive = DatagramChannel.open();
-            datagramChannelForReceive.bind(socketAddressReceive);
+            datagramSocket = null;
+            datagramSocket = new DatagramSocket(socketAddressReceive);
+//            datagramChannelForReceive = DatagramChannel.open();
+//            datagramSocket.bind(socketAddressReceive);
+//            DatagramPacket datagramPacket = new DatagramPacket();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -137,19 +192,38 @@ public class TransferCenter{
     }
 
     public <T> void sendObjectToServer(T object){
+
+//        checkConnection();
+
+
+
         byte[] serObject = serializeObject(object);
-        DataBlock warningAboutSize = new DataBlock();
-        warningAboutSize.parameter = String.valueOf(serObject.length);
-        sendByteArr(serializeObject(warningAboutSize));
+//        DataBlock warningAboutSize = new DataBlock();
+//        warningAboutSize.parameter = String.valueOf(serObject.length);
+//        sendByteArr(serializeObject(warningAboutSize));
+//        System.out.println(object.getClass().getName());
+        if(object.getClass().getName().equals("CommonClasses.FirstTimeConnectedData")){
+            sendByteArr(serObject, mainServerSocketAddress);
+        }
+        else {
+//            System.out.println(serObject.length);
+//            Object obj = deSerialize(serObject);
+//            System.out.println(obj.getClass().getName());
+//            for(int i =0; i< serObject.length;i++){
+//                System.out.println(i + "   " + serObject[i]);
+//            }
+            sendByteArr(serObject, individualServerSocketAddress);
+        }
         //Необходимо получать allRight --- доделать
-        sendByteArr(serializeObject(object));
+//        sendByteArr(serializeObject(object));
     }
 
 
-    private void sendByteArr(byte[] bArr){
-        DatagramPacket datagramPacket = new DatagramPacket(bArr, bArr.length, socketAddressForSend);
+    private void sendByteArr(byte[] bArr, SocketAddress socketAddress){
+        DatagramPacket datagramPacket = new DatagramPacket(bArr, bArr.length, socketAddress);
         try {
-            datagramSocketForSend.send(datagramPacket);
+//            System.out.println(socketAddress);
+            datagramSocket.send(datagramPacket);
         } catch (IOException e) {
             System.out.println("Проблема с отправкой объекта!");
         }
