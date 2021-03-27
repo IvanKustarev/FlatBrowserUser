@@ -1,11 +1,17 @@
 package CommonClasses;
 
-import L6User.ApartmentDescription.*;
-//import L5.Commands.CommonClasses.CommandsData;
 
+
+import CommonClasses.ApartmentDescription.*;
+
+import java.io.Serializable;
+import java.lang.instrument.Instrumentation;
 import java.util.Date;
 
-public class Flat implements Comparable<Flat>{
+public class Flat implements Serializable, Comparable<Flat>{
+
+    static final long serialVersionUID = 2;
+
     private Long id; //Поле не может быть null, Значение поля должно быть больше 0, Значение этого поля должно быть уникальным, Значение этого поля должно генерироваться автоматически
     private String name; //Поле не может быть null, Строка не может быть пустой
     private Coordinates coordinates; //Поле не может быть null
@@ -13,7 +19,7 @@ public class Flat implements Comparable<Flat>{
     private Long area; //Значение поля должно быть больше 0
     private long numberOfRooms; //Значение поля должно быть больше 0
     private Furnish furnish; //Поле не может быть null
-    private L6User.ApartmentDescription.View view; //Поле может быть null
+    private CommonClasses.ApartmentDescription.View view; //Поле может быть null
     private Transport transport; //Поле может быть null
     private House house; //Поле может быть null
 
@@ -107,7 +113,7 @@ public class Flat implements Comparable<Flat>{
         return  this.transport;
     }
 
-    public L6User.ApartmentDescription.View getView(){
+    public CommonClasses.ApartmentDescription.View getView(){
         return  this.view;
     }
     public Furnish getFurnish(){
@@ -150,7 +156,7 @@ public class Flat implements Comparable<Flat>{
         this.transport = transport;
     }
 
-    public void setView(L6User.ApartmentDescription.View view) {
+    public void setView(CommonClasses.ApartmentDescription.View view) {
         this.view = view;
     }
 

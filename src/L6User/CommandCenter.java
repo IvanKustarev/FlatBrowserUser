@@ -111,8 +111,13 @@ public class CommandCenter {
     public CommandsData whatTheCommand(String command){
         CommandsData[] commandsVariations = CommandsData.values();
         for(int i = 0; i < commandsVariations.length; i++){
-            if(command.contains(commandsVariations[i].toString())){
-                return commandsVariations[i];
+            if(command.contains("add_if_min")){
+                return CommandsData.ADDIFMIN;
+            }
+            else {
+                if(command.contains(commandsVariations[i].toString())){
+                    return commandsVariations[i];
+                }
             }
         }
         return null;
@@ -131,10 +136,18 @@ public class CommandCenter {
 
         CommandsData[] commands = CommandsData.values();
         for (int i =0; i<commands.length; i++){
-            if(command.contains(commands[i].toString())){
-                commandObject = commands[i];
+
+//            System.out.println(command);
+            if(command.contains("add_if_min")){
+                commandObject = CommandsData.ADDIFMIN;
+            }
+            else {
+                if(command.contains(commands[i].toString())){
+                    commandObject = commands[i];
+                }
             }
         }
+//        System.out.println(commandObject.name());
         if(isCommandWithParameter(command)){
             processingParameter(commandObject, command, commands);
         }

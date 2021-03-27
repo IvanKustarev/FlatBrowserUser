@@ -1,6 +1,8 @@
-package L6User.ApartmentDescription;
+package CommonClasses.ApartmentDescription;
 
-public enum Furnish implements Attractive {
+import java.io.Serializable;
+
+public enum Furnish implements Attractive, Serializable {
     DESIGNER{
         @Override
         public int levelAttractive() {

@@ -1,7 +1,8 @@
 package CommonClasses;
 
-import L6User.ApartmentDescription.*;
-//import L5.Commands.CommonClasses.CommandsData;
+
+
+import CommonClasses.ApartmentDescription.*;
 
 import java.io.BufferedReader;
 import java.util.Scanner;
@@ -150,11 +151,11 @@ public class FlatCreator {
         return furnish;
     }
 
-    public L6User.ApartmentDescription.View createView(){
+    public CommonClasses.ApartmentDescription.View createView(){
 //        Scanner input = new Scanner(System.in);
         System.out.println("Вид из квартиры задаётся одной из следующих констант:");
-        L6User.ApartmentDescription.View[] views = L6User.ApartmentDescription.View.values();
-        L6User.ApartmentDescription.View view;
+        CommonClasses.ApartmentDescription.View[] views = CommonClasses.ApartmentDescription.View.values();
+        CommonClasses.ApartmentDescription.View view;
         for (int i =0;i<views.length;i++){
             System.out.print(views[i].name() + " ");
         }
@@ -166,7 +167,7 @@ public class FlatCreator {
         }
         else {
             try {
-                view = L6User.ApartmentDescription.View.valueOf(str);
+                view = CommonClasses.ApartmentDescription.View.valueOf(str);
             } catch (Exception e) {
                 System.out.println("Некорректный ввод данных!\nВведите поле занова");
                 view = (new FlatCreator()).createView();
