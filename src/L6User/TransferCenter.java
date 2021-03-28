@@ -7,6 +7,9 @@ import CommonClasses.FirstTimeConnectedData;
 
 import java.io.*;
 import java.net.*;
+import java.nio.ByteBuffer;
+import java.nio.channels.DatagramChannel;
+import java.util.Date;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -19,21 +22,45 @@ public class TransferCenter{
     InetSocketAddress socketAddressReceive;
     InetSocketAddress individualServerSocketAddress;
 
-    public TransferCenter(){
-        createMainServerSocketAddress();
-//        System.out.println("ttt");
-        createSocketAddressForReceive();
-//        DataBlock dataBlock = new DataBlock();
-//        dataBlock.parameter = socketAddressReceive.getAddress().getHostAddress() + "; " + socketAddressReceive.getPort();
-//        sendObjectToServer(dataBlock);
+    private final int SIZEOFBUFFER = 500;
 
-//        dataBlock = (DataBlock) receiveObjectFromServer();
-//        System.out.println("ttt");
-        RestartConnectionWithServer restartConnectionWithServer = new RestartConnectionWithServer();
-        restartConnectionWithServer.start();
-        createConnectionWithServer();
-        restartConnectionWithServer.setConnected(true);
+    public TransferCenter(){
+        boolean isExceptions = true;
+        while (isExceptions) {
+            isExceptions = false;
+            try {
+                createMainServerSocketAddress();
+                createSocketAddressForReceive();
+//                RestartConnectionWithServer restartConnectionWithServer = new RestartConnectionWithServer();
+                CreateConnectionWithServer createConnectionWithServer = new CreateConnectionWithServer(this);
+                createConnectionWithServer.start();
+//                Date date = new Date();
+                long timeOfStart = new Date().getTime();
+
+//              Жуткий колхоз! ==============================
+                while (!createConnectionWithServer.isAllRight() & !(timeOfStart < (new Date().getTime() - 5000))){
+                    Thread.sleep(10);
+
+                }
+                if(createConnectionWithServer.isAllRight()){
+                    System.out.println("Пользователь успешно создан!");
+                }
+                else {
+                    System.out.println("Проблема с подключением к серверу. Пробуем всё заново!");
+                    isExceptions = true;
+                }
+//              ==============================================
+
+
+            } catch (Exception e) {
+                System.out.println("Введены некорректные данные!");
+                isExceptions = true;
+            }
+        }
+
+
     }
+
 
     public TransferCenter(TransferCenter transferCenter){
         this.mainServerSocketAddress = transferCenter.mainServerSocketAddress;
@@ -65,49 +92,82 @@ public class TransferCenter{
 //    }
 
     public Object receiveObjectFromServer(){
-//        ByteBuffer buffer = ByteBuffer.allocate(10000);
-        byte[] buffer = new byte[10000];
+//        byte[] buffer = new byte[10000];
+//        try {
+//            DatagramPacket datagramPacket = new DatagramPacket(buffer, buffer.length);
+//            datagramSocket.receive(datagramPacket);
+//        } catch (IOException e) {
+//            System.out.println("Проблема с переходом из канала в буфер!");
+//            e.printStackTrace();
+//        }
+//        return deSerialize(buffer);
+
+        Object obj = null;
+        boolean endOfReceive = false;
+        byte[] objByteArr = new byte[0];
+        byte[] receivedArr;
+
+        while (!endOfReceive){
+            receivedArr = receiveByteArr(datagramSocket);
+            byte[] newArr = new byte[objByteArr.length + receivedArr.length];
+
+            for(int i =0;i<(objByteArr.length + receivedArr.length);i++){
+                if(i<objByteArr.length){
+                    newArr[i] = objByteArr[i];
+                }
+                else {
+                    newArr[i] = receivedArr[i-objByteArr.length];
+                }
+            }
+            objByteArr = newArr;
+
+
+            try {
+                obj = ObjectProcessing.deSerializeObject(objByteArr);
+                endOfReceive = true;
+
+            }catch (Exception e){}
+        }
+
+        return  obj;
+    }
+
+    private byte[] receiveByteArr(DatagramSocket datagramSocket) {
+        final int size = SIZEOFBUFFER;
+//        ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[size]);
+        byte[] bytes = new byte[size];
+        DatagramPacket datagramPacket = new DatagramPacket(bytes, bytes.length);
         try {
-            DatagramPacket datagramPacket = new DatagramPacket(buffer, buffer.length);
             datagramSocket.receive(datagramPacket);
-//            datagramChannelForReceive.receive(buffer);
         } catch (IOException e) {
-            System.out.println("Проблема с переходом из канала в буфер!");
             e.printStackTrace();
         }
-//        buffer.array();
-//        byte[] objectByteArr = buffer.array()/*new byte[objectArrSize]*/;
-//        buffer.get(objectByteArr, 0, objectArrSize);
-        return deSerialize(buffer);
+        return bytes;
     }
 
-//    private int receiveObjectArrSize(){
-//        AbstractDataBlock objectWithSizeParameter = (AbstractDataBlock) receiveObjectFromServer(500);
-//        return Integer.valueOf(objectWithSizeParameter.parameter);
+
+//    private Object deSerialize(byte[] objectByteArr){
+//        ByteArrayInputStream inputStream = new ByteArrayInputStream(objectByteArr);
+//
+//        ObjectInputStream objectInputStream = null;
+//
+//        try {
+//            objectInputStream = new ObjectInputStream(inputStream);
+//        } catch (IOException e) {
+//            System.out.println("Проблема с созданием ObjectInputStream!");
+//            e.printStackTrace();
+//        }
+//
+//        Object object = null;
+//        try {
+//            object = objectInputStream.readObject();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        } catch (ClassNotFoundException e) {
+//            e.printStackTrace();
+//        }
+//        return object;
 //    }
-
-    private Object deSerialize(byte[] objectByteArr){
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(objectByteArr);
-
-        ObjectInputStream objectInputStream = null;
-
-        try {
-            objectInputStream = new ObjectInputStream(inputStream);
-        } catch (IOException e) {
-            System.out.println("Проблема с созданием ObjectInputStream!");
-            e.printStackTrace();
-        }
-
-        Object object = null;
-        try {
-            object = objectInputStream.readObject();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return object;
-    }
 
 //    public boolean checkConnection(){
 //        CheckConnection checkConnection = new CheckConnection(this);
@@ -197,7 +257,7 @@ public class TransferCenter{
 
 
 
-        byte[] serObject = serializeObject(object);
+        byte[] serObject = ObjectProcessing.serializeObject(object);
 //        DataBlock warningAboutSize = new DataBlock();
 //        warningAboutSize.parameter = String.valueOf(serObject.length);
 //        sendByteArr(serializeObject(warningAboutSize));
@@ -220,35 +280,53 @@ public class TransferCenter{
 
 
     private void sendByteArr(byte[] bArr, SocketAddress socketAddress){
-        DatagramPacket datagramPacket = new DatagramPacket(bArr, bArr.length, socketAddress);
-        try {
-//            System.out.println(socketAddress);
-            datagramSocket.send(datagramPacket);
-        } catch (IOException e) {
-            System.out.println("Проблема с отправкой объекта!");
+//        System.out.println(bArr.length);
+//        if(bArr.length>500){
+//            System.out.println(bArr[602]);
+//        }
+        final int size = SIZEOFBUFFER;
+        byte[] bigArr = new byte[bArr.length + size - (bArr.length % size)];
+        for (int i =0; i < bArr.length; i++){
+            bigArr[i] = bArr[i];
+        }
+        bArr = bigArr;
+
+
+        for(int i = 0; i < Math.ceil(Float.valueOf(bArr.length)/size); i++){
+            byte[] data = new byte[size];
+            for (int j = 0; j<(size);j++){
+                data[j] = bArr[j+(size)*i];
+            }
+
+            DatagramPacket datagramPacket = new DatagramPacket(data, size, socketAddress);
+            try {
+                datagramSocket.send(datagramPacket);
+            } catch (IOException e) {
+                System.out.println("Проблема с отправкой объекта!");
+            }
         }
     }
 
-    public <T> byte[] serializeObject(T obj){
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        ObjectOutputStream objectOutputStream = null;
-        try {
-            objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
-        } catch (IOException e) {
-            System.out.println("Проблема с созданием потока для серилизации объектов!");
-        }
-        byte[] serObj = null;
-
-        try {
-            objectOutputStream.writeObject(obj);
-            serObj = byteArrayOutputStream.toByteArray();
-        } catch (IOException e) {
-            System.out.println("Проблема с серелизацией объекта для отправки на сервер!");
-            e.printStackTrace();
-        }
-
-        return serObj;
-    }
+//    public <T> byte[] serializeObject(T obj){
+//        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+//        ObjectOutputStream objectOutputStream = null;
+//        try {
+//            objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+//        } catch (IOException e) {
+//            System.out.println("Проблема с созданием потока для серилизации объектов!");
+//        }
+//        byte[] serObj = null;
+//
+//        try {
+//            objectOutputStream.writeObject(obj);
+//            serObj = byteArrayOutputStream.toByteArray();
+//        } catch (IOException e) {
+//            System.out.println("Проблема с серелизацией объекта для отправки на сервер!");
+//            e.printStackTrace();
+//        }
+//
+//        return serObj;
+//    }
 
 
 
