@@ -1,4 +1,4 @@
-package L6User;
+package User;
 
 public class CreateConnection extends Thread{
 

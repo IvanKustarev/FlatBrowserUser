@@ -1,4 +1,4 @@
-package L6User;
+package User;
 
 //import L5.Creator;
 //import L6User.Commands.*;

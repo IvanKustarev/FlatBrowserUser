@@ -1,4 +1,4 @@
-package L6User;
+package User;
 
 //import CommonClasses.AbstractDataBlock;
 //import CommonClasses.DataBlock;
@@ -7,8 +7,6 @@ import CommonClasses.FirstTimeConnectedData;
 
 import java.io.*;
 import java.net.*;
-import java.nio.ByteBuffer;
-import java.nio.channels.DatagramChannel;
 import java.util.Date;
 import java.util.Random;
 import java.util.Scanner;
