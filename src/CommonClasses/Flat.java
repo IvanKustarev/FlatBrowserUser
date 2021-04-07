@@ -12,6 +12,8 @@ public class Flat implements Serializable, Comparable<Flat>{
 
     static final long serialVersionUID = 2;
 
+    private String userName;
+
     private Long id; //Поле не может быть null, Значение поля должно быть больше 0, Значение этого поля должно быть уникальным, Значение этого поля должно генерироваться автоматически
     private String name; //Поле не может быть null, Строка не может быть пустой
     private Coordinates coordinates; //Поле не может быть null
@@ -24,6 +26,7 @@ public class Flat implements Serializable, Comparable<Flat>{
     private House house; //Поле может быть null
 
     public void show(){
+        System.out.printf("%-30s %s \n", "userName", userName);
         System.out.printf("%-30s %s \n", "id", id);
         System.out.printf("%-30s %s \n", "name", name);
         System.out.println("coordinates:");
@@ -79,7 +82,13 @@ public class Flat implements Serializable, Comparable<Flat>{
         return flat;
     }
 
+    public String getUserName() {
+        return userName;
+    }
 
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
 
     public Long getId() {
         return id;

@@ -7,9 +7,9 @@ import java.util.Scanner;
 public class CheckConnection extends Thread{
 
 //    Boolean serverAnswer;
-    User user;
+    UserWork user;
 
-    public CheckConnection(User user){
+    public CheckConnection(UserWork user){
         this.user = user;
 //        this.serverAnswer = serverAnswer;
     }
@@ -25,10 +25,9 @@ public class CheckConnection extends Thread{
                     CreateConnection createConnection = new CreateConnection(user.transferCenter);
                     createConnection.start();
                     Thread.sleep(5000);
-//                    System.out.println("ttt");
-//                    System.out.println(createConnection.connectionReCreated);
+
                     if(createConnection.connectionReCreated == true){
-                        User user1 = new User(createConnection.transferCenter);
+                        UserWork user1 = new UserWork(createConnection.transferCenter);
                         user1.startCheckingCommands();
                     }
                     System.out.println("Введите 0, чтобы выйти или 1, чтобы продолжить попытки восстановить соединение.");

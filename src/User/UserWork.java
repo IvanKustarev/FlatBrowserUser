@@ -2,22 +2,124 @@ package User;
 
 //import L6User.Commands.*;
 
-import CommonClasses.CommandsData;
+import CommonClasses.*;
 //import CommonClasses.DataBlock;
-import CommonClasses.Creator;
-import CommonClasses.DataBlock;
-import CommonClasses.Flat;
 
 import java.util.Scanner;
 
-public class User {
+public class UserWork {
 
 //    String fileAddress;
     TransferCenter transferCenter;
+    User mainUser;
 
-    public User(TransferCenter transferCenter){
-//        transferCenter = new TransferCenter();
+    public UserWork(TransferCenter transferCenter){
         this.transferCenter = transferCenter;
+        login();
+    }
+
+    private void login(){
+        System.out.println("Необходимо авторизироваться.");
+        System.out.println("Войти - 0, зарегестрироваться - 1.");
+        Scanner scanner = new Scanner(System.in);
+        int scan;
+        try {
+            scan = Integer.valueOf(scanner.nextLine());
+        }catch (Exception e){
+            System.out.println("Это что-то страшное... Попробуем ещё раз!");
+            login();
+            return;
+        }
+        if(scan == 0){
+            entering(scanner);
+        }
+        else {
+            if(scan == 1){
+                registering(scanner);
+            }
+            else {
+                System.out.println("Нужно выбрать один из вариантов!");
+                login();
+                return;
+            }
+        }
+    }
+
+    private void entering(Scanner scanner){
+        CheckConnection checkConnection = new CheckConnection(this);
+        boolean end = false;
+        while (!end){
+            try {
+                System.out.println("Введите имя пользователя:");
+//                System.out.println("ttt");
+                String name = scanner.nextLine();
+//                System.out.println("ttt");
+                System.out.println("Введите пароль:");
+                String password = scanner.nextLine();
+                User user = new User(false, name, password);
+
+                DataBlock dataBlock = new DataBlock();
+                dataBlock.setUser(user);
+                dataBlock.setCommandsData(CommandsData.CHECKUSER);
+
+                checkConnection.start();
+                serverAnswer = false;
+                transferCenter.sendObjectToServer(dataBlock);
+                dataBlock = (DataBlock) transferCenter.receiveObjectFromServer();
+                serverAnswer = true;
+
+                if(dataBlock.getParameter().equals("true")){
+                    System.out.println(dataBlock.getPhrase());
+                    mainUser = user;
+                    end = true;
+                }
+                else {
+                    System.out.println(dataBlock.getParameter());
+                    System.out.println(dataBlock.getPhrase());
+                    System.out.println("Пробуем занова!");
+                    entering(scanner);
+                    return;
+                }
+
+            }catch (Exception e){ }
+        }
+    }
+
+    private void registering(Scanner scanner){
+        CheckConnection checkConnection = new CheckConnection(this);
+        boolean end = false;
+        while (!end){
+            try {
+                System.out.println("Введите имя пользователя:");
+                String name = scanner.nextLine();
+                System.out.println("Введите пароль:");
+                String password = scanner.nextLine();
+                User user = new User(true, name, password);
+
+                DataBlock dataBlock = new DataBlock();
+                dataBlock.setUser(user);
+                dataBlock.setCommandsData(CommandsData.CHECKUSER);
+
+                checkConnection.start();
+                serverAnswer = false;
+                transferCenter.sendObjectToServer(dataBlock);
+                dataBlock = (DataBlock) transferCenter.receiveObjectFromServer();
+                serverAnswer = true;
+
+                if(dataBlock.getParameter().equals("true")){
+                    System.out.println(dataBlock.getPhrase());
+                    mainUser = user;
+                    end = true;
+                }
+                else {
+                    System.out.println(dataBlock.getPhrase());
+                    System.out.println("Пробуем занова!");
+                    registering(scanner);
+                    return;
+                }
+
+            }catch (Exception e){ }
+        }
     }
 
     public void startCheckingCommands(){
@@ -37,59 +139,31 @@ public class User {
             }
             else {
                 commandsDataForSendToServer = cc.whatTheCommand(command);
+//                System.out.println(commandsDataForSendToServer.getCreator());
+//                System.out.println(commandsDataForSendToServer.name());
                 if(commandsDataForSendToServer == null){
                     System.out.println("Такой команды не существует!");
                 }
                 else {
+                    commandsDataForSendToServer.setCreator(null);
                     if(commandsDataForSendToServer.equals(CommandsData.EXIT)){
+
                         exit = true;
                     }
                     else {
+
                         cc.packingCommandInCommandsObject(command, commandsDataForSendToServer);
-//                        System.out.println(commandsDataForSendToServer.name());
+
                         if(commandsDataForSendToServer.isCommandWithElementParameter()){
                             commandsDataForSendToServer.setFlat(Flat.createFlat(null));
                         }
-//                        commandsDataForSendToServer.getFlat().show();
-//                        commandsDataForSendToServer.setParameter("aaaa");
 //                        System.out.println(commandsDataForSendToServer.name());
-//                        DataBlock dataBlock = new DataBlock();
-//                        copyFieldsFromTo(commandsDataForSendToServer, dataBlock);
-//                        dataBlock.setCommandsData(commandsDataForSendToServer);
-////                        transferCenter.sendObjectToServer(commandsDataForSendToServer);
-//                        transferCenter.sendObjectToServer(dataBlock);
-////                        CommandsData commandsDataAnswer = (CommandsData) transferCenter.receiveObjectFromServer();
-//                        dataBlock = (DataBlock) transferCenter.receiveObjectFromServer();
-//                        CommandsData commandsDataAnswer = dataBlock.getCommandsData();
-//                        copyFieldsFromTo(dataBlock, commandsDataAnswer);
+
                         communicateWithServerAboutCommand(commandsDataForSendToServer);
-//                        System.out.println(transferCenter.receiveObjectFromServer().getClass().getName());
-//                        DataBlock dataBlock = new DataBlock();
-//                        dataBlock.setFlat(commandsDataForSendToServer.getFlat());
-//                        dataBlock.setParameter(commandsDataForSendToServer.getParameter());
-
-//                        System.out.println("ttt");
-//                        transferCenter.checkConnection();
-//                        System.out.println("ttt");
-//                        transferCenter.sendObjectToServer(dataBlock);
-//                        processingMessageFromServer((DataBlock) transferCenter.receiveObjectFromServer());
-
-//                        DataBlock dataBlock = (DataBlock)transferCenter.receiveObjectFromServer();
-//                        System.out.println(dataBlock.phrase);
-
-//                        boolean commandCompleted = false;
-//                        while (!commandCompleted){
-//                            DataBlock dataBlock = transferCenter.reciveAnswerFromServer();
-//                            DataBlock answerToServer = new DataBlock();
-//                            commandCompleted = dataBlock.StartProcessingCommand(answerToServer);
-//
-//                            if(!commandCompleted){
-//                                transferCenter.sendAnswerToServer(dataBlock);
-//                            }
-//                        }
                     }
                 }
             }
+            commandsDataForSendToServer = null;
         }
         System.out.println("Выход из программы...");
     }
@@ -131,12 +205,14 @@ public class User {
     private void communicateWithServerAboutCommand(Object obj){
         CommandsData commandsData = (CommandsData) obj;
         boolean end = false;
-        CheckConnection checkConnection = new CheckConnection(this);
 
         while (!end){
+//            Нужно оптимизировать так, чтобы находился вне цикла и не возникала ошибка при запуске execute_script
+            CheckConnection checkConnection = new CheckConnection(this);
 
-            if(!(commandsData.getCreator() == null)){
+            if(commandsData.getCreator() != null){
                 if(commandsData.getCreator().equals(Creator.SCRIPT)){
+
                     DataBlock dataBlock;
                     serverAnswer = false;
                     checkConnection.start();
@@ -144,39 +220,46 @@ public class User {
                     serverAnswer = true;
                     commandsData = dataBlock.getCommandsData();
                     copyFieldsFromTo(dataBlock, commandsData);
+
                 }
                 else {
 
                     DataBlock dataBlock = new DataBlock();
                     copyFieldsFromTo(commandsData, dataBlock);
                     dataBlock.setCommandsData(commandsData);
-//                        transferCenter.sendObjectToServer(commandsDataForSendToServer);
+                    dataBlock.setUser(mainUser);
+
+//                    System.out.println(dataBlock.getCommandsData().name());
+
                     transferCenter.sendObjectToServer(dataBlock);
-//                        CommandsData commandsDataAnswer = (CommandsData) transferCenter.receiveObjectFromServer();
                     serverAnswer = false;
                     checkConnection.start();
                     dataBlock = (DataBlock) transferCenter.receiveObjectFromServer();
                     serverAnswer = true;
                     commandsData = dataBlock.getCommandsData();
                     copyFieldsFromTo(dataBlock, commandsData);
+
                 }
             }
             else {
+
                 DataBlock dataBlock = new DataBlock();
                 copyFieldsFromTo(commandsData, dataBlock);
                 dataBlock.setCommandsData(commandsData);
-//                        transferCenter.sendObjectToServer(commandsDataForSendToServer);
+                dataBlock.setUser(mainUser);
+//                System.out.println(dataBlock.getCommandsData().name());
                 transferCenter.sendObjectToServer(dataBlock);
-//                        CommandsData commandsData = (CommandsData) transferCenter.receiveObjectFromServer();
                 serverAnswer = false;
                 checkConnection.start();
                 dataBlock = (DataBlock) transferCenter.receiveObjectFromServer();
                 serverAnswer = true;
                 commandsData = dataBlock.getCommandsData();
                 copyFieldsFromTo(dataBlock, commandsData);
+
             }
 
 //            System.out.println(commandsData.getCreator());
+
 
 
             end = commandsData.isCommandEnded();
@@ -200,71 +283,4 @@ public class User {
         }
 
     }
-
-
-
-
-
-//
-//    private void processingMessageFromServer(DataBlock dataBlock){
-//        if (dataBlock.getPhrase() != null) {
-//            print(dataBlock.getPhrase());
-//        }
-//        if (dataBlock.isUserNeedToShowFlatArr) {
-//            Flat[] flats = dataBlock.getFlats();
-//            for (Flat flat : flats) {
-//                flat.show();
-//            }
-//        }
-//        if(dataBlock.isAllRight()){
-//            return;
-//        }
-//        else {
-//            DataBlock answerForServer = new DataBlock();
-//            if(dataBlock.isServerNeedStringParameter()){
-//                answerForServer.setParameter(scan());
-//            }
-//            if(dataBlock.isServerNeedElementParameter){
-//                answerForServer.setFlat(Flat.createFlat(null));
-//            }
-//            transferCenter.sendObjectToServer(answerForServer);
-//            processingMessageFromServer((DataBlock) transferCenter.receiveObjectFromServer());
-//        }
-//    }
-//
-//    public static void print(Object object){
-//        System.out.println(object);
-//    }
-//
-//    public static String scan(){
-//        Scanner scanner = new Scanner(System.in);
-//        return  scanner.nextLine();
-//    }
-//
-//    private String gettingNormalFormat(String str){ //меняет "_a" на "A" и тп и переводит первую букву в верхний регистр
-//
-//        String firstCarInCommand = str.substring(0,1);  //
-//        firstCarInCommand = firstCarInCommand.toUpperCase();                    // переводит первую букву в верхний регистр
-//        str = firstCarInCommand + str.substring(1);
-//
-//        boolean normalFormat = false;
-//        while (!normalFormat){
-//            normalFormat = true;
-//            int ind;
-//            if(str.contains("_")){
-//                ind = str.indexOf("_");
-//                str = str.substring(0, ind) + str.substring(ind+1, ind+2).toUpperCase() + str.substring(ind+2);
-//                normalFormat = false;
-//            }
-//        }
-//        return str;
-//    }
-//
-//    public String printAndRead(String parameter){
-//        System.out.println(parameter);
-//        Scanner scanner = new Scanner(System.in);
-//        String str = scanner.nextLine();
-//        return str;
-//    }
-//
 }

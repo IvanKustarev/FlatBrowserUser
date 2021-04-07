@@ -16,7 +16,7 @@ public class Main {
 //        transferCenter.sendObjectToServer(new Flat());
 
 
-        User user = new User(new TransferCenter());
+        UserWork user = new UserWork(new TransferCenter());
         user.startCheckingCommands();
     }
 }

@@ -29,10 +29,8 @@ public class TransferCenter{
             try {
                 createMainServerSocketAddress();
                 createSocketAddressForReceive();
-//                RestartConnectionWithServer restartConnectionWithServer = new RestartConnectionWithServer();
                 CreateConnectionWithServer createConnectionWithServer = new CreateConnectionWithServer(this);
                 createConnectionWithServer.start();
-//                Date date = new Date();
                 long timeOfStart = new Date().getTime();
 
 //              Жуткий колхоз! ==============================
@@ -68,26 +66,12 @@ public class TransferCenter{
 
     public void createConnectionWithServer(){
         FirstTimeConnectedData firstTimeConnectedData = new FirstTimeConnectedData();
-//        DatagramChannel datagramChannel = DatagramChannel.open();
-//        System.out.println("1");
         firstTimeConnectedData.setSocketAddress(socketAddressReceive);
-//        System.out.println("2");
-//        .parameter = socketAddressReceive.getAddress().getHostAddress() + "; " + socketAddressReceive.getPort();
         sendObjectToServer(firstTimeConnectedData);
-//        System.out.println("3");
         firstTimeConnectedData = (FirstTimeConnectedData) receiveObjectFromServer();
-//        System.out.println("4");
-//        System.out.println(firstTimeConnectedData.getSocketAddress());
-
-//        individualServerSocketAddress = new InetSocketAddress(firstTimeConnectedData.getSocketAddress());
 
         individualServerSocketAddress = (InetSocketAddress) firstTimeConnectedData.getSocketAddress();
-//        System.out.println("5");
     }
-
-//    public Object receiveObjectFromServer(){
-//        return receiveObjectFromServer(receiveObjectArrSize());
-//    }
 
     public Object receiveObjectFromServer(){
 //        byte[] buffer = new byte[10000];
@@ -251,37 +235,17 @@ public class TransferCenter{
 
     public <T> void sendObjectToServer(T object){
 
-//        checkConnection();
-
-
-
         byte[] serObject = ObjectProcessing.serializeObject(object);
-//        DataBlock warningAboutSize = new DataBlock();
-//        warningAboutSize.parameter = String.valueOf(serObject.length);
-//        sendByteArr(serializeObject(warningAboutSize));
-//        System.out.println(object.getClass().getName());
         if(object.getClass().getName().equals("CommonClasses.FirstTimeConnectedData")){
             sendByteArr(serObject, mainServerSocketAddress);
         }
         else {
-//            System.out.println(serObject.length);
-//            Object obj = deSerialize(serObject);
-//            System.out.println(obj.getClass().getName());
-//            for(int i =0; i< serObject.length;i++){
-//                System.out.println(i + "   " + serObject[i]);
-//            }
             sendByteArr(serObject, individualServerSocketAddress);
         }
-        //Необходимо получать allRight --- доделать
-//        sendByteArr(serializeObject(object));
     }
 
 
     private void sendByteArr(byte[] bArr, SocketAddress socketAddress){
-//        System.out.println(bArr.length);
-//        if(bArr.length>500){
-//            System.out.println(bArr[602]);
-//        }
         final int size = SIZEOFBUFFER;
         byte[] bigArr = new byte[bArr.length + size - (bArr.length % size)];
         for (int i =0; i < bArr.length; i++){
