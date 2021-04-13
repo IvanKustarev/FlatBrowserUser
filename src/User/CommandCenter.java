@@ -137,7 +137,6 @@ public class CommandCenter {
         CommandsData[] commands = CommandsData.values();
         for (int i =0; i<commands.length; i++){
 
-//            System.out.println(command);
             if(command.contains("add_if_min")){
                 commandObject = CommandsData.ADDIFMIN;
             }
@@ -147,7 +146,6 @@ public class CommandCenter {
                 }
             }
         }
-//        System.out.println(commandObject.name());
         if(isCommandWithParameter(command)){
             processingParameter(commandObject, command, commands);
         }
@@ -169,9 +167,8 @@ public class CommandCenter {
             }
             break;
         }
-//            System.out.println(comWords.length);
         if(comWords.length < 2){
-            System.out.println("Для этой команды необходим параметр!");
+            Printer.println("Для этой команды необходим параметр!");
             String par = new Scanner(System.in).nextLine();
             command = command + " " + par;
             processingParameter(commandObject, command, commands);

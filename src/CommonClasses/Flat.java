@@ -5,8 +5,8 @@ package CommonClasses;
 import CommonClasses.ApartmentDescription.*;
 
 import java.io.Serializable;
-import java.lang.instrument.Instrumentation;
 import java.util.Date;
+import User.Printer;
 
 public class Flat implements Serializable, Comparable<Flat>{
 
@@ -26,42 +26,36 @@ public class Flat implements Serializable, Comparable<Flat>{
     private House house; //Поле может быть null
 
     public void show(){
-        System.out.printf("%-30s %s \n", "userName", userName);
-        System.out.printf("%-30s %s \n", "id", id);
-        System.out.printf("%-30s %s \n", "name", name);
-        System.out.println("coordinates:");
+        Printer.printf("%-30s %s \n", "userName", userName);
+        Printer.printf("%-30s %s \n", "id", id);
+        Printer.printf("%-30s %s \n", "name", name);
+        Printer.println("coordinates:");
         coordinates.show();
-//        System.out.println("creationDate:\t\t\t\t" + creationDate);
-        System.out.printf("%-30s %s \n", "creationDate", creationDate);
-        System.out.printf("%-30s %s \n", "area", area);
-        System.out.printf("%-30s %s \n", "numberOfRooms", numberOfRooms);
-        System.out.printf("%-30s %s \n", "furnish", furnish.name());
-//        System.out.println("area:\t\t\t\t" + area);
-//        System.out.println("numberOfRooms:\t\t\t\t" + numberOfRooms);
-//        System.out.println("furnish:\t\t\t\t"+furnish.name());
+        Printer.printf("%-30s %s \n", "creationDate", creationDate);
+        Printer.printf("%-30s %s \n", "area", area);
+        Printer.printf("%-30s %s \n", "numberOfRooms", numberOfRooms);
+        Printer.printf("%-30s %s \n", "furnish", furnish.name());
 
         try {
-//            System.out.println("view:\t\t\t\t" + view.name());
-            System.out.printf("%-30s %s \n", "view", view.name());
+            Printer.printf("%-30s %s \n", "view", view.name());
         }catch (Exception e){
-            System.out.println("view - пустое поле");
+            Printer.println("view - пустое поле");
         }
         try {
-//            System.out.println("transport:\t\t\t\t" + transport.name());
-            System.out.printf("%-30s %s \n", "transport", transport.name());
+            Printer.printf("%-30s %s \n", "transport", transport.name());
         }catch (Exception e){
-            System.out.println("transport - пустое поле");
+            Printer.println("transport - пустое поле");
         }
         try {
-            System.out.println("house:");
+            Printer.println("house:");
             house.getFields();
         }catch (Exception e){
-            System.out.println("house - пустое поле");
+            Printer.println("house - пустое поле");
         }
 
 
 
-        System.out.println("\n\n");
+       Printer.println("\n\n");
     }
 
     public static Flat createFlat(Long id){
@@ -169,29 +163,6 @@ public class Flat implements Serializable, Comparable<Flat>{
         this.view = view;
     }
 
-//    @Override
-//    public int compareTo(CommonClasses.Flat o) {
-//
-//        if((getNumberOfRooms() > Integer.MAX_VALUE) | (o.getNumberOfRooms() > Integer.MAX_VALUE)){
-//            return (int)(getNumberOfRooms() - Integer.MAX_VALUE) - (int)(o.getNumberOfRooms() - Integer.MAX_VALUE);
-//
-//        }
-//        else {
-//            return (int) getNumberOfRooms() - (int) o.getNumberOfRooms();
-//        }
-//    }
-
-//    @Override
-//    public int compareTo(CommonClasses.Flat o) {
-//
-//        if((getNumberOfRooms() > Integer.MAX_VALUE) | (o.getNumberOfRooms() > Integer.MAX_VALUE)){
-//            return (int)(o.getNumberOfRooms() - Integer.MAX_VALUE) - (int)(getNumberOfRooms() - Integer.MAX_VALUE);
-//
-//        }
-//        else {
-//            return (int) o.getNumberOfRooms() - (int) getNumberOfRooms();
-//        }
-//    }
 
     @Override
     public int compareTo(Flat flat){

@@ -1,6 +1,5 @@
 package User;
 
-//import L6User.Commands.*;
 
 import CommonClasses.*;
 //import CommonClasses.DataBlock;
@@ -9,7 +8,6 @@ import java.util.Scanner;
 
 public class UserWork {
 
-//    String fileAddress;
     TransferCenter transferCenter;
     User mainUser;
 
@@ -19,14 +17,14 @@ public class UserWork {
     }
 
     private void login(){
-        System.out.println("Необходимо авторизироваться.");
-        System.out.println("Войти - 0, зарегестрироваться - 1.");
+        Printer.println("Необходимо авторизироваться.");
+        Printer.println("Войти - 0, зарегестрироваться - 1.");
         Scanner scanner = new Scanner(System.in);
         int scan;
         try {
             scan = Integer.valueOf(scanner.nextLine());
         }catch (Exception e){
-            System.out.println("Это что-то страшное... Попробуем ещё раз!");
+            Printer.println("Это что-то страшное... Попробуем ещё раз!");
             login();
             return;
         }
@@ -38,7 +36,7 @@ public class UserWork {
                 registering(scanner);
             }
             else {
-                System.out.println("Нужно выбрать один из вариантов!");
+                Printer.println("Нужно выбрать один из вариантов!");
                 login();
                 return;
             }
@@ -50,11 +48,9 @@ public class UserWork {
         boolean end = false;
         while (!end){
             try {
-                System.out.println("Введите имя пользователя:");
-//                System.out.println("ttt");
+                Printer.println("Введите имя пользователя:");
                 String name = scanner.nextLine();
-//                System.out.println("ttt");
-                System.out.println("Введите пароль:");
+                Printer.println("Введите пароль:");
                 String password = scanner.nextLine();
                 User user = new User(false, name, password);
 
@@ -69,14 +65,14 @@ public class UserWork {
                 serverAnswer = true;
 
                 if(dataBlock.getParameter().equals("true")){
-                    System.out.println(dataBlock.getPhrase());
+                    Printer.println(dataBlock.getPhrase());
                     mainUser = user;
                     end = true;
                 }
                 else {
-                    System.out.println(dataBlock.getParameter());
-                    System.out.println(dataBlock.getPhrase());
-                    System.out.println("Пробуем занова!");
+                    Printer.println(dataBlock.getParameter());
+                    Printer.println(dataBlock.getPhrase());
+                    Printer.println("Пробуем занова!");
                     entering(scanner);
                     return;
                 }
@@ -90,9 +86,9 @@ public class UserWork {
         boolean end = false;
         while (!end){
             try {
-                System.out.println("Введите имя пользователя:");
+                Printer.println("Введите имя пользователя:");
                 String name = scanner.nextLine();
-                System.out.println("Введите пароль:");
+                Printer.println("Введите пароль:");
                 String password = scanner.nextLine();
                 User user = new User(true, name, password);
 
@@ -107,13 +103,13 @@ public class UserWork {
                 serverAnswer = true;
 
                 if(dataBlock.getParameter().equals("true")){
-                    System.out.println(dataBlock.getPhrase());
+                    Printer.println(dataBlock.getPhrase());
                     mainUser = user;
                     end = true;
                 }
                 else {
-                    System.out.println(dataBlock.getPhrase());
-                    System.out.println("Пробуем занова!");
+                    Printer.println(dataBlock.getPhrase());
+                    Printer.println("Пробуем занова!");
                     registering(scanner);
                     return;
                 }
@@ -129,20 +125,18 @@ public class UserWork {
         String command = new String();
         CommandsData commandsDataForSendToServer = null;
 
-        System.out.println("Для просмотра списка команд необходимо ввести \"help\"");
+        Printer.println("Для просмотра списка команд необходимо ввести \"help\"");
 
         while (!exit){
-            System.out.println("Введите команду:");
+            Printer.println("Введите команду:");
             command = scanner.nextLine();
             if(command.equals("")){
-                System.out.println("Необходимо ввести команду!");
+                Printer.println("Необходимо ввести команду!");
             }
             else {
                 commandsDataForSendToServer = cc.whatTheCommand(command);
-//                System.out.println(commandsDataForSendToServer.getCreator());
-//                System.out.println(commandsDataForSendToServer.name());
                 if(commandsDataForSendToServer == null){
-                    System.out.println("Такой команды не существует!");
+                    Printer.println("Такой команды не существует!");
                 }
                 else {
                     commandsDataForSendToServer.setCreator(null);
@@ -157,7 +151,6 @@ public class UserWork {
                         if(commandsDataForSendToServer.isCommandWithElementParameter()){
                             commandsDataForSendToServer.setFlat(Flat.createFlat(null));
                         }
-//                        System.out.println(commandsDataForSendToServer.name());
 
                         communicateWithServerAboutCommand(commandsDataForSendToServer);
                     }
@@ -165,7 +158,7 @@ public class UserWork {
             }
             commandsDataForSendToServer = null;
         }
-        System.out.println("Выход из программы...");
+        Printer.println("Выход из программы...");
     }
 
 
@@ -229,8 +222,6 @@ public class UserWork {
                     dataBlock.setCommandsData(commandsData);
                     dataBlock.setUser(mainUser);
 
-//                    System.out.println(dataBlock.getCommandsData().name());
-
                     transferCenter.sendObjectToServer(dataBlock);
                     serverAnswer = false;
                     checkConnection.start();
@@ -247,7 +238,6 @@ public class UserWork {
                 copyFieldsFromTo(commandsData, dataBlock);
                 dataBlock.setCommandsData(commandsData);
                 dataBlock.setUser(mainUser);
-//                System.out.println(dataBlock.getCommandsData().name());
                 transferCenter.sendObjectToServer(dataBlock);
                 serverAnswer = false;
                 checkConnection.start();
@@ -258,15 +248,13 @@ public class UserWork {
 
             }
 
-//            System.out.println(commandsData.getCreator());
-
 
 
             end = commandsData.isCommandEnded();
-            System.out.println(commandsData.getPhrase());
+            Printer.println(commandsData.getPhrase());
 
             if(commandsData.isServerNeedElementParameter){
-                System.out.println("Необходимо задать квартиру.");
+                Printer.println("Необходимо задать квартиру.");
                 commandsData.setFlat(Flat.createFlat(null));
             }
 
@@ -277,7 +265,7 @@ public class UserWork {
             if(commandsData.isUserNeedToShowFlatArr()){
                 for(int i =0;i<commandsData.getFlats().length;i++){
                     commandsData.getFlats()[i].show();
-                    System.out.println("");
+                    Printer.println("");
                 }
             }
         }

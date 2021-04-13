@@ -39,17 +39,17 @@ public class TransferCenter{
 
                 }
                 if(createConnectionWithServer.isAllRight()){
-                    System.out.println("Пользователь успешно создан!");
+                    Printer.println("Пользователь успешно создан!");
                 }
                 else {
-                    System.out.println("Проблема с подключением к серверу. Пробуем всё заново!");
+                    Printer.println("Проблема с подключением к серверу. Пробуем всё заново!");
                     isExceptions = true;
                 }
 //              ==============================================
 
 
             } catch (Exception e) {
-                System.out.println("Введены некорректные данные!");
+                Printer.println("Введены некорректные данные!");
                 isExceptions = true;
             }
         }
@@ -74,15 +74,7 @@ public class TransferCenter{
     }
 
     public Object receiveObjectFromServer(){
-//        byte[] buffer = new byte[10000];
-//        try {
-//            DatagramPacket datagramPacket = new DatagramPacket(buffer, buffer.length);
-//            datagramSocket.receive(datagramPacket);
-//        } catch (IOException e) {
-//            System.out.println("Проблема с переходом из канала в буфер!");
-//            e.printStackTrace();
-//        }
-//        return deSerialize(buffer);
+
 
         Object obj = null;
         boolean endOfReceive = false;
@@ -171,15 +163,14 @@ public class TransferCenter{
         Scanner scanner = new Scanner(System.in);
         Boolean err = false;
 
-        System.out.println("Введите ip адрес сервера: ");
+        Printer.println("Введите ip адрес сервера: ");
         String ip = scanner.nextLine();
-        System.out.println("Введите port: ");
+        Printer.println("Введите port: ");
         int port = scanner.nextInt();
 
 
         //"192.168.1.135"
         mainServerSocketAddress = null;
-        //            System.out.println(InetAddress.getLocalHost().getHostAddress());
         mainServerSocketAddress = new InetSocketAddress(ip, port);
 //        System.out.println("ttt");
 //        socketAddressForSend
@@ -198,7 +189,7 @@ public class TransferCenter{
 
 
         if(err == true){
-            System.out.println("Попробуем снова...");
+            Printer.println("Попробуем снова...");
             createMainServerSocketAddress();
         }
 
@@ -216,7 +207,7 @@ public class TransferCenter{
                 socketAddressReceive = new InetSocketAddress(InetAddress.getLocalHost(), port);
                 workingSocket = true;
             } catch (IOException e) {
-                System.out.println("Проблема с созданием порта!");
+                Printer.println("Проблема с созданием порта!");
 //                e.printStackTrace();
             }
 
@@ -224,9 +215,6 @@ public class TransferCenter{
         try {
             datagramSocket = null;
             datagramSocket = new DatagramSocket(socketAddressReceive);
-//            datagramChannelForReceive = DatagramChannel.open();
-//            datagramSocket.bind(socketAddressReceive);
-//            DatagramPacket datagramPacket = new DatagramPacket();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -264,7 +252,7 @@ public class TransferCenter{
             try {
                 datagramSocket.send(datagramPacket);
             } catch (IOException e) {
-                System.out.println("Проблема с отправкой объекта!");
+                Printer.println("Проблема с отправкой объекта!");
             }
         }
     }

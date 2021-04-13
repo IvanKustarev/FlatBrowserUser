@@ -6,12 +6,10 @@ import java.util.Scanner;
 
 public class CheckConnection extends Thread{
 
-//    Boolean serverAnswer;
     UserWork user;
 
     public CheckConnection(UserWork user){
         this.user = user;
-//        this.serverAnswer = serverAnswer;
     }
 
     @Override
@@ -19,7 +17,7 @@ public class CheckConnection extends Thread{
         try {
             Thread.sleep(5000);
             if(user.serverAnswer.equals(false)){
-                System.out.println("Сервер не отвечает...\nПытаюсь восстановить соединение.");
+                Printer.println("Сервер не отвечает...\nПытаюсь восстановить соединение.");
                 while (true){
 
                     CreateConnection createConnection = new CreateConnection(user.transferCenter);
@@ -30,19 +28,15 @@ public class CheckConnection extends Thread{
                         UserWork user1 = new UserWork(createConnection.transferCenter);
                         user1.startCheckingCommands();
                     }
-                    System.out.println("Введите 0, чтобы выйти или 1, чтобы продолжить попытки восстановить соединение.");
+                    Printer.println("Введите 0, чтобы выйти или 1, чтобы продолжить попытки восстановить соединение.");
                     if((new Scanner(System.in)).nextInt() == 0){
-                        System.out.println("Выхожу из программы...");
+                        Printer.println("Выхожу из программы...");
                         System.exit(0);
                     }
                 }
 
 
             }
-//            System.out.println("allIsRight");
-//            else {
-//                System.out.println("");
-//            }
 
 
         } catch (Exception e) {
