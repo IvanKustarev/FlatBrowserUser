@@ -1,4 +1,4 @@
-package L6User;
+package User;
 
 public class CreateConnection extends Thread{
 
@@ -12,7 +12,6 @@ public class CreateConnection extends Thread{
     @Override
     public void run(){
         transferCenter = new TransferCenter(transferCenter);
-//        System.out.println(connectionReCreated);
         connectionReCreated = true;
     }
 }

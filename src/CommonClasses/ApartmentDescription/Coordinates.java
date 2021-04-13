@@ -1,5 +1,7 @@
 package CommonClasses.ApartmentDescription;
 
+import User.Printer;
+
 import java.io.Serializable;
 
 public class Coordinates implements Serializable {
@@ -8,8 +10,8 @@ public class Coordinates implements Serializable {
 
     public void show(){
 
-        System.out.printf("%-30s %s \n", "   coordinate x", x);
-        System.out.printf("%-30s %s \n", "   coordinate y", y);
+        Printer.printf("%-30s %s \n", "   coordinate x", x);
+        Printer.printf("%-30s %s \n", "   coordinate y", y);
 
     }
 

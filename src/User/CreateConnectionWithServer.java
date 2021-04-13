@@ -1,4 +1,4 @@
-package L6User;
+package User;
 
 import CommonClasses.FirstTimeConnectedData;
 
