@@ -22,7 +22,6 @@ public class FlatCreator {
         Scanner scanner = new Scanner(System.in);
         return scanner.nextLine();
     }
-
     public String createName(){
 
         Printer.println("Введите имя квартиры:");
