@@ -3,6 +3,11 @@ package User;
 //import CommonClasses.AbstractDataBlock;
 //import CommonClasses.DataBlock;
 
+import GraphicalUserInterface.GInterfaceControlCenter;
+import GraphicalUserInterface.Login;
+import GraphicalUserInterface.MainWindow;
+import GraphicalUserInterface.WorkingWithGInterface;
+
 import java.io.*;
 
 public class Main {
@@ -16,7 +21,14 @@ public class Main {
 //        transferCenter.sendObjectToServer(new Flat());
 
 
-        UserWork user = new UserWork(new TransferCenter());
-        user.startCheckingCommands();
+
+//    Login login = new Login();
+
+
+//        MainWindow mainWindow = new MainWindow();
+        WorkingWithGInterface gInterface = new GInterfaceControlCenter();
+
+        UserWork user = new UserWork(new TransferCenter(gInterface), gInterface);
+//        user.startCheckingCommands();
     }
 }

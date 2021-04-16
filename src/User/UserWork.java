@@ -2,29 +2,60 @@ package User;
 
 
 import CommonClasses.*;
+import GraphicalUserInterface.LogOrRegChoice;
+import GraphicalUserInterface.Login;
+import GraphicalUserInterface.MainWindow;
+import GraphicalUserInterface.WorkingWithGInterface;
 //import CommonClasses.DataBlock;
 
+import javax.swing.*;
+import java.awt.*;
 import java.util.Scanner;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class UserWork {
 
     TransferCenter transferCenter;
     User mainUser;
+    WorkingWithGInterface gInterface;
 
-    public UserWork(TransferCenter transferCenter){
+
+    public UserWork(TransferCenter transferCenter, WorkingWithGInterface gInterface){
         this.transferCenter = transferCenter;
+        this.gInterface = gInterface;
         login();
+
     }
 
     private void login(){
-        Printer.println("Необходимо авторизироваться.");
-        Printer.println("Войти - 0, зарегестрироваться - 1.");
+//      Обновляем окно на всякий случай
+//        mainWindow.getContentPane().removeAll();
+//        mainWindow.repaint();
+
+        LogOrRegChoice logOrRegChoice = new LogOrRegChoice();
+        gInterface.setSpaceForInteraction(logOrRegChoice.getPanel());
+
+        while (logOrRegChoice.getAnswer() == null){
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        String answer = logOrRegChoice.getAnswer();
+
+
+//        Printer.println("Необходимо авторизироваться.");
+//        Printer.println("Войти - 0, зарегестрироваться - 1.");
         Scanner scanner = new Scanner(System.in);
         int scan;
         try {
-            scan = Integer.valueOf(scanner.nextLine());
+            scan = Integer.valueOf(answer);
         }catch (Exception e){
-            Printer.println("Это что-то страшное... Попробуем ещё раз!");
+//            Printer.println("Это что-то страшное... Попробуем ещё раз!");
+            JOptionPane.showConfirmDialog(new JOptionPane(), "Это что-то страшное... Попробуем ещё раз!", "Ошибка подключения", JOptionPane.OK_CANCEL_OPTION);
             login();
             return;
         }
@@ -36,7 +67,8 @@ public class UserWork {
                 registering(scanner);
             }
             else {
-                Printer.println("Нужно выбрать один из вариантов!");
+//                Printer.println("Нужно выбрать один из вариантов!");
+                JOptionPane.showConfirmDialog(new JOptionPane(), "Нужно выбрать один из вариантов!", "Ошибка подключения", JOptionPane.OK_CANCEL_OPTION);
                 login();
                 return;
             }
@@ -44,14 +76,33 @@ public class UserWork {
     }
 
     private void entering(Scanner scanner){
-        CheckConnection checkConnection = new CheckConnection(this);
+        CheckConnection checkConnection = new CheckConnection(this, gInterface);
         boolean end = false;
         while (!end){
             try {
-                Printer.println("Введите имя пользователя:");
-                String name = scanner.nextLine();
-                Printer.println("Введите пароль:");
-                String password = scanner.nextLine();
+//                Printer.println("Введите имя пользователя:");
+//                String name = scanner.nextLine();
+//                Printer.println("Введите пароль:");
+//                String password = scanner.nextLine();
+
+//                mainWindow.getContentPane().removeAll();
+//                mainWindow.repaint();
+
+                Lock lock = new ReentrantLock();
+                lock.lock();
+                Condition condition = lock.newCondition();
+                Login login = new Login(lock, condition);
+                gInterface.setSpaceForInteraction(login.getPanel());
+//                mainWindow.add(login.getPanel());
+//                mainWindow.setVisible(true);
+                condition.await();
+                lock.unlock();
+
+                String name = login.getLogin();
+                String password = login.getPassword();
+//                mainWindow.remove(login.getPanel());
+
+
                 User user = new User(false, name, password);
 
                 DataBlock dataBlock = new DataBlock();
@@ -70,9 +121,9 @@ public class UserWork {
                     end = true;
                 }
                 else {
-                    Printer.println(dataBlock.getParameter());
-                    Printer.println(dataBlock.getPhrase());
-                    Printer.println("Пробуем занова!");
+//                    Printer.println(dataBlock.getPhrase());
+                    JOptionPane.showConfirmDialog(new JOptionPane(), dataBlock.getPhrase() + "\nПробуем занова!", "Ошибка подключения", JOptionPane.OK_CANCEL_OPTION);
+//                    Printer.println("Пробуем занова!");
                     entering(scanner);
                     return;
                 }
@@ -82,14 +133,39 @@ public class UserWork {
     }
 
     private void registering(Scanner scanner){
-        CheckConnection checkConnection = new CheckConnection(this);
+        CheckConnection checkConnection = new CheckConnection(this, gInterface);
         boolean end = false;
         while (!end){
             try {
-                Printer.println("Введите имя пользователя:");
-                String name = scanner.nextLine();
-                Printer.println("Введите пароль:");
-                String password = scanner.nextLine();
+//                Printer.println("Введите имя пользователя:");
+//                String name = scanner.nextLine();
+//                Printer.println("Введите пароль:");
+//                String password = scanner.nextLine();
+
+//                mainWindow.getContentPane().removeAll();
+//                mainWindow.repaint();
+
+                Lock lock = new ReentrantLock();
+                lock.lock();
+                Condition condition = lock.newCondition();
+                Login login = new Login(lock, condition);
+                gInterface.setSpaceForInteraction(login.getPanel());
+//                mainWindow.add(login.getPanel());
+//                mainWindow.setVisible(true);
+                condition.await();
+                lock.unlock();
+
+//                Login login = new Login();
+//                mainWindow.add(login.getPanel());
+//                mainWindow.setVisible(true);
+//                while (login.getLogin() == null | login.getPassword() == null){
+//                    Thread.sleep(50);
+//                }
+                String name = login.getLogin();
+                String password = login.getPassword();
+
+
+
                 User user = new User(true, name, password);
 
                 DataBlock dataBlock = new DataBlock();
@@ -103,13 +179,15 @@ public class UserWork {
                 serverAnswer = true;
 
                 if(dataBlock.getParameter().equals("true")){
-                    Printer.println(dataBlock.getPhrase());
+//                    Printer.println(dataBlock.getPhrase());
+                    JOptionPane.showConfirmDialog(new JOptionPane(), dataBlock.getPhrase(), "Ошибка подключения", JOptionPane.OK_CANCEL_OPTION);
                     mainUser = user;
                     end = true;
                 }
                 else {
-                    Printer.println(dataBlock.getPhrase());
-                    Printer.println("Пробуем занова!");
+//                    Printer.println(dataBlock.getPhrase());
+//                    Printer.println("Пробуем занова!");
+                    JOptionPane.showConfirmDialog(new JOptionPane(), dataBlock.getPhrase() + "\nПробуем занова!", "Ошибка подключения", JOptionPane.OK_CANCEL_OPTION);
                     registering(scanner);
                     return;
                 }
@@ -201,7 +279,7 @@ public class UserWork {
 
         while (!end){
 //            Нужно оптимизировать так, чтобы находился вне цикла и не возникала ошибка при запуске execute_script
-            CheckConnection checkConnection = new CheckConnection(this);
+            CheckConnection checkConnection = new CheckConnection(this, gInterface);
 
             if(commandsData.getCreator() != null){
                 if(commandsData.getCreator().equals(Creator.SCRIPT)){

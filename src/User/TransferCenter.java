@@ -4,12 +4,18 @@ package User;
 //import CommonClasses.DataBlock;
 
 import CommonClasses.FirstTimeConnectedData;
+import GraphicalUserInterface.*;
 
+import javax.swing.*;
+import java.awt.*;
 import java.io.*;
 import java.net.*;
 import java.util.Date;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class TransferCenter{
 
@@ -19,10 +25,14 @@ public class TransferCenter{
     InetSocketAddress mainServerSocketAddress;
     InetSocketAddress socketAddressReceive;
     InetSocketAddress individualServerSocketAddress;
+    WorkingWithGInterface gInterface;
+//    MainWindow mainWindow;
 
     private final int SIZEOFBUFFER = 500;
 
-    public TransferCenter(){
+    public TransferCenter(WorkingWithGInterface gInterface ){
+//        this.mainWindow = new MainWindow();
+        this.gInterface = gInterface;
         boolean isExceptions = true;
         while (isExceptions) {
             isExceptions = false;
@@ -39,17 +49,22 @@ public class TransferCenter{
 
                 }
                 if(createConnectionWithServer.isAllRight()){
-                    Printer.println("Пользователь успешно создан!");
+//                    Printer.println("Пользователь успешно создан!");
+//                    JOptionPane.showConfirmDialog(new JOptionPane(), "Пользователь успешно создан!", "Уведомление", JOptionPane.OK_CANCEL_OPTION);
+
                 }
                 else {
-                    Printer.println("Проблема с подключением к серверу. Пробуем всё заново!");
+
+                    JOptionPane.showConfirmDialog(new JOptionPane(), "Проблема с подключением к серверу. Пробуем всё заново!", "Ошибка подключения", JOptionPane.OK_CANCEL_OPTION);
+//                    Printer.println("Проблема с подключением к серверу. Пробуем всё заново!");
                     isExceptions = true;
                 }
 //              ==============================================
 
 
             } catch (Exception e) {
-                Printer.println("Введены некорректные данные!");
+//                Printer.println("Введены некорректные данные!");
+                JOptionPane.showConfirmDialog(new JOptionPane(), "Введены некорректные данные!", "Ошибка подключения", JOptionPane.OK_CANCEL_OPTION);
                 isExceptions = true;
             }
         }
@@ -163,33 +178,39 @@ public class TransferCenter{
         Scanner scanner = new Scanner(System.in);
         Boolean err = false;
 
-        Printer.println("Введите ip адрес сервера: ");
-        String ip = scanner.nextLine();
-        Printer.println("Введите port: ");
-        int port = scanner.nextInt();
+
+        IpAndPortEntering ipAndPortEntering = null;
+        try {
+            Lock lock = new ReentrantLock();
+            lock.lock();
+            Condition condition = lock.newCondition();
+            ipAndPortEntering = new IpAndPortEntering(lock, condition);
+            gInterface.setSpaceForInteraction(ipAndPortEntering.getPanel());
+            condition.await();
+            lock.unlock();
+        }catch (Exception e){
+            err = true;
+            e.printStackTrace();
+        }
+
+
+        String ip = ipAndPortEntering.getIp();
+        int port = Integer.valueOf(ipAndPortEntering.getPort());
+
+//        Printer.println("Введите ip адрес сервера: ");
+//        String ip = scanner.nextLine();
+//        Printer.println("Введите port: ");
+//        int port = scanner.nextInt();
 
 
         //"192.168.1.135"
         mainServerSocketAddress = null;
         mainServerSocketAddress = new InetSocketAddress(ip, port);
-//        System.out.println("ttt");
-//        socketAddressForSend
-//        System.out.println(socketAddressForSend.getPort());
-//        socketAddressForSend.isUnresolved()
-//        System.out.println(socketAddressForSend.isUnresolved());
-
-//        datagramSocket = null;
-//        try {
-//            datagramSocket = new DatagramSocket();
-////            datagramSocket.bind();
-//        } catch (SocketException e) {
-////            err = true;
-//            System.out.println("Проблемы с datagramSocket!");
-//        }
-
 
         if(err == true){
-            Printer.println("Попробуем снова...");
+//            Printer.println("Попробуем снова...");
+            JOptionPane.showConfirmDialog(new JOptionPane(), "Попробуем снова...", "Ошибка подключения", JOptionPane.OK_CANCEL_OPTION);
+
             createMainServerSocketAddress();
         }
 
@@ -248,7 +269,12 @@ public class TransferCenter{
                 data[j] = bArr[j+(size)*i];
             }
 
-            DatagramPacket datagramPacket = new DatagramPacket(data, size, socketAddress);
+            DatagramPacket datagramPacket = null;
+            try {
+                datagramPacket = new DatagramPacket(data, size, socketAddress);
+            }catch (Exception e){
+                Printer.println("Проблема с отправкой объекта!");
+            }
             try {
                 datagramSocket.send(datagramPacket);
             } catch (IOException e) {
@@ -256,112 +282,4 @@ public class TransferCenter{
             }
         }
     }
-
-//    public <T> byte[] serializeObject(T obj){
-//        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-//        ObjectOutputStream objectOutputStream = null;
-//        try {
-//            objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
-//        } catch (IOException e) {
-//            System.out.println("Проблема с созданием потока для серилизации объектов!");
-//        }
-//        byte[] serObj = null;
-//
-//        try {
-//            objectOutputStream.writeObject(obj);
-//            serObj = byteArrayOutputStream.toByteArray();
-//        } catch (IOException e) {
-//            System.out.println("Проблема с серелизацией объекта для отправки на сервер!");
-//            e.printStackTrace();
-//        }
-//
-//        return serObj;
-//    }
-
-
-
-
-//    public void sendRequestToServer(Object commandsDataForSendToServer){
-////        File dataToServ = new File("dataToServ");
-//        byte[] serObj = new byte[1000];
-//        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-//        ObjectOutputStream objectOutputStream = null;
-//        try {
-//            objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
-//        } catch (IOException e) {
-//            System.out.println("Проблема с созданием потока для серилизации объектов!");
-//        }
-//        try {
-//            objectOutputStream.writeObject(commandsDataForSendToServer);
-//            serObj = byteArrayOutputStream.toByteArray();
-//        }catch (IOException e){
-//            System.out.println("Проблема с серелизацией объекта для отправки на сервер!");
-//        }
-//        DatagramPacket datagramPacket = new DatagramPacket(serObj, serObj.length, socketAddress);
-//        try {
-//            datagramSocket.send(datagramPacket);
-//        } catch (IOException e) {
-//            System.out.println("Проблема с отправкой объекта!");
-//        }
-//
-////        System.out.println(serObj.length);
-////        for(byte b : serObj){
-////            System.out.println(b);
-////        }
-////        System.out.println(serObj.length);
-////        for(byte b : serObj){
-////            System.out.println(b);
-////        }
-////        byte[] b = {1};
-////        DatagramPacket datagramPacket = null;
-////        datagramPacket = new DatagramPacket(b, b.length, socketAddress);
-////        try {
-////            datagramSocket.send(datagramPacket);
-////        } catch (IOException e) {
-////            System.out.println("Проблемы с отправкой запроса на сервер!");
-////        }
-//    }
-//
-//    public DataBlock reciveAnswerFromServer(){
-//
-//        byte[] bArr = new byte[1000];
-//        DatagramChannel channel = null;
-//
-//        try {
-//            channel = DatagramChannel.open();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        SocketAddress socketAddress = new InetSocketAddress(6667);
-//        try {
-//            channel.bind(socketAddress);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        ByteBuffer byteBuffer = ByteBuffer.wrap(bArr);
-//            byteBuffer.clear();
-//        try {
-//            socketAddress = channel.receive(byteBuffer);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//        System.out.println("take == true");
-//
-//        ByteArrayInputStream inputStream = new ByteArrayInputStream(bArr);
-//        ObjectInputStream objectInputStream = null;
-//        DataBlock dataBlock = null;
-//        try {
-//            objectInputStream = new ObjectInputStream(inputStream);
-//            dataBlock = (DataBlock) objectInputStream.readObject();
-//        } catch (Exception e) {
-//            System.out.println("Проблема с загрузкой потока ObjectInputStream!");
-//        }
-////        System.out.println("ttttttt");
-//        return dataBlock;
-//    }
-//
-//    public void sendAnswerToServer(DataBlock dataBlock){
-//        sendRequestToServer(dataBlock);
-//    }
 }

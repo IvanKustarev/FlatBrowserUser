@@ -2,14 +2,21 @@ package User;
 
 //import CommonClasses.DataBlock;
 
+import GraphicalUserInterface.GInterfaceControlCenter;
+import GraphicalUserInterface.MainWindow;
+import GraphicalUserInterface.WorkingWithGInterface;
+
 import java.util.Scanner;
 
 public class CheckConnection extends Thread{
 
     UserWork user;
+    WorkingWithGInterface gInterface;
 
-    public CheckConnection(UserWork user){
+    //Надо переделывать
+    public CheckConnection(UserWork user, WorkingWithGInterface gInterface){
         this.user = user;
+        this.gInterface = gInterface;
     }
 
     @Override
@@ -25,7 +32,8 @@ public class CheckConnection extends Thread{
                     Thread.sleep(5000);
 
                     if(createConnection.connectionReCreated == true){
-                        UserWork user1 = new UserWork(createConnection.transferCenter);
+
+                        UserWork user1 = new UserWork(createConnection.transferCenter, gInterface);
                         user1.startCheckingCommands();
                     }
                     Printer.println("Введите 0, чтобы выйти или 1, чтобы продолжить попытки восстановить соединение.");
