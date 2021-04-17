@@ -6,6 +6,6 @@ public interface WorkingWithGInterface {
     public void setSpaceForInteraction(JPanel spaceForInteraction);
     public void removeWindow();
     public void restartWindow();
-//    public void clearSpaceForInteraction();
-//    public  void repaint();
+    public void creatingWindow();
+    public void setTopPartOfWindow(JPanel topPartOfWindow);
 }

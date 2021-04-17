@@ -6,32 +6,51 @@ import CommonClasses.ApartmentDescription.*;
 
 import java.io.BufferedReader;
 import java.util.Scanner;
-import User.Printer;
+import User.ConsolePrinter;
+import User.*;
 
 public class FlatCreator {
 
     BufferedReader bufferedReader;
-//    CommonClasses.CommandsData commandsData;
+    Printer printer;
+    ConsoleScanner scanner;
 
-    public FlatCreator(){
-//        this.bufferedReader = commandsData.getBufferedReader();
-//        this.commandsData = commandsData;
+    public FlatCreator(Printer printer, ConsoleScanner consoleScanner){
+        this.printer = printer;
+        this.scanner = consoleScanner;
     }
 
     public String informationGetter(){
-        Scanner scanner = new Scanner(System.in);
-        return scanner.nextLine();
+//        Scanner scanner = new Scanner(System.in);
+//        return scanner.nextLine();
+        scanner.setNeeded(true);
+        try {
+            synchronized (scanner){
+                scanner.wait();
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return scanner.getStr();
     }
+
+    private void pPrintln(String str){
+        printer.println(str);
+    }
+    private void pPrint(String str){
+        printer.print(str);
+    }
+
     public String createName(){
 
-        Printer.println("Введите имя квартиры:");
+        pPrintln("Введите имя квартиры:");
         String name = informationGetter();
         if(name.length() == 0){
             name = null;
         }
         if(name == null){
-            Printer.println("У квартиры обязательно должно быть имя!");
-            name = (new FlatCreator()).createName();
+            pPrintln("У квартиры обязательно должно быть имя!");
+            name = (new FlatCreator(printer, scanner)).createName();
         }
         boolean empty = true;
         for (int i =0;i<name.length();i++){
@@ -40,8 +59,8 @@ public class FlatCreator {
             }
         }
         if(empty){
-            Printer.println("У квартиры обязательно должно быть имя!");
-            name = (new FlatCreator()).createName();
+            pPrintln("У квартиры обязательно должно быть имя!");
+            name = (new FlatCreator(printer, scanner)).createName();
         }
         return name;
     }
@@ -54,129 +73,129 @@ public class FlatCreator {
     }
 
     private Double createXcoordinate(){
-        Printer.println("Введите координату по X:");
+        pPrintln("Введите координату по X:");
         Double x;
         try {
             x = Double.valueOf(informationGetter());
         }catch (Exception e){
-            Printer.println("Некорректный ввод данных!\nВведите поле занова");
-            x = (new FlatCreator()).createXcoordinate();
+            pPrintln("Некорректный ввод данных!\nВведите поле занова");
+            x = (new FlatCreator(printer, scanner)).createXcoordinate();
         }
         if(x <= -587){
-            Printer.println("Значение поля должно быть больше -587!");
-            x = (new FlatCreator()).createXcoordinate();
+            pPrintln("Значение поля должно быть больше -587!");
+            x = (new FlatCreator(printer, scanner)).createXcoordinate();
         }
         return x;
     }
 
     private Integer createYcoordinate(){
-        Printer.println("Введите координату по Y:");
+        pPrintln("Введите координату по Y:");
         Integer y;
         try {
             y = Integer.valueOf(informationGetter());
         }catch (Exception e){
-            Printer.println("Некорректный ввод данных!\nВведите поле занова");
-            y = (new FlatCreator()).createYcoordinate();
+            pPrintln("Некорректный ввод данных!\nВведите поле занова");
+            y = (new FlatCreator(printer, scanner)).createYcoordinate();
         }
         if(y > 77){
-            Printer.println("Максимальное значение поля: 77!");
-            y = (new FlatCreator()).createYcoordinate();
+            pPrintln("Максимальное значение поля: 77!");
+            y = (new FlatCreator(printer, scanner)).createYcoordinate();
         }
         return y;
     }
 
     public Long createArea(){
-        Printer.println("Введите номер района:");
+        pPrintln("Введите номер района:");
         Long area;
         try {
             area = Long.valueOf(informationGetter());
         }catch (Exception e){
-            Printer.println("Некорректный ввод данных!\nВведите поле занова");
-            area = (new FlatCreator()).createArea();
+            pPrintln("Некорректный ввод данных!\nВведите поле занова");
+            area = (new FlatCreator(printer, scanner)).createArea();
         }
         if(area <= 0){
-            Printer.println("Значение поля должно быть больше 0!");
-            area = (new FlatCreator()).createArea();
+            pPrintln("Значение поля должно быть больше 0!");
+            area = (new FlatCreator(printer, scanner)).createArea();
         }
         return area;
     }
 
     public long createNumberOfRooms(){
-        Printer.println("Введите количество комнат:");
+        pPrintln("Введите количество комнат:");
         Long numberOfRooms;
         try {
             numberOfRooms = Long.valueOf(informationGetter());
         }catch (Exception e){
-            Printer.println("Некорректный ввод данных!\nВведите поле занова");
-            numberOfRooms = (new FlatCreator()).createNumberOfRooms();
+            pPrintln("Некорректный ввод данных!\nВведите поле занова");
+            numberOfRooms = (new FlatCreator(printer, scanner)).createNumberOfRooms();
         }
         if((numberOfRooms <= 0) | (numberOfRooms == null)){
-            Printer.println("Значение поля должно быть больше 0!");
-            numberOfRooms = (new FlatCreator()).createNumberOfRooms();
+            pPrintln("Значение поля должно быть больше 0!");
+            numberOfRooms = (new FlatCreator(printer, scanner)).createNumberOfRooms();
         }
         return numberOfRooms;
     }
 
     public Furnish createFurnish(){
-        Printer.println("Обстановка квартиры задаётся одной из следующих констант:");
+        pPrintln("Обстановка квартиры задаётся одной из следующих констант:");
         Furnish[] furnishes = Furnish.values();
         Furnish furnish;
         for (int i =0;i<furnishes.length;i++){
-            Printer.print(furnishes[i].name() + " ");
+            pPrint(furnishes[i].name() + " ");
         }
-        Printer.println("\nНужно выбрать одну из них:");
+        pPrintln("\nНужно выбрать одну из них:");
         try {
             furnish = Furnish.valueOf(informationGetter());
         }catch (Exception e){
-            Printer.println("Некорректный ввод данных!\nВведите поле занова");
-            furnish = (new FlatCreator()).createFurnish();
+            pPrintln("Некорректный ввод данных!\nВведите поле занова");
+            furnish = (new FlatCreator(printer, scanner)).createFurnish();
         }
         return furnish;
     }
 
     public CommonClasses.ApartmentDescription.View createView(){
-        Printer.println("Вид из квартиры задаётся одной из следующих констант:");
+        pPrintln("Вид из квартиры задаётся одной из следующих констант:");
         CommonClasses.ApartmentDescription.View[] views = CommonClasses.ApartmentDescription.View.values();
         CommonClasses.ApartmentDescription.View view;
         for (int i =0;i<views.length;i++){
-            Printer.print(views[i].name() + " ");
+            printer.print(views[i].name() + " ");
         }
-        Printer.println("Нужно выбрать одну из них");
+        pPrintln("Нужно выбрать одну из них");
         String str = informationGetter();
         if(str.length() == 0){
-            Printer.println("Это поле остаётся пустым");
+            pPrintln("Это поле остаётся пустым");
             view = null;
         }
         else {
             try {
                 view = CommonClasses.ApartmentDescription.View.valueOf(str);
             } catch (Exception e) {
-                Printer.println("Некорректный ввод данных!\nВведите поле занова");
-                view = (new FlatCreator()).createView();
+                pPrintln("Некорректный ввод данных!\nВведите поле занова");
+                view = (new FlatCreator(printer, scanner)).createView();
             }
         }
         return view;
     }
 
     public Transport createTransport(){
-        Printer.println("Транспортные маршруты,проходящие у дома, задаётся одной из следующих констант:");
+        pPrintln("Транспортные маршруты,проходящие у дома, задаётся одной из следующих констант:");
         Transport[] transports = Transport.values();
         Transport transport;
         for (int i =0;i<transports.length;i++){
-            Printer.print(transports[i].name() + " ");
+            ConsolePrinter.print(transports[i].name() + " ");
         }
-        Printer.println("Нужно выбрать одну из них");
+        pPrintln("Нужно выбрать одну из них");
         String str = informationGetter();
         if(str.length() == 0){
-            Printer.println("Это поле остаётся пустым");
+            pPrintln("Это поле остаётся пустым");
             transport = null;
         }
         else {
             try {
                 transport = Transport.valueOf(str);
             } catch (Exception e) {
-                Printer.println("Некорректный ввод данных!\nВведите поле занова");
-                transport = (new FlatCreator()).createTransport();
+                pPrintln("Некорректный ввод данных!\nВведите поле занова");
+                transport = (new FlatCreator(printer, scanner)).createTransport();
             }
         }
         return transport;
@@ -184,11 +203,11 @@ public class FlatCreator {
 
     public House createHouse(){
         House house = new House();
-        Printer.println("Следующее поле содержит пораметры дома, в котором находится квартира.\nЕсли это поле нужно оставить пустым - необходимо ввести 0,\nесли оно будет заполняться - 1");
+        pPrintln("Следующее поле содержит пораметры дома, в котором находится квартира.\nЕсли это поле нужно оставить пустым - необходимо ввести 0,\nесли оно будет заполняться - 1");
         String str = informationGetter();
-        Printer.println(str);
+        printer.println(str);
         if (str.equals("0")){
-            Printer.println("Это поле остаётся пустым");
+            pPrintln("Это поле остаётся пустым");
             house = null;
         }
         else {
@@ -200,84 +219,84 @@ public class FlatCreator {
                 house.setNumberOfLifts(createHouseNumberOfLifts());
             }
             else {
-                Printer.println("Некорректный ввод данных!\nВведите поле занова");
-                house = (new FlatCreator()).createHouse();
+                pPrintln("Некорректный ввод данных!\nВведите поле занова");
+                house = (new FlatCreator(printer, scanner)).createHouse();
             }
         }
         return house;
     }
 
     private String createHouseName(){
-        Printer.println("Введите имя дома:");
+        pPrintln("Введите имя дома:");
         String houseName;
         houseName = informationGetter();
         if(houseName.length() == 0){
-            Printer.println("Это поле обязательно для заполнения!");
-            houseName = (new FlatCreator()).createHouseName();
+            pPrintln("Это поле обязательно для заполнения!");
+            houseName = (new FlatCreator(printer, scanner)).createHouseName();
         }
         return houseName;
     }
 
     private long createHouseYear(){
-        Printer.println("Введите год постройки дома:");
+        pPrintln("Введите год постройки дома:");
         long houseYear;
         try {
             houseYear = Long.valueOf(informationGetter());
         }catch (Exception e){
-            Printer.println("Некорректный ввод данных!\nВведите поле занова");
-            houseYear = (new FlatCreator()).createHouseYear();
+            pPrintln("Некорректный ввод данных!\nВведите поле занова");
+            houseYear = (new FlatCreator(printer, scanner)).createHouseYear();
         }
         if(houseYear <= 0){
-            Printer.println("Значение поля должно быть больше 0!");
-            houseYear = (new FlatCreator()).createHouseYear();
+            pPrintln("Значение поля должно быть больше 0!");
+            houseYear = (new FlatCreator(printer, scanner)).createHouseYear();
         }
         return houseYear;
     }
 
     private long createHouseNumberOfFloors(){
-        Printer.println("Введите количество этажей в доме:");
+        pPrintln("Введите количество этажей в доме:");
         long houseNumberOfFloors;
         try {
             houseNumberOfFloors = Long.valueOf(informationGetter());
         }catch (Exception e){
-            Printer.println("Некорректный ввод данных!\nВведите поле занова");
-            houseNumberOfFloors = (new FlatCreator()).createHouseYear();
+            pPrintln("Некорректный ввод данных!\nВведите поле занова");
+            houseNumberOfFloors = (new FlatCreator(printer, scanner)).createHouseYear();
         }
         if((houseNumberOfFloors <= 0) | (houseNumberOfFloors >86)){
-            Printer.println("Значение поля должно быть больше 0 и меньше 87!");
-            houseNumberOfFloors = (new FlatCreator()).createHouseYear();
+            pPrintln("Значение поля должно быть больше 0 и меньше 87!");
+            houseNumberOfFloors = (new FlatCreator(printer, scanner)).createHouseYear();
         }
         return houseNumberOfFloors;
     }
 
     private int createHouseNumberOfFlatsOnFloor(){
-        Printer.println("Введите количество квартир на этаже:");
+        pPrintln("Введите количество квартир на этаже:");
         int houseNumberOfFlatsOnFloor;
         try {
             houseNumberOfFlatsOnFloor = Integer.valueOf(informationGetter());
         }catch (Exception e){
-            Printer.println("Некорректный ввод данных!\nВведите поле занова");
-            houseNumberOfFlatsOnFloor = (new FlatCreator()).createHouseNumberOfFlatsOnFloor();
+            pPrintln("Некорректный ввод данных!\nВведите поле занова");
+            houseNumberOfFlatsOnFloor = (new FlatCreator(printer, scanner)).createHouseNumberOfFlatsOnFloor();
         }
         if(houseNumberOfFlatsOnFloor <= 0){
-            Printer.println("Значение поля должно быть больше 0!");
-            houseNumberOfFlatsOnFloor = (new FlatCreator()).createHouseNumberOfFlatsOnFloor();
+            pPrintln("Значение поля должно быть больше 0!");
+            houseNumberOfFlatsOnFloor = (new FlatCreator(printer, scanner)).createHouseNumberOfFlatsOnFloor();
         }
         return houseNumberOfFlatsOnFloor;
     }
 
     private int createHouseNumberOfLifts(){
-        Printer.println("Введите количество лифтов в доме:");
+        pPrintln("Введите количество лифтов в доме:");
         int houseNumberOfLifts;
         try {
             houseNumberOfLifts = Integer.valueOf(informationGetter());
         }catch (Exception e){
-            Printer.println("Некорректный ввод данных!\nВведите поле занова");
-            houseNumberOfLifts = (new FlatCreator()).createHouseNumberOfLifts();
+            pPrintln("Некорректный ввод данных!\nВведите поле занова");
+            houseNumberOfLifts = (new FlatCreator(printer, scanner)).createHouseNumberOfLifts();
         }
         if(houseNumberOfLifts <= 0){
-            Printer.println("Значение поля должно быть больше 0!");
-            houseNumberOfLifts = (new FlatCreator()).createHouseNumberOfLifts();
+            pPrintln("Значение поля должно быть больше 0!");
+            houseNumberOfLifts = (new FlatCreator(printer, scanner)).createHouseNumberOfLifts();
         }
         return houseNumberOfLifts;
     }

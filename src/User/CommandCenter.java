@@ -168,7 +168,7 @@ public class CommandCenter {
             break;
         }
         if(comWords.length < 2){
-            Printer.println("Для этой команды необходим параметр!");
+            ConsolePrinter.println("Для этой команды необходим параметр!");
             String par = new Scanner(System.in).nextLine();
             command = command + " " + par;
             processingParameter(commandObject, command, commands);

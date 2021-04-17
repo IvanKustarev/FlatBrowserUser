@@ -5,12 +5,12 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class LogOrRegChoice implements WindowPart{
+public class GLogOrRegChoice implements WindowPart{
 
     private String answer;
     private JPanel panel;
 
-    public LogOrRegChoice(){
+    public GLogOrRegChoice(){
         panel = createChoicePanel();
     }
 

@@ -7,13 +7,13 @@ import java.awt.event.ActionListener;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 
-public class IpAndPortEntering implements WindowPart, Runnable {
+public class GIpAndPortEntering implements WindowPart, Runnable {
     private String ip;
     private String port;
     private Lock lock;
     private Condition condition;
 
-    public IpAndPortEntering(Lock lock, Condition condition){
+    public GIpAndPortEntering(Lock lock, Condition condition){
         this.lock = lock;
         this.condition = condition;
     }

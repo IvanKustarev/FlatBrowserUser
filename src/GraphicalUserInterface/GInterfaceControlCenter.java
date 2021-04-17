@@ -1,24 +1,14 @@
 package GraphicalUserInterface;
 
-import CommonClasses.User;
-
 import javax.swing.*;
 import java.awt.*;
 
 public class GInterfaceControlCenter implements WorkingWithGInterface{
     public MainWindow mainWindow;
     public JPanel abstractSpaceForInteraction;
-//    JPanel spaceForInteraction;
-    JPanel defaultMainWindowPart;
-    User mainUser;
+    JPanel abstractTopMainWindowPart;
 
-    public GInterfaceControlCenter(){
-        creatingWindow();
-    }
 
-    public void setMainUser(User mainUser) {
-        this.mainUser = mainUser;
-    }
 
     @Override
     public void setSpaceForInteraction(JPanel spaceForInteraction) {
@@ -49,10 +39,13 @@ public class GInterfaceControlCenter implements WorkingWithGInterface{
         creatingWindow();
     }
 
-    private void creatingWindow(){
+    @Override
+    public void creatingWindow(){
         mainWindow = new MainWindow();
         abstractSpaceForInteraction = new JPanel();
-        defaultMainWindowPart = new JPanel();
+        abstractSpaceForInteraction.setLayout(new GridLayout(1,1));
+        abstractTopMainWindowPart = new JPanel();
+        abstractTopMainWindowPart.setLayout(new GridLayout(1,1));
         mainWindow.setLayout(new GridBagLayout());
 
         GridBagConstraints constraints1 = new GridBagConstraints();
@@ -60,16 +53,16 @@ public class GInterfaceControlCenter implements WorkingWithGInterface{
         constraints1.weighty = 0;
         constraints1.gridx = 0;
         constraints1.gridheight = 1;
-        constraints1.gridwidth = 1;
+        constraints1.gridwidth = 3;
 
-        mainWindow.add(defaultMainWindowPart, constraints1);
+        mainWindow.add(abstractTopMainWindowPart, constraints1);
 
         GridBagConstraints constraints2 = new GridBagConstraints();
         constraints2.weightx = 0;
         constraints2.weighty = 0;
         constraints2.gridx = 0;
         constraints2.gridheight = 9;
-        constraints2.gridwidth = 1;
+        constraints2.gridwidth = 3;
 
         mainWindow.add(abstractSpaceForInteraction, constraints2);
 
@@ -77,11 +70,15 @@ public class GInterfaceControlCenter implements WorkingWithGInterface{
         mainWindow.repaint();
     }
 
-    private void addBack(){
-
+    @Override
+    public void setTopPartOfWindow(JPanel topPartOfWindow) {
+        clearTopPartOfWindow();
+        abstractTopMainWindowPart.add(topPartOfWindow);
+        mainWindow.setVisible(true);
     }
 
-    private void addUser(User mainUser){
-
+    private void clearTopPartOfWindow() {
+        abstractTopMainWindowPart.removeAll();
+        repaint();
     }
 }

@@ -7,12 +7,12 @@ import CommonClasses.FirstTimeConnectedData;
 import GraphicalUserInterface.*;
 
 import javax.swing.*;
-import java.awt.*;
 import java.io.*;
 import java.net.*;
 import java.util.Date;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -25,19 +25,22 @@ public class TransferCenter{
     InetSocketAddress mainServerSocketAddress;
     InetSocketAddress socketAddressReceive;
     InetSocketAddress individualServerSocketAddress;
-    WorkingWithGInterface gInterface;
+//    WorkingWithGInterface gInterface;
 //    MainWindow mainWindow;
 
     private final int SIZEOFBUFFER = 500;
 
-    public TransferCenter(WorkingWithGInterface gInterface ){
+    public TransferCenter(){
 //        this.mainWindow = new MainWindow();
-        this.gInterface = gInterface;
+//        this.gInterface = gInterface;
+    }
+
+    public void connect(WorkingWithGInterface gInterface){
         boolean isExceptions = true;
         while (isExceptions) {
             isExceptions = false;
             try {
-                createMainServerSocketAddress();
+                createMainServerSocketAddress(gInterface);
                 createSocketAddressForReceive();
                 CreateConnectionWithServer createConnectionWithServer = new CreateConnectionWithServer(this);
                 createConnectionWithServer.start();
@@ -68,7 +71,36 @@ public class TransferCenter{
                 isExceptions = true;
             }
         }
+    };
 
+    public boolean reConnect(){
+        TransferCenter transferCenter = this;
+        try {
+            TimeLimitedCode timeLimitedCode = new TimeLimitedCode(5, TimeUnit.SECONDS){
+
+                @Override
+                public void codeBlock() {
+                    transferCenter.createSocketAddressForReceive();
+                    transferCenter.createConnectionWithServer();
+                    CreateConnectionWithServer createConnectionWithServer = new CreateConnectionWithServer(transferCenter);
+
+//                    Такая конструкция экономичнее, тк не расходуются лишние ресурсы на доп поток. При этом,
+//                    если даже run пройдёт(что случается крайне редко), то цикл всё равно вернёт всё назад
+                    Date date = new Date();
+                    while (date.getTime() + 10000 > new Date().getTime()) {
+                        createConnectionWithServer.run();
+                        if (createConnectionWithServer.isAllRight() == true) {
+                            return;
+                        }
+                    }
+                }
+            };
+            timeLimitedCode.start();
+
+            return true;
+        }catch (ConnectionException connectionException){
+            return false;
+        }
 
     }
 
@@ -174,18 +206,18 @@ public class TransferCenter{
 //    }
 
 //    /**устанавливает связь с сервером (заполняет поля datagramSocket и socketAddress)*/
-    public void createMainServerSocketAddress(){
+    public void createMainServerSocketAddress(WorkingWithGInterface gInterface){
         Scanner scanner = new Scanner(System.in);
         Boolean err = false;
 
 
-        IpAndPortEntering ipAndPortEntering = null;
+        GIpAndPortEntering GIpAndPortEntering = null;
         try {
             Lock lock = new ReentrantLock();
             lock.lock();
             Condition condition = lock.newCondition();
-            ipAndPortEntering = new IpAndPortEntering(lock, condition);
-            gInterface.setSpaceForInteraction(ipAndPortEntering.getPanel());
+            GIpAndPortEntering = new GIpAndPortEntering(lock, condition);
+            gInterface.setSpaceForInteraction(GIpAndPortEntering.getPanel());
             condition.await();
             lock.unlock();
         }catch (Exception e){
@@ -194,8 +226,8 @@ public class TransferCenter{
         }
 
 
-        String ip = ipAndPortEntering.getIp();
-        int port = Integer.valueOf(ipAndPortEntering.getPort());
+        String ip = GIpAndPortEntering.getIp();
+        int port = Integer.valueOf(GIpAndPortEntering.getPort());
 
 //        Printer.println("Введите ip адрес сервера: ");
 //        String ip = scanner.nextLine();
@@ -211,7 +243,7 @@ public class TransferCenter{
 //            Printer.println("Попробуем снова...");
             JOptionPane.showConfirmDialog(new JOptionPane(), "Попробуем снова...", "Ошибка подключения", JOptionPane.OK_CANCEL_OPTION);
 
-            createMainServerSocketAddress();
+            createMainServerSocketAddress(gInterface);
         }
 
     }
@@ -228,7 +260,7 @@ public class TransferCenter{
                 socketAddressReceive = new InetSocketAddress(InetAddress.getLocalHost(), port);
                 workingSocket = true;
             } catch (IOException e) {
-                Printer.println("Проблема с созданием порта!");
+                ConsolePrinter.println("Проблема с созданием порта!");
 //                e.printStackTrace();
             }
 
@@ -273,12 +305,12 @@ public class TransferCenter{
             try {
                 datagramPacket = new DatagramPacket(data, size, socketAddress);
             }catch (Exception e){
-                Printer.println("Проблема с отправкой объекта!");
+                ConsolePrinter.println("Проблема с отправкой объекта!");
             }
             try {
                 datagramSocket.send(datagramPacket);
             } catch (IOException e) {
-                Printer.println("Проблема с отправкой объекта!");
+                ConsolePrinter.println("Проблема с отправкой объекта!");
             }
         }
     }

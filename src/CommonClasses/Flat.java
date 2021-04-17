@@ -6,7 +6,7 @@ import CommonClasses.ApartmentDescription.*;
 
 import java.io.Serializable;
 import java.util.Date;
-import User.Printer;
+import User.ConsolePrinter;
 
 public class Flat implements Serializable, Comparable<Flat>{
 
@@ -25,42 +25,46 @@ public class Flat implements Serializable, Comparable<Flat>{
     private Transport transport; //Поле может быть null
     private House house; //Поле может быть null
 
-    public void show(){
-        Printer.printf("%-30s %s \n", "userName", userName);
-        Printer.printf("%-30s %s \n", "id", id);
-        Printer.printf("%-30s %s \n", "name", name);
-        Printer.println("coordinates:");
-        coordinates.show();
-        Printer.printf("%-30s %s \n", "creationDate", creationDate);
-        Printer.printf("%-30s %s \n", "area", area);
-        Printer.printf("%-30s %s \n", "numberOfRooms", numberOfRooms);
-        Printer.printf("%-30s %s \n", "furnish", furnish.name());
+    public String show(){
+
+        String str = new String();
+
+        str += String.format("%-30s %s \n", "userName", userName);
+        str += String.format("%-30s %s \n", "id", id);
+        str += String.format("%-30s %s \n", "name", name);
+        str += String.format("coordinates:");
+        str += coordinates.show();
+        str += String.format("%-30s %s \n", "creationDate", creationDate);
+        str += String.format("%-30s %s \n", "area", area);
+        str += String.format("%-30s %s \n", "numberOfRooms", numberOfRooms);
+        str += String.format("%-30s %s \n", "furnish", furnish.name());
+
+
 
         try {
-            Printer.printf("%-30s %s \n", "view", view.name());
+            str += String.format("%-30s %s \n", "view", view.name());
         }catch (Exception e){
-            Printer.println("view - пустое поле");
+            str += String.format("view - пустое поле");
         }
         try {
-            Printer.printf("%-30s %s \n", "transport", transport.name());
+            str += String.format("%-30s %s \n", "transport", transport.name());
         }catch (Exception e){
-            Printer.println("transport - пустое поле");
+            str += String.format("transport - пустое поле");
         }
         try {
-            Printer.println("house:");
-            house.getFields();
+            str += String.format("house:");
+            str += house.getFields();
         }catch (Exception e){
-            Printer.println("house - пустое поле");
+            str += String.format("house - пустое поле");
         }
 
 
-
-       Printer.println("\n\n");
+        return str;
     }
 
-    public static Flat createFlat(Long id){
+    public static Flat createFlat(Long id, FlatCreator flatCreator){
         Flat flat = new Flat();
-        FlatCreator flatCreator = new FlatCreator();
+
 
         flat.setId(id);
         flat.setName(flatCreator.createName());

@@ -8,14 +8,14 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class Login implements WindowPart, Runnable{
+public class GLogin implements WindowPart, Runnable{
 
     private String login;
     private String password;
     private Lock lock;
     private Condition condition;
 
-    public Login(Lock lock, Condition condition){
+    public GLogin(Lock lock, Condition condition){
         this.lock = lock;
         this.condition = condition;
     }
@@ -32,7 +32,7 @@ public class Login implements WindowPart, Runnable{
         JTextField logText = new JTextField(15);
         logPasPanel.add(logText);
         logPasPanel.add(new JLabel("Password: "));
-        JTextField pasText = new JTextField(15);
+        JPasswordField pasText = new JPasswordField(15);
         logPasPanel.add(pasText);
         mainPanel.add(logPasPanel);
 

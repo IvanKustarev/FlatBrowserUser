@@ -2,242 +2,37 @@ package User;
 
 
 import CommonClasses.*;
-import GraphicalUserInterface.LogOrRegChoice;
-import GraphicalUserInterface.Login;
-import GraphicalUserInterface.MainWindow;
+import GraphicalUserInterface.GLogOrRegChoice;
+import GraphicalUserInterface.GLogin;
 import GraphicalUserInterface.WorkingWithGInterface;
 //import CommonClasses.DataBlock;
 
 import javax.swing.*;
-import java.awt.*;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class UserWork {
+public class UserWork{
 
-    TransferCenter transferCenter;
-    User mainUser;
-    WorkingWithGInterface gInterface;
+//    TransferCenter transferCenter;
+    private User mainUser;
+//    WorkingWithGInterface gInterface;
 
 
-    public UserWork(TransferCenter transferCenter, WorkingWithGInterface gInterface){
-        this.transferCenter = transferCenter;
-        this.gInterface = gInterface;
-        login();
+    public UserWork(/*TransferCenter transferCenter*/){
+//        this.transferCenter = transferCenter;
+//        this.gInterface = gInterface;
+//        login();
 
     }
 
-    private void login(){
-//      Обновляем окно на всякий случай
-//        mainWindow.getContentPane().removeAll();
-//        mainWindow.repaint();
-
-        LogOrRegChoice logOrRegChoice = new LogOrRegChoice();
-        gInterface.setSpaceForInteraction(logOrRegChoice.getPanel());
-
-        while (logOrRegChoice.getAnswer() == null){
-            try {
-                Thread.sleep(50);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        String answer = logOrRegChoice.getAnswer();
-
-
-//        Printer.println("Необходимо авторизироваться.");
-//        Printer.println("Войти - 0, зарегестрироваться - 1.");
-        Scanner scanner = new Scanner(System.in);
-        int scan;
-        try {
-            scan = Integer.valueOf(answer);
-        }catch (Exception e){
-//            Printer.println("Это что-то страшное... Попробуем ещё раз!");
-            JOptionPane.showConfirmDialog(new JOptionPane(), "Это что-то страшное... Попробуем ещё раз!", "Ошибка подключения", JOptionPane.OK_CANCEL_OPTION);
-            login();
-            return;
-        }
-        if(scan == 0){
-            entering(scanner);
-        }
-        else {
-            if(scan == 1){
-                registering(scanner);
-            }
-            else {
-//                Printer.println("Нужно выбрать один из вариантов!");
-                JOptionPane.showConfirmDialog(new JOptionPane(), "Нужно выбрать один из вариантов!", "Ошибка подключения", JOptionPane.OK_CANCEL_OPTION);
-                login();
-                return;
-            }
-        }
+    public User getMainUser() {
+        return mainUser;
     }
 
-    private void entering(Scanner scanner){
-        CheckConnection checkConnection = new CheckConnection(this, gInterface);
-        boolean end = false;
-        while (!end){
-            try {
-//                Printer.println("Введите имя пользователя:");
-//                String name = scanner.nextLine();
-//                Printer.println("Введите пароль:");
-//                String password = scanner.nextLine();
 
-//                mainWindow.getContentPane().removeAll();
-//                mainWindow.repaint();
-
-                Lock lock = new ReentrantLock();
-                lock.lock();
-                Condition condition = lock.newCondition();
-                Login login = new Login(lock, condition);
-                gInterface.setSpaceForInteraction(login.getPanel());
-//                mainWindow.add(login.getPanel());
-//                mainWindow.setVisible(true);
-                condition.await();
-                lock.unlock();
-
-                String name = login.getLogin();
-                String password = login.getPassword();
-//                mainWindow.remove(login.getPanel());
-
-
-                User user = new User(false, name, password);
-
-                DataBlock dataBlock = new DataBlock();
-                dataBlock.setUser(user);
-                dataBlock.setCommandsData(CommandsData.CHECKUSER);
-
-                checkConnection.start();
-                serverAnswer = false;
-                transferCenter.sendObjectToServer(dataBlock);
-                dataBlock = (DataBlock) transferCenter.receiveObjectFromServer();
-                serverAnswer = true;
-
-                if(dataBlock.getParameter().equals("true")){
-                    Printer.println(dataBlock.getPhrase());
-                    mainUser = user;
-                    end = true;
-                }
-                else {
-//                    Printer.println(dataBlock.getPhrase());
-                    JOptionPane.showConfirmDialog(new JOptionPane(), dataBlock.getPhrase() + "\nПробуем занова!", "Ошибка подключения", JOptionPane.OK_CANCEL_OPTION);
-//                    Printer.println("Пробуем занова!");
-                    entering(scanner);
-                    return;
-                }
-
-            }catch (Exception e){ }
-        }
-    }
-
-    private void registering(Scanner scanner){
-        CheckConnection checkConnection = new CheckConnection(this, gInterface);
-        boolean end = false;
-        while (!end){
-            try {
-//                Printer.println("Введите имя пользователя:");
-//                String name = scanner.nextLine();
-//                Printer.println("Введите пароль:");
-//                String password = scanner.nextLine();
-
-//                mainWindow.getContentPane().removeAll();
-//                mainWindow.repaint();
-
-                Lock lock = new ReentrantLock();
-                lock.lock();
-                Condition condition = lock.newCondition();
-                Login login = new Login(lock, condition);
-                gInterface.setSpaceForInteraction(login.getPanel());
-//                mainWindow.add(login.getPanel());
-//                mainWindow.setVisible(true);
-                condition.await();
-                lock.unlock();
-
-//                Login login = new Login();
-//                mainWindow.add(login.getPanel());
-//                mainWindow.setVisible(true);
-//                while (login.getLogin() == null | login.getPassword() == null){
-//                    Thread.sleep(50);
-//                }
-                String name = login.getLogin();
-                String password = login.getPassword();
-
-
-
-                User user = new User(true, name, password);
-
-                DataBlock dataBlock = new DataBlock();
-                dataBlock.setUser(user);
-                dataBlock.setCommandsData(CommandsData.CHECKUSER);
-
-                checkConnection.start();
-                serverAnswer = false;
-                transferCenter.sendObjectToServer(dataBlock);
-                dataBlock = (DataBlock) transferCenter.receiveObjectFromServer();
-                serverAnswer = true;
-
-                if(dataBlock.getParameter().equals("true")){
-//                    Printer.println(dataBlock.getPhrase());
-                    JOptionPane.showConfirmDialog(new JOptionPane(), dataBlock.getPhrase(), "Ошибка подключения", JOptionPane.OK_CANCEL_OPTION);
-                    mainUser = user;
-                    end = true;
-                }
-                else {
-//                    Printer.println(dataBlock.getPhrase());
-//                    Printer.println("Пробуем занова!");
-                    JOptionPane.showConfirmDialog(new JOptionPane(), dataBlock.getPhrase() + "\nПробуем занова!", "Ошибка подключения", JOptionPane.OK_CANCEL_OPTION);
-                    registering(scanner);
-                    return;
-                }
-
-            }catch (Exception e){ }
-        }
-    }
-
-    public void startCheckingCommands(){
-        boolean exit = false;
-        Scanner scanner = new Scanner(System.in);
-        CommandCenter cc = new CommandCenter();
-        String command = new String();
-        CommandsData commandsDataForSendToServer = null;
-
-        Printer.println("Для просмотра списка команд необходимо ввести \"help\"");
-
-        while (!exit){
-            Printer.println("Введите команду:");
-            command = scanner.nextLine();
-            if(command.equals("")){
-                Printer.println("Необходимо ввести команду!");
-            }
-            else {
-                commandsDataForSendToServer = cc.whatTheCommand(command);
-                if(commandsDataForSendToServer == null){
-                    Printer.println("Такой команды не существует!");
-                }
-                else {
-                    commandsDataForSendToServer.setCreator(null);
-                    if(commandsDataForSendToServer.equals(CommandsData.EXIT)){
-
-                        exit = true;
-                    }
-                    else {
-
-                        cc.packingCommandInCommandsObject(command, commandsDataForSendToServer);
-
-                        if(commandsDataForSendToServer.isCommandWithElementParameter()){
-                            commandsDataForSendToServer.setFlat(Flat.createFlat(null));
-                        }
-
-                        communicateWithServerAboutCommand(commandsDataForSendToServer);
-                    }
-                }
-            }
-            commandsDataForSendToServer = null;
-        }
-        Printer.println("Выход из программы...");
-    }
 
 
 
@@ -271,82 +66,379 @@ public class UserWork {
         commandsData.setUserNeedToShowFlatArr(dataBlock.isUserNeedToShowFlatArr);
     }
 
-    public Boolean serverAnswer = true;
+//    private Boolean serverAnswer = true;
 
-    private void communicateWithServerAboutCommand(Object obj){
-        CommandsData commandsData = (CommandsData) obj;
-        boolean end = false;
 
-        while (!end){
-//            Нужно оптимизировать так, чтобы находился вне цикла и не возникала ошибка при запуске execute_script
-            CheckConnection checkConnection = new CheckConnection(this, gInterface);
 
-            if(commandsData.getCreator() != null){
-                if(commandsData.getCreator().equals(Creator.SCRIPT)){
+    public class CommunicateWithServerByCommands implements Runnable{
 
-                    DataBlock dataBlock;
-                    serverAnswer = false;
-                    checkConnection.start();
-                    dataBlock = (DataBlock) transferCenter.receiveObjectFromServer();
-                    serverAnswer = true;
-                    commandsData = dataBlock.getCommandsData();
-                    copyFieldsFromTo(dataBlock, commandsData);
+        TransferCenter transferCenter;
+        WorkingWithGInterface gInterface;
+        String command;
+        Printer printer;
+        ConsoleScanner consoleScanner;
+        ProcessControlCenter processControlCenter;
 
+        public CommunicateWithServerByCommands(TransferCenter transferCenter, WorkingWithGInterface gInterface, String command, Printer printer, ConsoleScanner consoleScanner, ProcessControlCenter processControlCenter){
+            this.transferCenter = transferCenter;
+            this.gInterface = gInterface;
+            this.command = command;
+            this.printer = printer;
+            this.consoleScanner = consoleScanner;
+            this.processControlCenter = processControlCenter;
+        }
+
+        public CommunicateWithServerByCommands(){}
+
+        @Override
+        public void run() {
+            try {
+                startCheckingCommands(transferCenter, gInterface, command, printer, consoleScanner);
+            } catch (ConnectionException connectionException) {
+                processControlCenter.reConnect();
+                processControlCenter.working();
+                return;
+            }
+        }
+
+        public void startCheckingCommands(TransferCenter transferCenter, WorkingWithGInterface gInterface, String command, Printer printer, ConsoleScanner consoleScanner) throws  ConnectionException{
+
+            CommandCenter cc = new CommandCenter();
+            CommandsData commandsDataForSendToServer = null;
+
+                if(command.equals("")){
+                    printer.println("Необходимо ввести команду!");
+                    return;
                 }
                 else {
+                    commandsDataForSendToServer = cc.whatTheCommand(command);
+                    if(commandsDataForSendToServer == null){
+                        printer.println("Такой команды не существует!");
+                        return;
+                    }
+                    else {
+                        commandsDataForSendToServer.setCreator(null);
+                        if(commandsDataForSendToServer.equals(CommandsData.EXIT)){
+                            JOptionPane.showConfirmDialog(new JOptionPane(), "Введена команда exit. Завершаю работу...", "Уведомление", JOptionPane.OK_CANCEL_OPTION);
+                            System.exit(0);
+                        }
+                        else {
 
-                    DataBlock dataBlock = new DataBlock();
+                            cc.packingCommandInCommandsObject(command, commandsDataForSendToServer);
+
+                            if(commandsDataForSendToServer.isCommandWithElementParameter()){
+                                commandsDataForSendToServer.setFlat(Flat.createFlat(null, new FlatCreator(printer, consoleScanner)));
+                            }
+
+                            new CommunicateWithServerByCommands().communicateWithServerAboutCommand(commandsDataForSendToServer, transferCenter, gInterface, printer, consoleScanner);
+                        }
+                    }
+                }
+        }
+
+
+        DataBlock dataBlock;
+
+        public void communicateWithServerAboutCommand(Object obj,  TransferCenter transferCenter, WorkingWithGInterface gInterface, Printer printer, ConsoleScanner consoleScanner) throws ConnectionException{
+            CommandsData commandsData = (CommandsData) obj;
+            boolean end = false;
+
+            while (!end){
+//            Нужно оптимизировать так, чтобы находился вне цикла и не возникала ошибка при запуске execute_script
+//            CheckConnection checkConnection = new CheckConnection(this, gInterface);
+                dataBlock = new DataBlock();
+
+                if(commandsData.getCreator() != null){
+                    if(commandsData.getCreator().equals(Creator.SCRIPT)){
+
+
+                        new TimeLimitedCode(5, TimeUnit.SECONDS){
+
+                            @Override
+                            public void codeBlock() {
+                                dataBlock = (DataBlock) transferCenter.receiveObjectFromServer();
+                            }
+                        }.start();
+
+                        commandsData = dataBlock.getCommandsData();
+                        copyFieldsFromTo(dataBlock, commandsData);
+
+                    }
+                    else {
+                        copyFieldsFromTo(commandsData, dataBlock);
+                        dataBlock.setCommandsData(commandsData);
+                        dataBlock.setUser(mainUser);
+
+                        transferCenter.sendObjectToServer(dataBlock);
+
+                        new TimeLimitedCode(5, TimeUnit.SECONDS){
+
+                            @Override
+                            public void codeBlock() {
+                                dataBlock = (DataBlock) transferCenter.receiveObjectFromServer();
+                            }
+                        }.start();
+
+                        commandsData = dataBlock.getCommandsData();
+                        copyFieldsFromTo(dataBlock, commandsData);
+
+                    }
+                }
+                else {
                     copyFieldsFromTo(commandsData, dataBlock);
                     dataBlock.setCommandsData(commandsData);
                     dataBlock.setUser(mainUser);
-
                     transferCenter.sendObjectToServer(dataBlock);
-                    serverAnswer = false;
-                    checkConnection.start();
-                    dataBlock = (DataBlock) transferCenter.receiveObjectFromServer();
-                    serverAnswer = true;
+
+                    new TimeLimitedCode(5, TimeUnit.SECONDS){
+
+                        @Override
+                        public void codeBlock() {
+                            dataBlock = (DataBlock) transferCenter.receiveObjectFromServer();
+                        }
+                    }.start();
+
                     commandsData = dataBlock.getCommandsData();
                     copyFieldsFromTo(dataBlock, commandsData);
 
                 }
+
+                if(commandsData.equals(CommandsData.EXIT)){
+                    JOptionPane.showConfirmDialog(new JOptionPane(), "Найдена команда exit. Завершаю работу...", "Уведомление", JOptionPane.OK_CANCEL_OPTION);
+                }
+
+                end = commandsData.isCommandEnded();
+                printer.println(commandsData.getPhrase());
+
+                if(commandsData.isServerNeedElementParameter){
+                    printer.println("Необходимо задать квартиру.");
+                    commandsData.setFlat(Flat.createFlat(null, new FlatCreator(printer, consoleScanner)));
+                }
+
+                if(commandsData.isServerNeedStringParameter){
+                    consoleScanner.setNeeded(true);
+                    try {
+                        synchronized (consoleScanner){
+                            consoleScanner.wait();
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    commandsData.setParameter(consoleScanner.getStr());
+                }
+
+                if(commandsData.isUserNeedToShowFlatArr()){
+                    for(int i =0;i<commandsData.getFlats().length;i++){
+                        String str = commandsData.getFlats()[i].show() + "\n";
+                        printer.println(str);
+                    }
+                }
+            }
+
+        }
+
+//        Для получения массива элементов
+        public Flat[] getFlatArr(TransferCenter transferCenter) throws ConnectionException {
+            dataBlock = new DataBlock();
+            dataBlock.setCommandsData(CommandsData.SHOW);
+            dataBlock.setUser(mainUser);
+            transferCenter.sendObjectToServer(dataBlock);
+            new TimeLimitedCode(5, TimeUnit.SECONDS){
+
+                @Override
+                public void codeBlock() {
+                    dataBlock = (DataBlock) transferCenter.receiveObjectFromServer();
+                }
+            }.start();
+            return dataBlock.getFlats();
+        }
+    }
+
+
+    public class Login{
+
+//        Обязательно всегда создавать новый. Вынесен отдельно, чтобы работала проверка подключения в другом потоке.
+        private DataBlock dataBlock;
+
+        public void login(WorkingWithGInterface gInterface, TransferCenter transferCenter) throws ConnectionException{
+            login(gInterface, new DataBlock(), transferCenter);
+        }
+
+        private void login(WorkingWithGInterface gInterface, DataBlock newDataBlock, TransferCenter transferCenter) throws ConnectionException{
+
+            GLogOrRegChoice gLogOrRegChoice = new GLogOrRegChoice();
+            gInterface.setSpaceForInteraction(gLogOrRegChoice.getPanel());
+
+            while (gLogOrRegChoice.getAnswer() == null){
+                try {
+                    Thread.sleep(50);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            String answer = gLogOrRegChoice.getAnswer();
+
+
+//        Printer.println("Необходимо авторизироваться.");
+//        Printer.println("Войти - 0, зарегестрироваться - 1.");
+//            Scanner scanner = new Scanner(System.in);
+            int scan;
+            try {
+                scan = Integer.valueOf(answer);
+            }catch (Exception e){
+//            Printer.println("Это что-то страшное... Попробуем ещё раз!");
+                JOptionPane.showConfirmDialog(new JOptionPane(), "Это что-то страшное... Попробуем ещё раз!", "Ошибка подключения", JOptionPane.OK_CANCEL_OPTION);
+                login(gInterface, new DataBlock(), transferCenter);
+                return;
+            }
+            if(scan == 0){
+                entering(transferCenter, gInterface);
             }
             else {
-
-                DataBlock dataBlock = new DataBlock();
-                copyFieldsFromTo(commandsData, dataBlock);
-                dataBlock.setCommandsData(commandsData);
-                dataBlock.setUser(mainUser);
-                transferCenter.sendObjectToServer(dataBlock);
-                serverAnswer = false;
-                checkConnection.start();
-                dataBlock = (DataBlock) transferCenter.receiveObjectFromServer();
-                serverAnswer = true;
-                commandsData = dataBlock.getCommandsData();
-                copyFieldsFromTo(dataBlock, commandsData);
-
-            }
-
-
-
-            end = commandsData.isCommandEnded();
-            Printer.println(commandsData.getPhrase());
-
-            if(commandsData.isServerNeedElementParameter){
-                Printer.println("Необходимо задать квартиру.");
-                commandsData.setFlat(Flat.createFlat(null));
-            }
-
-            if(commandsData.isServerNeedStringParameter){
-                commandsData.setParameter((new Scanner(System.in)).nextLine());
-            }
-
-            if(commandsData.isUserNeedToShowFlatArr()){
-                for(int i =0;i<commandsData.getFlats().length;i++){
-                    commandsData.getFlats()[i].show();
-                    Printer.println("");
+                if(scan == 1){
+                    registering(new DataBlock(), transferCenter, gInterface);
+                }
+                else {
+//                Printer.println("Нужно выбрать один из вариантов!");
+                    JOptionPane.showConfirmDialog(new JOptionPane(), "Нужно выбрать один из вариантов!", "Ошибка подключения", JOptionPane.OK_CANCEL_OPTION);
+                    login(gInterface, transferCenter);
+                    return;
                 }
             }
         }
 
+        public void entering(TransferCenter transferCenter, WorkingWithGInterface gInterface) throws ConnectionException{
+            entering(new DataBlock(), transferCenter, gInterface);
+        }
+
+        private void entering(DataBlock newDataBlock, TransferCenter transferCenter, WorkingWithGInterface gInterface) throws ConnectionException{
+//        CheckConnection checkConnection = new CheckConnection(this, gInterface);
+            boolean end = false;
+            while (!end){
+                Lock lock = new ReentrantLock();
+                 lock.lock();
+                 Condition condition = lock.newCondition();
+                 GLogin gLogin = new GLogin(lock, condition);
+                 gInterface.setSpaceForInteraction(gLogin.getPanel());
+                 try {
+                     condition.await();
+                 } catch (InterruptedException e) { }
+                 lock.unlock();
+                 String name = gLogin.getLogin();
+                 String password = gLogin.getPassword();
+
+
+
+                 User user = new User(false, name, password);
+
+                 dataBlock = newDataBlock;
+                 dataBlock.setUser(user);
+                 dataBlock.setCommandsData(CommandsData.CHECKUSER);
+
+
+                 new TimeLimitedCode(5, TimeUnit.SECONDS) {
+
+                     @Override
+                     public void codeBlock() {
+                         transferCenter.sendObjectToServer(dataBlock);
+                         dataBlock = (DataBlock) transferCenter.receiveObjectFromServer();
+                     }
+                 }.start();
+
+
+                 if(dataBlock.getParameter().equals("true")){
+                     ConsolePrinter.println(dataBlock.getPhrase());
+                     mainUser = user;
+                     end = true;
+                 }
+                 else {
+                     JOptionPane.showConfirmDialog(new JOptionPane(), dataBlock.getPhrase() + "\nПробуем занова!", "Ошибка подключения", JOptionPane.OK_CANCEL_OPTION);
+                     entering(transferCenter, gInterface);
+                     return;
+                 }
+
+
+            }
+        }
+
+        public void registering(TransferCenter transferCenter, WorkingWithGInterface gInterface) throws ConnectionException{
+            registering(new DataBlock(), transferCenter, gInterface);
+        }
+
+        private void registering(DataBlock newDataBlock, TransferCenter transferCenter, WorkingWithGInterface gInterface) throws ConnectionException{
+//        CheckConnection checkConnection = new CheckConnection(this, gInterface);
+            boolean end = false;
+            while (!end){
+
+//                Printer.println("Введите имя пользователя:");
+//                String name = scanner.nextLine();
+//                Printer.println("Введите пароль:");
+//                String password = scanner.nextLine();
+
+//                mainWindow.getContentPane().removeAll();
+//                mainWindow.repaint();
+
+                    Lock lock = new ReentrantLock();
+                    lock.lock();
+                    Condition condition = lock.newCondition();
+                    GLogin GLogin = new GLogin(lock, condition);
+                    gInterface.setSpaceForInteraction(GLogin.getPanel());
+//                mainWindow.add(login.getPanel());
+//                mainWindow.setVisible(true);
+                try {
+                    condition.await();
+                } catch (InterruptedException e) { }
+                lock.unlock();
+
+//                Login login = new Login();
+//                mainWindow.add(login.getPanel());
+//                mainWindow.setVisible(true);
+//                while (login.getLogin() == null | login.getPassword() == null){
+//                    Thread.sleep(50);
+//                }
+                    String name = GLogin.getLogin();
+                    String password = GLogin.getPassword();
+
+
+
+                    User user = new User(true, name, password);
+
+//                DataBlock dataBlock = new DataBlock();
+                    dataBlock = newDataBlock;
+                    dataBlock.setUser(user);
+                    dataBlock.setCommandsData(CommandsData.CHECKUSER);
+
+
+                    new TimeLimitedCode(5, TimeUnit.SECONDS){
+
+                        @Override
+                        public void codeBlock() {
+                            transferCenter.sendObjectToServer(dataBlock);
+                            dataBlock = (DataBlock) transferCenter.receiveObjectFromServer();
+                        }
+                    }.start();
+
+//                checkConnection.start();
+//                serverAnswer = false;
+//                transferCenter.sendObjectToServer(dataBlock);
+//                dataBlock = (DataBlock) transferCenter.receiveObjectFromServer();
+//                serverAnswer = true;
+
+                    if(dataBlock.getParameter().equals("true")){
+//                    Printer.println(dataBlock.getPhrase());
+                        JOptionPane.showConfirmDialog(new JOptionPane(), dataBlock.getPhrase(), "Ошибка подключения", JOptionPane.OK_CANCEL_OPTION);
+                        mainUser = user;
+                        end = true;
+                    }
+                    else {
+//                    Printer.println(dataBlock.getPhrase());
+//                    Printer.println("Пробуем занова!");
+                        JOptionPane.showConfirmDialog(new JOptionPane(), dataBlock.getPhrase() + "\nПробуем занова!", "Ошибка подключения", JOptionPane.OK_CANCEL_OPTION);
+                        registering(new DataBlock(), transferCenter, gInterface);
+                        return;
+                    }
+
+            }
+        }
     }
 }
