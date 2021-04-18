@@ -1,14 +1,18 @@
 package User;
 
+import CommonClasses.CommandsData;
 import CommonClasses.Flat;
 import GraphicalUserInterface.GReConnect;
 import GraphicalUserInterface.PlaneCreator;
 import GraphicalUserInterface.WorkingWithGInterface;
+import Resources.Naming;
+import Resources.ResourceControlCenter;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ResourceBundle;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -18,11 +22,13 @@ public class ProcessControlCenter {
     private UserWork userWork;
     private TransferCenter transferCenter;
     private WorkingWithGInterface gInterface;
+    private ResourceControlCenter resourceControlCenter;
 
-    public ProcessControlCenter(TransferCenter transferCenter, UserWork userWork, WorkingWithGInterface gInterface){
+    public ProcessControlCenter(TransferCenter transferCenter, UserWork userWork, WorkingWithGInterface gInterface, ResourceControlCenter resourceControlCenter){
         this.userWork = userWork;
         this.transferCenter = transferCenter;
         this.gInterface = gInterface;
+        this.resourceControlCenter = resourceControlCenter;
 
         gInterface.creatingWindow();
     }
@@ -52,7 +58,9 @@ public class ProcessControlCenter {
         JPanel jPanel = new JPanel();
         jPanel.setLayout(new GridLayout(2,1));
 
-        JButton consoleWork = new JButton("Консольная работа с командами");
+        JButton consoleWork = new JButton(resourceControlCenter.getMainResourceBundle().getString("Консольная работа с командами"));
+//        System.out.println(((Naming) mainResourceBundle).getName());
+//        System.out.println(mainResourceBundle.getString("Консольная работа с командами"));
         consoleWork.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -83,9 +91,9 @@ public class ProcessControlCenter {
     private void toTableWork(){
         JPanel table = null;
         try {
-            Flat[] flats = userWork.new CommunicateWithServerByCommands().getFlatArr(transferCenter);
+            Flat[] flats = (userWork.new CommunicateWithServerByCommands().processCommand(CommandsData.SHOW, transferCenter)).getFlats();
 
-            table = new PlaneCreator().new Table(flats).getPanel();
+            table = new PlaneCreator().new Table(flats, userWork.getMainUser(), transferCenter, gInterface, userWork, this).getPanel();
         }catch (ConnectionException e){
             reConnect();
             working();
@@ -218,6 +226,10 @@ public class ProcessControlCenter {
             }
         }
     }
+
+//    public void repain(){
+//
+//    }
 
     private void connect(){
         transferCenter.connect(gInterface);

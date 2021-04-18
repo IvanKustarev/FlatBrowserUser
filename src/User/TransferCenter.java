@@ -207,17 +207,17 @@ public class TransferCenter{
 
 //    /**устанавливает связь с сервером (заполняет поля datagramSocket и socketAddress)*/
     public void createMainServerSocketAddress(WorkingWithGInterface gInterface){
-        Scanner scanner = new Scanner(System.in);
+//        Scanner scanner = new Scanner(System.in);
         Boolean err = false;
 
 
-        GIpAndPortEntering GIpAndPortEntering = null;
+        GIpAndPortEntering gIpAndPortEntering = null;
         try {
             Lock lock = new ReentrantLock();
             lock.lock();
             Condition condition = lock.newCondition();
-            GIpAndPortEntering = new GIpAndPortEntering(lock, condition);
-            gInterface.setSpaceForInteraction(GIpAndPortEntering.getPanel());
+            gIpAndPortEntering = new GIpAndPortEntering(lock, condition);
+            gInterface.setSpaceForInteraction(gIpAndPortEntering.getPanel());
             condition.await();
             lock.unlock();
         }catch (Exception e){
@@ -226,8 +226,8 @@ public class TransferCenter{
         }
 
 
-        String ip = GIpAndPortEntering.getIp();
-        int port = Integer.valueOf(GIpAndPortEntering.getPort());
+        String ip = gIpAndPortEntering.getIp();
+        int port = Integer.valueOf(gIpAndPortEntering.getPort());
 
 //        Printer.println("Введите ip адрес сервера: ");
 //        String ip = scanner.nextLine();

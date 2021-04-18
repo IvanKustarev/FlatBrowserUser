@@ -137,7 +137,9 @@ public class UserWork{
         }
 
 
-        DataBlock dataBlock;
+        DataBlock dataBlock0;
+        DataBlock dataBlock1;
+        DataBlock dataBlock2;
 
         public void communicateWithServerAboutCommand(Object obj,  TransferCenter transferCenter, WorkingWithGInterface gInterface, Printer printer, ConsoleScanner consoleScanner) throws ConnectionException{
             CommandsData commandsData = (CommandsData) obj;
@@ -146,7 +148,7 @@ public class UserWork{
             while (!end){
 //            Нужно оптимизировать так, чтобы находился вне цикла и не возникала ошибка при запуске execute_script
 //            CheckConnection checkConnection = new CheckConnection(this, gInterface);
-                dataBlock = new DataBlock();
+                dataBlock1 = new DataBlock();
 
                 if(commandsData.getCreator() != null){
                     if(commandsData.getCreator().equals(Creator.SCRIPT)){
@@ -156,50 +158,50 @@ public class UserWork{
 
                             @Override
                             public void codeBlock() {
-                                dataBlock = (DataBlock) transferCenter.receiveObjectFromServer();
+                                dataBlock1 = (DataBlock) transferCenter.receiveObjectFromServer();
                             }
                         }.start();
 
-                        commandsData = dataBlock.getCommandsData();
-                        copyFieldsFromTo(dataBlock, commandsData);
+                        commandsData = dataBlock1.getCommandsData();
+                        copyFieldsFromTo(dataBlock1, commandsData);
 
                     }
                     else {
-                        copyFieldsFromTo(commandsData, dataBlock);
-                        dataBlock.setCommandsData(commandsData);
-                        dataBlock.setUser(mainUser);
+                        copyFieldsFromTo(commandsData, dataBlock1);
+                        dataBlock1.setCommandsData(commandsData);
+                        dataBlock1.setUser(mainUser);
 
-                        transferCenter.sendObjectToServer(dataBlock);
+                        transferCenter.sendObjectToServer(dataBlock1);
 
                         new TimeLimitedCode(5, TimeUnit.SECONDS){
 
                             @Override
                             public void codeBlock() {
-                                dataBlock = (DataBlock) transferCenter.receiveObjectFromServer();
+                                dataBlock1 = (DataBlock) transferCenter.receiveObjectFromServer();
                             }
                         }.start();
 
-                        commandsData = dataBlock.getCommandsData();
-                        copyFieldsFromTo(dataBlock, commandsData);
+                        commandsData = dataBlock1.getCommandsData();
+                        copyFieldsFromTo(dataBlock1, commandsData);
 
                     }
                 }
                 else {
-                    copyFieldsFromTo(commandsData, dataBlock);
-                    dataBlock.setCommandsData(commandsData);
-                    dataBlock.setUser(mainUser);
-                    transferCenter.sendObjectToServer(dataBlock);
+                    copyFieldsFromTo(commandsData, dataBlock1);
+                    dataBlock1.setCommandsData(commandsData);
+                    dataBlock1.setUser(mainUser);
+                    transferCenter.sendObjectToServer(dataBlock1);
 
                     new TimeLimitedCode(5, TimeUnit.SECONDS){
 
                         @Override
                         public void codeBlock() {
-                            dataBlock = (DataBlock) transferCenter.receiveObjectFromServer();
+                            dataBlock1 = (DataBlock) transferCenter.receiveObjectFromServer();
                         }
                     }.start();
 
-                    commandsData = dataBlock.getCommandsData();
-                    copyFieldsFromTo(dataBlock, commandsData);
+                    commandsData = dataBlock1.getCommandsData();
+                    copyFieldsFromTo(dataBlock1, commandsData);
 
                 }
 
@@ -238,19 +240,35 @@ public class UserWork{
         }
 
 //        Для получения массива элементов
-        public Flat[] getFlatArr(TransferCenter transferCenter) throws ConnectionException {
-            dataBlock = new DataBlock();
-            dataBlock.setCommandsData(CommandsData.SHOW);
-            dataBlock.setUser(mainUser);
-            transferCenter.sendObjectToServer(dataBlock);
+//        public Flat[] getFlatArr(TransferCenter transferCenter) throws ConnectionException {
+//            dataBlock0 = new DataBlock();
+//            dataBlock0.setCommandsData(CommandsData.SHOW);
+//            dataBlock0.setUser(mainUser);
+//            transferCenter.sendObjectToServer(dataBlock0);
+//            new TimeLimitedCode(5, TimeUnit.SECONDS){
+//
+//                @Override
+//                public void codeBlock() {
+//                    dataBlock0 = (DataBlock) transferCenter.receiveObjectFromServer();
+//                }
+//            }.start();
+//            return dataBlock0.getFlats();
+//        }
+
+        public DataBlock processCommand(CommandsData commandsData, TransferCenter transferCenter) throws ConnectionException{
+            dataBlock2 = new DataBlock();
+            dataBlock2.setUser(mainUser);
+            dataBlock2.setCommandsData(commandsData);
+            copyFieldsFromTo(commandsData, dataBlock2);
+            transferCenter.sendObjectToServer(dataBlock2);
             new TimeLimitedCode(5, TimeUnit.SECONDS){
 
                 @Override
                 public void codeBlock() {
-                    dataBlock = (DataBlock) transferCenter.receiveObjectFromServer();
+                    dataBlock2 = (DataBlock) transferCenter.receiveObjectFromServer();
                 }
             }.start();
-            return dataBlock.getFlats();
+            return dataBlock2;
         }
     }
 

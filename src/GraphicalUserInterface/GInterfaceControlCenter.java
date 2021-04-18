@@ -1,12 +1,25 @@
 package GraphicalUserInterface;
 
+import Resources.Naming;
+import Resources.ResourceControlCenter;
+
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ResourceBundle;
 
 public class GInterfaceControlCenter implements WorkingWithGInterface{
-    public MainWindow mainWindow;
-    public JPanel abstractSpaceForInteraction;
-    JPanel abstractTopMainWindowPart;
+    private MainWindow mainWindow;
+    private JPanel abstractSpaceForInteraction;
+    private JPanel abstractTopMainWindowPart;
+    private JPanel menuTopMainWindowPart;
+
+    ResourceControlCenter resourceControlCenter;
+
+    public GInterfaceControlCenter(ResourceControlCenter resourceControlCenter){
+        this.resourceControlCenter = resourceControlCenter;
+    }
 
 
 
@@ -24,8 +37,8 @@ public class GInterfaceControlCenter implements WorkingWithGInterface{
         repaint();
     }
 
-//    @Override
-    private void repaint() {
+    @Override
+    public void repaint() {
         mainWindow.repaint();
     }
 
@@ -42,11 +55,20 @@ public class GInterfaceControlCenter implements WorkingWithGInterface{
     @Override
     public void creatingWindow(){
         mainWindow = new MainWindow();
-        abstractSpaceForInteraction = new JPanel();
-        abstractSpaceForInteraction.setLayout(new GridLayout(1,1));
-        abstractTopMainWindowPart = new JPanel();
-        abstractTopMainWindowPart.setLayout(new GridLayout(1,1));
         mainWindow.setLayout(new GridBagLayout());
+
+        createAbstractSpaceForInteraction();
+
+        createMenuTopMainWindowPart();
+
+        GridBagConstraints constraints0 = new GridBagConstraints();
+        constraints0.weightx = 0;
+        constraints0.weighty = 0;
+        constraints0.gridx = 0;
+        constraints0.gridheight = 1;
+        constraints0.gridwidth = 3;
+
+        mainWindow.add(menuTopMainWindowPart, constraints0);
 
         GridBagConstraints constraints1 = new GridBagConstraints();
         constraints1.weightx = 0;
@@ -80,5 +102,31 @@ public class GInterfaceControlCenter implements WorkingWithGInterface{
     private void clearTopPartOfWindow() {
         abstractTopMainWindowPart.removeAll();
         repaint();
+    }
+
+    private void createMenuTopMainWindowPart(){
+
+        String[] languagesNames = new String[resourceControlCenter.getResourceBundles().length];
+        for(int i =0; i<languagesNames.length; i++){
+            Naming naming = (Naming) resourceControlCenter.getResourceBundles()[i];
+            languagesNames[i] = naming.getName();
+        }
+        JComboBox languages = new JComboBox(languagesNames);
+        languages.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                synchronized (resourceControlCenter.getMainResourceBundle()){
+                    resourceControlCenter.setIndex(languages.getSelectedIndex());
+                }
+            }
+        });
+        menuTopMainWindowPart = new JPanel();
+        menuTopMainWindowPart.add(languages);
+    }
+    private void createAbstractSpaceForInteraction(){
+        abstractSpaceForInteraction = new JPanel();
+        abstractSpaceForInteraction.setLayout(new GridLayout(1,1));
+        abstractTopMainWindowPart = new JPanel();
+        abstractTopMainWindowPart.setLayout(new GridLayout(1,1));
     }
 }

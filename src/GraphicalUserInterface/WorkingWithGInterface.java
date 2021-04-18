@@ -8,4 +8,5 @@ public interface WorkingWithGInterface {
     public void restartWindow();
     public void creatingWindow();
     public void setTopPartOfWindow(JPanel topPartOfWindow);
+    public void repaint();
 }

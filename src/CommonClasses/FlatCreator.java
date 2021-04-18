@@ -182,7 +182,7 @@ public class FlatCreator {
         Transport[] transports = Transport.values();
         Transport transport;
         for (int i =0;i<transports.length;i++){
-            ConsolePrinter.print(transports[i].name() + " ");
+            printer.print(transports[i].name() + " ");
         }
         pPrintln("Нужно выбрать одну из них");
         String str = informationGetter();
