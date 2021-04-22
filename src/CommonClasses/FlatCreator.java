@@ -5,9 +5,9 @@ package CommonClasses;
 import CommonClasses.ApartmentDescription.*;
 
 import java.io.BufferedReader;
-import java.util.Scanner;
-import User.ConsolePrinter;
-import User.*;
+
+import HelpingModuls.ConsoleScanner;
+import HelpingModuls.Printer;
 
 public class FlatCreator {
 

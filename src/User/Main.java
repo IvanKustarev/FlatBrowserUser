@@ -4,6 +4,7 @@ package User;
 //import CommonClasses.DataBlock;
 
 import GraphicalUserInterface.GInterfaceControlCenter;
+import GraphicalUserInterface.VisualSpace.VisualSpaceControlCenter;
 import GraphicalUserInterface.WorkingWithGInterface;
 import Resources.ResourceControlCenter;
 
@@ -13,6 +14,7 @@ import java.util.ResourceBundle;
 
 public class Main {
     public static void main(String [] args) throws IOException, ClassNotFoundException {
+
 
         ResourceBundle bundleRu = ResourceBundle.getBundle("Resources.Resources_ru", new Locale("ru", "RU"));
         ResourceBundle bundleDE = ResourceBundle.getBundle("Resources.Resources_de", new Locale("de", "DE"));

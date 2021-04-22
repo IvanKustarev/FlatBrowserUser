@@ -5,10 +5,10 @@ import CommonClasses.*;
 import GraphicalUserInterface.GLogOrRegChoice;
 import GraphicalUserInterface.GLogin;
 import GraphicalUserInterface.WorkingWithGInterface;
+import HelpingModuls.*;
 //import CommonClasses.DataBlock;
 
 import javax.swing.*;
-import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -86,6 +86,8 @@ public class UserWork{
             this.printer = printer;
             this.consoleScanner = consoleScanner;
             this.processControlCenter = processControlCenter;
+
+            printer.println("\n");
         }
 
         public CommunicateWithServerByCommands(){}
@@ -284,7 +286,7 @@ public class UserWork{
 
         private void login(WorkingWithGInterface gInterface, DataBlock newDataBlock, TransferCenter transferCenter) throws ConnectionException{
 
-            GLogOrRegChoice gLogOrRegChoice = new GLogOrRegChoice();
+            GLogOrRegChoice gLogOrRegChoice = new GLogOrRegChoice(gInterface);
             gInterface.setSpaceForInteraction(gLogOrRegChoice.getPanel());
 
             while (gLogOrRegChoice.getAnswer() == null){
@@ -336,7 +338,7 @@ public class UserWork{
                 Lock lock = new ReentrantLock();
                  lock.lock();
                  Condition condition = lock.newCondition();
-                 GLogin gLogin = new GLogin(lock, condition);
+                 GLogin gLogin = new GLogin(lock, condition, gInterface);
                  gInterface.setSpaceForInteraction(gLogin.getPanel());
                  try {
                      condition.await();
@@ -399,7 +401,7 @@ public class UserWork{
                     Lock lock = new ReentrantLock();
                     lock.lock();
                     Condition condition = lock.newCondition();
-                    GLogin GLogin = new GLogin(lock, condition);
+                    GLogin GLogin = new GLogin(lock, condition, gInterface);
                     gInterface.setSpaceForInteraction(GLogin.getPanel());
 //                mainWindow.add(login.getPanel());
 //                mainWindow.setVisible(true);

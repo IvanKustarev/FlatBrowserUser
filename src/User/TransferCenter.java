@@ -5,13 +5,16 @@ package User;
 
 import CommonClasses.FirstTimeConnectedData;
 import GraphicalUserInterface.*;
+import HelpingModuls.ConnectionException;
+import HelpingModuls.ConsolePrinter;
+import HelpingModuls.ObjectProcessing;
+import HelpingModuls.TimeLimitedCode;
 
 import javax.swing.*;
 import java.io.*;
 import java.net.*;
 import java.util.Date;
 import java.util.Random;
-import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -120,7 +123,7 @@ public class TransferCenter{
         individualServerSocketAddress = (InetSocketAddress) firstTimeConnectedData.getSocketAddress();
     }
 
-    public Object receiveObjectFromServer(){
+    public synchronized Object receiveObjectFromServer(){
 
 
         Object obj = null;
@@ -216,7 +219,7 @@ public class TransferCenter{
             Lock lock = new ReentrantLock();
             lock.lock();
             Condition condition = lock.newCondition();
-            gIpAndPortEntering = new GIpAndPortEntering(lock, condition);
+            gIpAndPortEntering = new GIpAndPortEntering(lock, condition, gInterface);
             gInterface.setSpaceForInteraction(gIpAndPortEntering.getPanel());
             condition.await();
             lock.unlock();
@@ -274,7 +277,7 @@ public class TransferCenter{
         return port;
     }
 
-    public <T> void sendObjectToServer(T object){
+    public synchronized  <T> void sendObjectToServer(T object){
 
         byte[] serObject = ObjectProcessing.serializeObject(object);
         if(object.getClass().getName().equals("CommonClasses.FirstTimeConnectedData")){

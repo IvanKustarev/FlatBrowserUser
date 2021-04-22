@@ -1,7 +1,5 @@
 package CommonClasses.ApartmentDescription;
 
-import User.ConsolePrinter;
-
 import java.io.Serializable;
 
 public class Coordinates implements Serializable {

@@ -11,10 +11,12 @@ import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import HelpingModuls.ConnectionException;
 import User.*;
-import java.util.ArrayList;
 
 public class PlaneCreator {
     public class Table implements WindowPart{
@@ -100,6 +102,8 @@ public class PlaneCreator {
 
             TableModel tableModel = new DefaultTableModel(rows, columns);
             JTable table = new JTable(tableModel);
+            table.setPreferredSize(new Dimension(1000, 1000));
+            table.setSize(new Dimension(1000, 1000));
             RowSorter<TableModel> sorter = new TableRowSorter<>(tableModel);
 
             Filter filter = new Filter(filterTextField, comboBox, table);
@@ -125,7 +129,7 @@ public class PlaneCreator {
                         rowUserName = (String) table.getValueAt(rowCount, 0);
                     }
                     if(rowUserName.equals(user.getLogin())){
-                        gInterface.setSpaceForInteraction(new GEditWindow(table, transferCenter, rowCount, gInterface, userWork, processControlCenter).getPanel());
+                        gInterface.setSpaceForInteraction(new GEditTableWindow(table, transferCenter, rowCount, gInterface, userWork, processControlCenter).getPanel());
                     }
                     else {
                         JOptionPane.showConfirmDialog(new JOptionPane(), "Объект принадлежит другому пльзователю!", "Уведомление", JOptionPane.OK_CANCEL_OPTION);

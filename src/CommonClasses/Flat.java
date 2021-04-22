@@ -6,7 +6,6 @@ import CommonClasses.ApartmentDescription.*;
 
 import java.io.Serializable;
 import java.util.Date;
-import User.ConsolePrinter;
 
 public class Flat implements Serializable, Comparable<Flat>{
 

@@ -1,8 +1,10 @@
-package User;
+package GraphicalUserInterface;
+
+import HelpingModuls.Printer;
 
 import javax.swing.*;
 
-public class GInterfaceConsolePrinter implements Printer{
+public class GInterfaceConsolePrinter implements Printer {
     JEditorPane jEditorPane;
 
     public GInterfaceConsolePrinter(JEditorPane jEditorPane){

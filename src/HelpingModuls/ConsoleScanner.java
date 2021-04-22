@@ -1,4 +1,4 @@
-package User;
+package HelpingModuls;
 
 public class ConsoleScanner {
     private boolean needed;

@@ -54,7 +54,13 @@ public class GInterfaceControlCenter implements WorkingWithGInterface{
 
     @Override
     public void creatingWindow(){
+
+        Dimension sSize = Toolkit.getDefaultToolkit ().getScreenSize ();
+
         mainWindow = new MainWindow();
+
+        mainWindow.setBounds(0,0, sSize.width, sSize.height);
+
         mainWindow.setLayout(new GridBagLayout());
 
         createAbstractSpaceForInteraction();
@@ -93,6 +99,11 @@ public class GInterfaceControlCenter implements WorkingWithGInterface{
     }
 
     @Override
+    public Dimension  getMainWindowSize(){
+        return mainWindow.getSize();
+    }
+
+    @Override
     public void setTopPartOfWindow(JPanel topPartOfWindow) {
         clearTopPartOfWindow();
         abstractTopMainWindowPart.add(topPartOfWindow);
@@ -124,7 +135,18 @@ public class GInterfaceControlCenter implements WorkingWithGInterface{
         menuTopMainWindowPart.add(languages);
     }
     private void createAbstractSpaceForInteraction(){
-        abstractSpaceForInteraction = new JPanel();
+        abstractSpaceForInteraction = new JPanel();/*{
+            @Override
+            public Dimension getPreferredSize(){
+                return
+            }
+        };*/
+        abstractSpaceForInteraction.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
+
+        abstractSpaceForInteraction.setPreferredSize(new Dimension(mainWindow.getWidth()-20, (mainWindow.getHeight()/11 * 9)));
+
+
+
         abstractSpaceForInteraction.setLayout(new GridLayout(1,1));
         abstractTopMainWindowPart = new JPanel();
         abstractTopMainWindowPart.setLayout(new GridLayout(1,1));

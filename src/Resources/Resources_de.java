@@ -9,7 +9,9 @@ public class Resources_de extends ListResourceBundle implements Naming{
     private static final Object[][] contents =
             {
                     {"s1", "hello"},
-                    {"Консольная работа с командами", "Konsolenarbeit mit Befehlen"}
+                    {"Консольная работа с командами", "Konsolenarbeit mit Befehlen"},
+                    {"Табличная работа с элементами", "Tabellarische Arbeit mit Elementen"},
+                    {"Область визуализации", "Visualisierungsbereich"}
             };
 
     @Override

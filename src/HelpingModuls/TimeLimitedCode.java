@@ -1,4 +1,6 @@
-package User;
+package HelpingModuls;
+
+import HelpingModuls.ConnectionException;
 
 import javax.swing.*;
 import java.util.concurrent.*;

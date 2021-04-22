@@ -1,4 +1,6 @@
-package User;
+package HelpingModuls;
+
+import HelpingModuls.ConsolePrinter;
 
 import java.io.*;
 

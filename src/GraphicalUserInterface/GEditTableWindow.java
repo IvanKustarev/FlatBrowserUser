@@ -4,6 +4,7 @@ import CommonClasses.ApartmentDescription.*;
 import CommonClasses.CommandsData;
 import CommonClasses.DataBlock;
 import CommonClasses.Flat;
+import HelpingModuls.ConnectionException;
 import User.*;
 
 import javax.swing.*;
@@ -11,7 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Date;
 
-public class GEditWindow implements WindowPart{
+public class GEditTableWindow implements WindowPart{
 
     private JTable table;
     private TransferCenter transferCenter;
@@ -20,7 +21,7 @@ public class GEditWindow implements WindowPart{
     private UserWork userWork;
     private ProcessControlCenter processControlCenter;
 
-    public GEditWindow(JTable table, TransferCenter transferCenter, int row, WorkingWithGInterface gInterface, UserWork userWork, ProcessControlCenter processControlCenter){
+    public GEditTableWindow(JTable table, TransferCenter transferCenter, int row, WorkingWithGInterface gInterface, UserWork userWork, ProcessControlCenter processControlCenter){
         this.table = table;
         this.transferCenter = transferCenter;
         this.row = row;
@@ -135,23 +136,29 @@ public class GEditWindow implements WindowPart{
                     JOptionPane.showConfirmDialog(new JOptionPane(), "Все поля связанные с домом либо пустые, либо заполненные", "Уведомление", JOptionPane.OK_CANCEL_OPTION);
                     return;
                 }
-                try {
-                    Furnish.valueOf(furnishTextField.getText());
-                }catch (IllegalArgumentException illegalArgumentException){
-                    JOptionPane.showConfirmDialog(new JOptionPane(), "Мебель задана некорректно!", "Уведомление", JOptionPane.OK_CANCEL_OPTION);
-                    return;
+                if(furnishTextField.getText() == "") {
+                    try {
+                        Furnish.valueOf(furnishTextField.getText());
+                    } catch (IllegalArgumentException illegalArgumentException) {
+                        JOptionPane.showConfirmDialog(new JOptionPane(), "Мебель задана некорректно!", "Уведомление", JOptionPane.OK_CANCEL_OPTION);
+                        return;
+                    }
                 }
-                try {
-                    Transport.valueOf(transportTextField.getText());
-                }catch (IllegalArgumentException illegalArgumentException){
-                    JOptionPane.showConfirmDialog(new JOptionPane(), "Транспорт задан некорректно!", "Уведомление", JOptionPane.OK_CANCEL_OPTION);
-                    return;
+                if(transportTextField.getText() == "") {
+                    try {
+                        Transport.valueOf(transportTextField.getText());
+                    } catch (IllegalArgumentException illegalArgumentException) {
+                        JOptionPane.showConfirmDialog(new JOptionPane(), "Транспорт задан некорректно!", "Уведомление", JOptionPane.OK_CANCEL_OPTION);
+                        return;
+                    }
                 }
-                try {
-                    View.valueOf(viewTextField.getText());
-                }catch (IllegalArgumentException illegalArgumentException){
-                    JOptionPane.showConfirmDialog(new JOptionPane(), "Вид задан некорректно!", "Уведомление", JOptionPane.OK_CANCEL_OPTION);
-                    return;
+                if(viewTextField.getText() == "") {
+                    try {
+                        View.valueOf(viewTextField.getText());
+                    } catch (IllegalArgumentException illegalArgumentException) {
+                        JOptionPane.showConfirmDialog(new JOptionPane(), "Вид задан некорректно!", "Уведомление", JOptionPane.OK_CANCEL_OPTION);
+                        return;
+                    }
                 }
                 CommandsData commandsData = CommandsData.REMOVEBYID;
                 commandsData.setParameter((String) table.getValueAt(row, 1));

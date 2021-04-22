@@ -2,22 +2,25 @@ package User;
 
 import CommonClasses.CommandsData;
 import CommonClasses.Flat;
+import GraphicalUserInterface.GInterfaceConsolePrinter;
 import GraphicalUserInterface.GReConnect;
 import GraphicalUserInterface.PlaneCreator;
+import GraphicalUserInterface.VisualSpace.DifferenceHandler;
+import GraphicalUserInterface.VisualSpace.VisualSpaceControlCenter;
 import GraphicalUserInterface.WorkingWithGInterface;
-import Resources.Naming;
+import HelpingModuls.ConnectionException;
+import HelpingModuls.ConsoleScanner;
 import Resources.ResourceControlCenter;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ResourceBundle;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class ProcessControlCenter {
+public class ProcessControlCenter{
 
     private UserWork userWork;
     private TransferCenter transferCenter;
@@ -29,11 +32,11 @@ public class ProcessControlCenter {
         this.transferCenter = transferCenter;
         this.gInterface = gInterface;
         this.resourceControlCenter = resourceControlCenter;
-
         gInterface.creatingWindow();
     }
 
     public void start(){
+
         connect();
         working();
     }
@@ -54,13 +57,18 @@ public class ProcessControlCenter {
         createVariantsForMainMenu();
     }
 
+    private void toVisualSpace(){
+        VisualSpaceControlCenter visualSpaceControlCenter = new VisualSpaceControlCenter(userWork, transferCenter, this, gInterface);
+        createUserNameAndBackTopPartForVisualSpace(visualSpaceControlCenter);
+        gInterface.setSpaceForInteraction(visualSpaceControlCenter.getPanel());
+    }
+
     private void createVariantsForMainMenu(){
         JPanel jPanel = new JPanel();
-        jPanel.setLayout(new GridLayout(2,1));
+        jPanel.setLayout(new GridLayout(3,1));
 
         JButton consoleWork = new JButton(resourceControlCenter.getMainResourceBundle().getString("Консольная работа с командами"));
-//        System.out.println(((Naming) mainResourceBundle).getName());
-//        System.out.println(mainResourceBundle.getString("Консольная работа с командами"));
+        consoleWork.setFont(consoleWork.getFont().deriveFont((float)(gInterface.getMainWindowSize().height/11)));
         consoleWork.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -68,7 +76,10 @@ public class ProcessControlCenter {
             }
         });
 
-        JButton tableWork = new JButton("Табличная работа с элементами");
+
+        JButton tableWork = new JButton(resourceControlCenter.getMainResourceBundle().getString("Табличная работа с элементами"));
+        tableWork.setFont(tableWork.getFont().deriveFont((float)(gInterface.getMainWindowSize().height/11)));
+
         tableWork.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -76,8 +87,21 @@ public class ProcessControlCenter {
             }
         });
 
+
+        JButton visualWork = new JButton(resourceControlCenter.getMainResourceBundle().getString("Область визуализации"));
+        visualWork.setFont(visualWork.getFont().deriveFont((float)(gInterface.getMainWindowSize().height/11)));
+
+
+        visualWork.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                toVisualSpace();
+            }
+        });
+
         jPanel.add(consoleWork);
         jPanel.add(tableWork);
+        jPanel.add(visualWork);
 
 
         gInterface.setSpaceForInteraction(jPanel);
@@ -109,7 +133,7 @@ public class ProcessControlCenter {
         ConsoleScanner consoleScanner = new ConsoleScanner();
         ProcessControlCenter processControlCenter = this;
 
-        JLabel command = new JLabel("Введите команду сюда: ");
+        JLabel commandLabel = new JLabel("Введите команду сюда: ");
         JTextField textField = new JTextField(15);
         JButton jButton = new JButton("Исполнить");
         JEditorPane editorPane = new JEditorPane();
@@ -129,7 +153,6 @@ public class ProcessControlCenter {
                     }
                 }
                 else {
-                    //                        userWork.new CommunicateWithServerByCommands().startCheckingCommands(transferCenter, gInterface, textField.getText(), new GInterfaceConsolePrinter(editorPane), consoleScanner);
                     UserWork.CommunicateWithServerByCommands communicateWithServerByCommands = userWork.new CommunicateWithServerByCommands(transferCenter, gInterface, textField.getText(), new GInterfaceConsolePrinter(editorPane), consoleScanner, processControlCenter);
                     Thread thread = new Thread(communicateWithServerByCommands);
                     thread.start();
@@ -139,12 +162,48 @@ public class ProcessControlCenter {
             }
         });
 
+        jPanel.setLayout(new GridBagLayout());
 
-        jPanel.add(command);
-        jPanel.add(textField);
-        jPanel.add(jButton);
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.weightx = 0;
+        constraints.weighty = 0;
+        constraints.gridx = 0;
+        constraints.gridy = 0;
+        constraints.gridheight = 1;
+        constraints.gridwidth = 1;
+        GridBagConstraints constraints1 = new GridBagConstraints();
+        constraints1.weightx = 0;
+        constraints1.weighty = 0;
+        constraints1.gridx = 1;
+        constraints1.gridy = 0;
+        constraints1.gridheight = 1;
+        constraints1.gridwidth = 1;
+        GridBagConstraints constraints2 = new GridBagConstraints();
+        constraints2.weightx = 0;
+        constraints2.weighty = 0;
+        constraints2.gridx = 2;
+        constraints2.gridy = 0;
+        constraints2.gridheight = 1;
+        constraints2.gridwidth = 1;
+        GridBagConstraints constraints3 = new GridBagConstraints();
+        constraints3.weightx = 0;
+        constraints3.weighty = 0;
+        constraints3.gridx = 0;
+        constraints3.gridy = 1;
+        constraints3.gridheight = 7;
+        constraints3.gridwidth = 3;
+
+        jPanel.add(commandLabel, constraints);
+        jPanel.add(textField, constraints1);
+        jPanel.add(jButton, constraints2);
 //        jPanel.add(editorPane);
-        jPanel.add(new JScrollPane(editorPane));
+        JScrollPane scrollPane = new JScrollPane(editorPane);
+        editorPane.setSize(new Dimension(500, 500));
+        scrollPane.setSize(new Dimension(500, 500));
+        scrollPane.setMinimumSize(new Dimension(500, 500));
+        scrollPane.setPreferredSize(new Dimension(500, 500));
+        jPanel.add(scrollPane, constraints3);
+        jPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
 
         gInterface.setSpaceForInteraction(jPanel);
     }
@@ -161,6 +220,7 @@ public class ProcessControlCenter {
         constraints.gridwidth = 1;
 
         JLabel jLabel = new JLabel("User: "+userWork.getMainUser().getLogin());
+        jLabel.setFont(jLabel.getFont().deriveFont((float)(gInterface.getMainWindowSize().height/11)));
 
         jPanel.add(jLabel, constraints);
 
@@ -201,6 +261,41 @@ public class ProcessControlCenter {
         gInterface.setTopPartOfWindow(jPanel);
     }
 
+    private void createUserNameAndBackTopPartForVisualSpace(VisualSpaceControlCenter visualSpaceControlCenter){
+        JPanel jPanel = new JPanel();
+        jPanel.setLayout(new GridBagLayout());
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.weightx = 0;
+        constraints.weighty = 0;
+        constraints.gridx = 1;
+        constraints.gridy = 0;
+        constraints.gridheight = 1;
+        constraints.gridwidth = 1;
+
+        GridBagConstraints constraints1 = new GridBagConstraints();
+        constraints1.weightx = 0;
+        constraints1.weighty = 0;
+        constraints1.gridx = 0;
+        constraints1.gridy = 0;
+        constraints1.gridheight = 1;
+        constraints1.gridwidth = 1;
+
+        JLabel jLabel = new JLabel("User: "+userWork.getMainUser().getLogin());
+        JButton jButton = new JButton("НАЗАД");
+        jButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                visualSpaceControlCenter.stopDifferenceHandler();
+                toMainMenu();
+            }
+        });
+
+        jPanel.add(jLabel, constraints);
+        jPanel.add(jButton, constraints1);
+
+        gInterface.setTopPartOfWindow(jPanel);
+    }
+
     public void reConnect(){
         boolean end = false;
         Lock lock = new ReentrantLock();
@@ -226,10 +321,6 @@ public class ProcessControlCenter {
             }
         }
     }
-
-//    public void repain(){
-//
-//    }
 
     private void connect(){
         transferCenter.connect(gInterface);

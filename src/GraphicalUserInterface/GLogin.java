@@ -14,10 +14,12 @@ public class GLogin implements WindowPart, Runnable{
     private String password;
     private Lock lock;
     private Condition condition;
+    private WorkingWithGInterface gInterface;
 
-    public GLogin(Lock lock, Condition condition){
+    public GLogin(Lock lock, Condition condition, WorkingWithGInterface gInterface){
         this.lock = lock;
         this.condition = condition;
+        this.gInterface = gInterface;
     }
 
 
@@ -28,15 +30,26 @@ public class GLogin implements WindowPart, Runnable{
 
         JPanel logPasPanel = new JPanel();
         logPasPanel.setLayout(new GridLayout(2, 2));
-        logPasPanel.add(new JLabel("Login: "));
+
+        JLabel label = new JLabel("Login: ");
+        label.setFont(label.getFont().deriveFont((float)(gInterface.getMainWindowSize().height/11)));
+        logPasPanel.add(label);
+
         JTextField logText = new JTextField(15);
         logPasPanel.add(logText);
-        logPasPanel.add(new JLabel("Password: "));
+
+        label = new JLabel("Password: ");
+        label.setFont(label.getFont().deriveFont((float)(gInterface.getMainWindowSize().height/11)));
+        logPasPanel.add(label);
+
         JPasswordField pasText = new JPasswordField(15);
         logPasPanel.add(pasText);
         mainPanel.add(logPasPanel);
 
+//        label = new JLabel("Login");
         JButton logButton = new JButton("Login");
+        logButton.setFont(logButton.getFont().deriveFont((float)(gInterface.getMainWindowSize().height/11)));
+
         logButton.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
