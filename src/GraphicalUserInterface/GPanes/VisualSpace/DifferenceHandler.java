@@ -1,10 +1,9 @@
-package GraphicalUserInterface.VisualSpace;
+package GraphicalUserInterface.GPanes.VisualSpace;
 
 import CommonClasses.CommandsData;
-import CommonClasses.DataBlock;
 import CommonClasses.Flat;
+import GraphicalUserInterface.GInterface;
 import HelpingModuls.ConnectionException;
-import HelpingModuls.ObjectProcessing;
 import User.ProcessControlCenter;
 import User.TransferCenter;
 import User.UserWork;
@@ -23,8 +22,10 @@ public class DifferenceHandler implements Runnable{
     private ProcessControlCenter processControlCenter;
     private String[][] userColourVariations;
     private Boolean stop = false;
+    private GInterface gInterface;
 
-    public DifferenceHandler(Flat[] flats, GVisualSpace gVisualSpace, ProcessControlCenter processControlCenter, UserWork userWork, TransferCenter transferCenter, String[][] userColourVariations){
+    public DifferenceHandler(Flat[] flats, GVisualSpace gVisualSpace, ProcessControlCenter processControlCenter, UserWork userWork, TransferCenter transferCenter, String[][] userColourVariations, GInterface gInterface){
+        this.gInterface = gInterface;
         this.flatsHear = flats;
         this.gVisualSpace = gVisualSpace;
         this.userWork = userWork;
@@ -48,7 +49,7 @@ public class DifferenceHandler implements Runnable{
             } catch (ConnectionException e) {
                 JOptionPane.showConfirmDialog(new JOptionPane(), "Сервер не отвечает!", "Ошибка подключения", JOptionPane.OK_CANCEL_OPTION);
                 processControlCenter.reConnect();
-                processControlCenter.working();
+//                processControlCenter.working();
                 return;
             }
 
@@ -62,13 +63,15 @@ public class DifferenceHandler implements Runnable{
                 if(changes == true){
                     flatsHear = flatsFromDB;
                     userColourVariations = createUserColourVariations(flatsHear);
-//                    gVisualSpace.repaint();
+                    gInterface.repaint();
+                    setStop(true);
                 }
             }
             else {
                 flatsHear = flatsFromDB;
                 userColourVariations = createUserColourVariations(flatsHear);
-//                gVisualSpace.repaint();
+                gInterface.repaint();
+                setStop(true);
             }
         }
     }

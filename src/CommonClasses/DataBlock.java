@@ -1,13 +1,18 @@
 package CommonClasses;
 
+import Resources.ResourceControlCenter;
+
 import java.io.BufferedReader;
 import java.io.Serializable;
+import java.util.ResourceBundle;
 import java.util.Stack;
 
 public class DataBlock implements Serializable {
     static final long serialVersionUID = 1;
 
     private User user;
+
+    private String resourceBundleName;
 
     private CommandsData commandsData = null;
 
@@ -19,6 +24,14 @@ public class DataBlock implements Serializable {
         return commandsData;
     }
 
+
+    public String getResourceBundleName() {
+        return resourceBundleName;
+    }
+
+    public void setResourceBundleName(String resourceBundleName) {
+        this.resourceBundleName = resourceBundleName;
+    }
 
     //    commandWithElementParameter ======================================================
     protected Boolean commandWithElementParameter = null;

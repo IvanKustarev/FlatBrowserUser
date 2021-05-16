@@ -1,17 +1,21 @@
-package GraphicalUserInterface;
+package GraphicalUserInterface.GPanes;
+
+import GraphicalUserInterface.WindowPane;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ResourceBundle;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 
-public class GReConnect implements WindowPart{
+public class GReConnect implements WindowPane {
     
     private boolean tryConnect = false;
-    Lock lock;
-    Condition condition;
+    private Lock lock;
+    private Condition condition;
+    private ResourceBundle resourceBundle;
 
 
     public boolean getTryConnect(){
@@ -22,6 +26,12 @@ public class GReConnect implements WindowPart{
         this.lock = lock;
         this.condition = condition;
     }
+
+    @Override
+    public void setLocale(ResourceBundle resourceBundle) {
+        this.resourceBundle = resourceBundle;
+    }
+
 
     public JPanel createReConnectPanel(){
 
@@ -52,10 +62,10 @@ public class GReConnect implements WindowPart{
         constraints3.gridheight = 1;
         constraints3.gridwidth = 1;
 
-        JButton yes = new JButton("Да");
-        JButton no = new JButton("Нет");
+        JButton yes = new JButton(resourceBundle.getString("Да"));
+        JButton no = new JButton(resourceBundle.getString("Нет"));
 
-        jPanel.add(new JLabel("Продолжаем попытки подключения к серверу?"), constraints1);
+        jPanel.add(new JLabel(resourceBundle.getString("Продолжаем попытки подключения к серверу?")), constraints1);
         jPanel.add(yes, constraints2);
         jPanel.add(no, constraints3);
 

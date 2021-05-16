@@ -2,22 +2,24 @@ package GraphicalUserInterface;
 
 import Resources.Naming;
 import Resources.ResourceControlCenter;
+import User.UserWork;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ResourceBundle;
 
-public class GInterfaceControlCenter implements WorkingWithGInterface{
+public class InterfaceControlCenter implements GInterface {
     private MainWindow mainWindow;
     private JPanel abstractSpaceForInteraction;
     private JPanel abstractTopMainWindowPart;
     private JPanel menuTopMainWindowPart;
+    private WindowPane nowPane;
+    private WindowPane topPane;
 
     ResourceControlCenter resourceControlCenter;
 
-    public GInterfaceControlCenter(ResourceControlCenter resourceControlCenter){
+    public InterfaceControlCenter(ResourceControlCenter resourceControlCenter){
         this.resourceControlCenter = resourceControlCenter;
     }
 
@@ -25,21 +27,39 @@ public class GInterfaceControlCenter implements WorkingWithGInterface{
 
     @Override
     public void setSpaceForInteraction(JPanel spaceForInteraction) {
-//        this.spaceForInteraction = spaceForInteraction;
         clearSpaceForInteraction();
         abstractSpaceForInteraction.add(spaceForInteraction);
         mainWindow.setVisible(true);
     }
 
-//    @Override
-    private void clearSpaceForInteraction() {
-        abstractSpaceForInteraction.removeAll();
-        repaint();
+    @Override
+    public void setGPane(WindowPane windowPane) {
+        nowPane = windowPane;
+        nowPane.setLocale(resourceControlCenter.getMainResourceBundle());
+        clearSpaceForInteraction();
+        JPanel jPanel = nowPane.getPanel();
+        setSpaceForInteraction(jPanel);
+        jPanel.setVisible(true);
+
+//        JFrame jFrame = new JFrame();
+//        jFrame.add(jPanel);
+//        jFrame.setVisible(true);
     }
 
     @Override
+    public void clearSpaceForInteraction() {
+
+        abstractSpaceForInteraction.removeAll();
+
+//        repaint();
+    }
+
+
+
+    @Override
     public void repaint() {
-        mainWindow.repaint();
+        setSpaceForInteraction(nowPane.getPanel());
+        setTopPartOfWindow(topPane);
     }
 
     @Override
@@ -104,15 +124,22 @@ public class GInterfaceControlCenter implements WorkingWithGInterface{
     }
 
     @Override
-    public void setTopPartOfWindow(JPanel topPartOfWindow) {
+    public void sendNotification(String string, String title) {
+        JOptionPane.showConfirmDialog(new JOptionPane(), resourceControlCenter.getMainResourceBundle().getString(string), resourceControlCenter.getMainResourceBundle().getString(title), JOptionPane.OK_CANCEL_OPTION);
+    }
+
+        @Override
+    public void setTopPartOfWindow(WindowPane topPane) {
+        this.topPane = topPane;
         clearTopPartOfWindow();
-        abstractTopMainWindowPart.add(topPartOfWindow);
+        topPane.setLocale(resourceControlCenter.getMainResourceBundle());
+        abstractTopMainWindowPart.add(topPane.getPanel());
         mainWindow.setVisible(true);
     }
 
     private void clearTopPartOfWindow() {
         abstractTopMainWindowPart.removeAll();
-        repaint();
+//        repaint();
     }
 
     private void createMenuTopMainWindowPart(){
@@ -128,6 +155,12 @@ public class GInterfaceControlCenter implements WorkingWithGInterface{
             public void actionPerformed(ActionEvent e) {
                 synchronized (resourceControlCenter.getMainResourceBundle()){
                     resourceControlCenter.setIndex(languages.getSelectedIndex());
+                    nowPane.setLocale(resourceControlCenter.getMainResourceBundle());
+                    try {
+                        topPane.setLocale(resourceControlCenter.getMainResourceBundle());
+                        setTopPartOfWindow(topPane);
+                    }catch (NullPointerException nullPointerException){ }
+                    setSpaceForInteraction(nowPane.getPanel());
                 }
             }
         });
@@ -135,12 +168,7 @@ public class GInterfaceControlCenter implements WorkingWithGInterface{
         menuTopMainWindowPart.add(languages);
     }
     private void createAbstractSpaceForInteraction(){
-        abstractSpaceForInteraction = new JPanel();/*{
-            @Override
-            public Dimension getPreferredSize(){
-                return
-            }
-        };*/
+        abstractSpaceForInteraction = new JPanel();
         abstractSpaceForInteraction.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
 
         abstractSpaceForInteraction.setPreferredSize(new Dimension(mainWindow.getWidth()-20, (mainWindow.getHeight()/11 * 9)));

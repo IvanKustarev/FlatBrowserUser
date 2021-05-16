@@ -3,8 +3,10 @@ package GraphicalUserInterface;
 import javax.swing.*;
 import java.awt.*;
 
-public interface WorkingWithGInterface {
+public interface GInterface {
     public void setSpaceForInteraction(JPanel spaceForInteraction);
+
+    public void setGPane(WindowPane windowPane);
 
     public void removeWindow();
 
@@ -12,9 +14,13 @@ public interface WorkingWithGInterface {
 
     public void creatingWindow();
 
-    public void setTopPartOfWindow(JPanel topPartOfWindow);
+    public void setTopPartOfWindow(WindowPane topPartOfWindow);
 
     public void repaint();
 
     public Dimension getMainWindowSize();
+
+    public void sendNotification(String string, String title);
+
+    public void clearSpaceForInteraction();
 }

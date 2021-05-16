@@ -1,25 +1,34 @@
-package GraphicalUserInterface;
+package GraphicalUserInterface.GPanes;
+
+import GraphicalUserInterface.GInterface;
+import GraphicalUserInterface.WindowPane;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ResourceBundle;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
-public class GLogin implements WindowPart, Runnable{
+public class GLogin implements WindowPane, Runnable{
 
     private String login;
     private String password;
     private Lock lock;
     private Condition condition;
-    private WorkingWithGInterface gInterface;
+    private GInterface gInterface;
+    private ResourceBundle resourceBundle;
 
-    public GLogin(Lock lock, Condition condition, WorkingWithGInterface gInterface){
+    public GLogin(Lock lock, Condition condition, GInterface gInterface){
         this.lock = lock;
         this.condition = condition;
         this.gInterface = gInterface;
+    }
+
+    @Override
+    public void setLocale(ResourceBundle resourceBundle) {
+        this.resourceBundle = resourceBundle;
     }
 
 
@@ -31,14 +40,14 @@ public class GLogin implements WindowPart, Runnable{
         JPanel logPasPanel = new JPanel();
         logPasPanel.setLayout(new GridLayout(2, 2));
 
-        JLabel label = new JLabel("Login: ");
+        JLabel label = new JLabel(resourceBundle.getString("Login:"));
         label.setFont(label.getFont().deriveFont((float)(gInterface.getMainWindowSize().height/11)));
         logPasPanel.add(label);
 
         JTextField logText = new JTextField(15);
         logPasPanel.add(logText);
 
-        label = new JLabel("Password: ");
+        label = new JLabel(resourceBundle.getString("Password:"));
         label.setFont(label.getFont().deriveFont((float)(gInterface.getMainWindowSize().height/11)));
         logPasPanel.add(label);
 
@@ -47,7 +56,7 @@ public class GLogin implements WindowPart, Runnable{
         mainPanel.add(logPasPanel);
 
 //        label = new JLabel("Login");
-        JButton logButton = new JButton("Login");
+        JButton logButton = new JButton(resourceBundle.getString("Login"));
         logButton.setFont(logButton.getFont().deriveFont((float)(gInterface.getMainWindowSize().height/11)));
 
         logButton.addActionListener(new ActionListener(){

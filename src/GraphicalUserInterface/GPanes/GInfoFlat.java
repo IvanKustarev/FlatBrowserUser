@@ -1,23 +1,31 @@
-package GraphicalUserInterface;
+package GraphicalUserInterface.GPanes;
 
 import CommonClasses.Flat;
-import GraphicalUserInterface.VisualSpace.GVisualSpace;
+import GraphicalUserInterface.GPanes.VisualSpace.GVisualSpace;
+import GraphicalUserInterface.WindowPane;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ResourceBundle;
 
-public class GInfoFlat implements WindowPart{
+public class GInfoFlat implements WindowPane {
 
-    Flat flat;
-    Dimension size;
-    GVisualSpace visualSpace;
+    private Flat flat;
+    private Dimension size;
+    private GVisualSpace visualSpace;
+    private ResourceBundle resourceBundle;
 
     public GInfoFlat(Flat flat, Dimension size, GVisualSpace visualSpace){
         this.flat = flat;
         this.size = size;
         this.visualSpace = visualSpace;
+    }
+
+    @Override
+    public void setLocale(ResourceBundle resourceBundle) {
+        this.resourceBundle = resourceBundle;
     }
 
     private JPanel createInfoFlatPale(){

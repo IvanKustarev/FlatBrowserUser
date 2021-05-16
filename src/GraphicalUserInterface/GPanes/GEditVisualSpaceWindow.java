@@ -1,9 +1,11 @@
-package GraphicalUserInterface;
+package GraphicalUserInterface.GPanes;
 
 import CommonClasses.ApartmentDescription.*;
 import CommonClasses.CommandsData;
 import CommonClasses.DataBlock;
 import CommonClasses.Flat;
+import GraphicalUserInterface.GInterface;
+import GraphicalUserInterface.WindowPane;
 import HelpingModuls.ConnectionException;
 import User.*;
 
@@ -11,23 +13,29 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Date;
+import java.util.ResourceBundle;
 
-public class GEditTableWindow implements WindowPart{
+public class GEditVisualSpaceWindow implements WindowPane {
 
-    private JTable table;
     private TransferCenter transferCenter;
-    private int row;
-    private WorkingWithGInterface gInterface;
+    private GInterface gInterface;
     private UserWork userWork;
     private ProcessControlCenter processControlCenter;
+    private Flat flatFirst;
+    private ResourceBundle resourceBundle;
 
-    public GEditTableWindow(JTable table, TransferCenter transferCenter, int row, WorkingWithGInterface gInterface, UserWork userWork, ProcessControlCenter processControlCenter){
-        this.table = table;
+    public GEditVisualSpaceWindow(Flat flatFirst, TransferCenter transferCenter, GInterface gInterface, UserWork userWork, ProcessControlCenter processControlCenter){
         this.transferCenter = transferCenter;
-        this.row = row;
         this.gInterface = gInterface;
         this.userWork = userWork;
         this.processControlCenter = processControlCenter;
+        this.flatFirst = flatFirst;
+
+    }
+
+    @Override
+    public void setLocale(ResourceBundle resourceBundle) {
+        this.resourceBundle = resourceBundle;
     }
 
     @Override
@@ -38,31 +46,68 @@ public class GEditTableWindow implements WindowPart{
     private JPanel createEditPanel(){
 
         JLabel nameLabel = new JLabel("Имя");
-        JTextField nameTextField = new JTextField((String) table.getValueAt(row,2), 20);
+        JTextField nameTextField = new JTextField(flatFirst.getName());
         JLabel coordinateXLabel = new JLabel("Координата x");
-        JTextField coordinateXTextField = new JTextField((String) table.getValueAt(row,3), 20);
+        JTextField coordinateXTextField = new JTextField(String.valueOf(flatFirst.getCoordinates().getX()));
         JLabel coordinateYLabel = new JLabel("Координата y");
-        JTextField coordinateYTextField = new JTextField((String) table.getValueAt(row,4), 20);
+        JTextField coordinateYTextField = new JTextField(String.valueOf(flatFirst.getCoordinates().getY()));
         JLabel areaLabel = new JLabel("Расположение");
-        JTextField areaTextField = new JTextField((String) table.getValueAt(row,6), 20);
+        JTextField areaTextField = new JTextField(String.valueOf(flatFirst.getArea()));
         JLabel numberOfRoomsLabel = new JLabel("Количество комнат");
-        JTextField numberOfRoomsTextField = new JTextField((String) table.getValueAt(row,7), 20);
+        JTextField numberOfRoomsTextField = new JTextField(String.valueOf(flatFirst.getNumberOfRooms()));
         JLabel furnishLabel = new JLabel("Мебель");
-        JTextField furnishTextField = new JTextField((String) table.getValueAt(row,8), 20);
+        JTextField furnishTextField = new JTextField(String.valueOf(flatFirst.getFurnish()));
         JLabel viewLabel = new JLabel("Вид");
-        JTextField viewTextField = new JTextField((String) table.getValueAt(row,9), 20);
+        JTextField viewTextField;
+        if(flatFirst.getView() != null){
+            viewTextField = new JTextField(flatFirst.getView().name());
+        }
+        else {
+            viewTextField = new JTextField("");
+        }
         JLabel transportLabel = new JLabel("Транспортные маршруты");
-        JTextField transportTextField = new JTextField((String) table.getValueAt(row,10), 20);
-        JLabel houseNameLabel = new JLabel("Имя дома");
-        JTextField houseNameTextField = new JTextField((String) table.getValueAt(row,11), 20);
-        JLabel houseYearLabel = new JLabel("Год пострйки дома");
-        JTextField houseYearTextField = new JTextField((String) table.getValueAt(row,12), 20);
-        JLabel houseNumberOfFloorsLabel = new JLabel("Количество этажей в доме");
-        JTextField houseNumberOfFloorsTextField = new JTextField((String) table.getValueAt(row,13), 20);
-        JLabel houseNumberOfFlatsOnFloorLabel = new JLabel("Количество квартир на одном этаже");
-        JTextField houseNumberOfFlatsOnFloorTextField = new JTextField((String) table.getValueAt(row,14), 20);
-        JLabel houseNumberOfLiftsLabel = new JLabel("Количество лифтов");
-        JTextField houseNumberOfLiftsTextField = new JTextField((String) table.getValueAt(row,15), 20);
+        JTextField transportTextField;
+        if(flatFirst.getView() != null){
+            transportTextField = new JTextField(flatFirst.getTransport().name());
+        }
+        else {
+            transportTextField = new JTextField("");
+        }
+
+        JLabel houseNameLabel;
+        JTextField houseNameTextField;
+        JLabel houseYearLabel;
+        JTextField houseYearTextField;
+        JLabel houseNumberOfFloorsLabel;
+        JTextField houseNumberOfFloorsTextField;
+        JLabel houseNumberOfFlatsOnFloorLabel;
+        JTextField houseNumberOfFlatsOnFloorTextField;
+        JLabel houseNumberOfLiftsLabel;
+        JTextField houseNumberOfLiftsTextField;
+        if(flatFirst.getHouse() != null){
+            houseNameLabel = new JLabel("Имя дома");
+            houseNameTextField = new JTextField(flatFirst.getHouse().getName());
+            houseYearLabel = new JLabel("Год пострйки дома");
+            houseYearTextField = new JTextField(String.valueOf(flatFirst.getHouse().getYear()));
+            houseNumberOfFloorsLabel = new JLabel("Количество этажей в доме");
+            houseNumberOfFloorsTextField = new JTextField(String.valueOf(flatFirst.getHouse().getNumberOfFloors()));
+            houseNumberOfFlatsOnFloorLabel = new JLabel("Количество квартир на одном этаже");
+            houseNumberOfFlatsOnFloorTextField = new JTextField(flatFirst.getHouse().getNumberOfFlatsOnFloor());
+            houseNumberOfLiftsLabel = new JLabel("Количество лифтов");
+            houseNumberOfLiftsTextField = new JTextField(String.valueOf(flatFirst.getHouse().getNumberOfLifts()));
+        }
+        else {
+            houseNameLabel = new JLabel("Имя дома");
+            houseNameTextField = new JTextField("");
+            houseYearLabel = new JLabel("Год пострйки дома");
+            houseYearTextField = new JTextField("");
+            houseNumberOfFloorsLabel = new JLabel("Количество этажей в доме");
+            houseNumberOfFloorsTextField = new JTextField("");
+            houseNumberOfFlatsOnFloorLabel = new JLabel("Количество квартир на одном этаже");
+            houseNumberOfFlatsOnFloorTextField = new JTextField("");
+            houseNumberOfLiftsLabel = new JLabel("Количество лифтов");
+            houseNumberOfLiftsTextField = new JTextField("");
+        }
 
         JButton saveEdit = new JButton("Сохранить изменения");
 
@@ -161,7 +206,7 @@ public class GEditTableWindow implements WindowPart{
                     }
                 }
                 CommandsData commandsData = CommandsData.REMOVEBYID;
-                commandsData.setParameter((String) table.getValueAt(row, 1));
+                commandsData.setParameter(String.valueOf(flatFirst.getId()));
                 DataBlock dataBlock;
 
                 try {
@@ -180,7 +225,7 @@ public class GEditTableWindow implements WindowPart{
 
                     Flat flat = new Flat();
                     flat.setUserName(userWork.getMainUser().getLogin());
-                    flat.setId(Long.valueOf((String) table.getValueAt(row, 1)));
+                    flat.setId(Long.valueOf(flatFirst.getId()));
                     flat.setName(nameTextField.getText());
                     Coordinates coordinates = new Coordinates();
                     coordinates.setX(Double.valueOf(coordinateXTextField.getText()));

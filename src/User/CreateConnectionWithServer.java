@@ -44,12 +44,18 @@ public class CreateConnectionWithServer extends Thread {
 
         transferCenter.sendObjectToServer(firstTimeConnectedData);
 
-        firstTimeConnectedData = (FirstTimeConnectedData) transferCenter.receiveObjectFromServer();
-
-
+//        System.out.println("a");
+        try {
+            Object o = transferCenter.receiveObjectFromServer();
+//            System.out.println("a1");
+            firstTimeConnectedData = (FirstTimeConnectedData) o;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+//        System.out.println("a");
         transferCenter.individualServerSocketAddress = (InetSocketAddress) firstTimeConnectedData.getSocketAddress();
-
+//        System.out.println("a");
         allRight = true;
-
+//        System.out.println("a");
     }
 }

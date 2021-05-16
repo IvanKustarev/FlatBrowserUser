@@ -1,10 +1,10 @@
-package GraphicalUserInterface.VisualSpace;
+package GraphicalUserInterface.GPanes.VisualSpace;
 
 import CommonClasses.Flat;
-import GraphicalUserInterface.GEditVisualSpaceWindow;
-import GraphicalUserInterface.GInfoFlat;
-import GraphicalUserInterface.WindowPart;
-import GraphicalUserInterface.WorkingWithGInterface;
+import GraphicalUserInterface.GPanes.GEditVisualSpaceWindow;
+import GraphicalUserInterface.GPanes.GInfoFlat;
+import GraphicalUserInterface.WindowPane;
+import GraphicalUserInterface.GInterface;
 import User.ProcessControlCenter;
 import User.TransferCenter;
 import User.UserWork;
@@ -13,9 +13,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.ResourceBundle;
 
-public class GVisualSpace implements WindowPart {
+public class GVisualSpace implements WindowPane {
 
     private Flat[] flatsHere;
     private JPanel abstractPanel = new JPanel();
@@ -29,14 +29,15 @@ public class GVisualSpace implements WindowPart {
     private final int sizeOfOneObjectX = 10;
     private final int sizeOfOneObjectY= 10;
     private String[][] userColourVariations;
-    private WorkingWithGInterface gInterface;
+    private GInterface gInterface;
     private Flat[] flatsWithThisCoordinates;
     private UserWork userWork;
     private VisualSpaceControlCenter visualSpaceControlCenter;
     private TransferCenter transferCenter;
+    private ResourceBundle resourceBundle;
 
 
-    public GVisualSpace(Flat[] flatsHere, ProcessControlCenter processControlCenter, String[][] userColourVariations, WorkingWithGInterface gInterface, UserWork userWork, VisualSpaceControlCenter visualSpaceControlCenter, TransferCenter transferCenter){
+    public GVisualSpace(Flat[] flatsHere, ProcessControlCenter processControlCenter, String[][] userColourVariations, GInterface gInterface, UserWork userWork, VisualSpaceControlCenter visualSpaceControlCenter, TransferCenter transferCenter){
         this.flatsHere = flatsHere;
         this.transferCenter = transferCenter;
         this.processControlCenter = processControlCenter;
@@ -52,6 +53,11 @@ public class GVisualSpace implements WindowPart {
         dekartSK.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
         printObjectsOnDekSK();
         abstractPanel.add(dekartSK);
+    }
+
+    @Override
+    public void setLocale(ResourceBundle resourceBundle) {
+        this.resourceBundle = resourceBundle;
     }
 
     @Override
@@ -204,7 +210,6 @@ public class GVisualSpace implements WindowPart {
             protected void paintComponent(Graphics g){
 
                     int sizeYForOneFlat = sizeY / flatsWithThisCoordinatesObjects.length;
-                    System.out.println(sizeYForOneFlat);
                     int xIndent = abstractPanel.getWidth()/40; //отступ от края
                     for (int i = 0; i < flatsWithThisCoordinatesObjects.length; i++) {
 

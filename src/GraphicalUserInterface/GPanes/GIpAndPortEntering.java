@@ -1,30 +1,40 @@
-package GraphicalUserInterface;
+package GraphicalUserInterface.GPanes;
+
+import GraphicalUserInterface.GInterface;
+import GraphicalUserInterface.WindowPane;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ResourceBundle;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 
-public class GIpAndPortEntering implements WindowPart, Runnable {
+public class GIpAndPortEntering implements WindowPane, Runnable {
     private String ip;
     private String port;
     private Lock lock;
     private Condition condition;
-    private WorkingWithGInterface gInterface;
+    private GInterface gInterface;
+    private ResourceBundle resourceBundle;
 
-    public GIpAndPortEntering(Lock lock, Condition condition, WorkingWithGInterface gInterface){
+    public GIpAndPortEntering(Lock lock, Condition condition, GInterface gInterface){
         this.lock = lock;
         this.condition = condition;
         this.gInterface = gInterface;
+    }
+
+    @Override
+    public void setLocale(ResourceBundle resourceBundle) {
+        this.resourceBundle = resourceBundle;
     }
 
     private JPanel enterDataToConnection() {
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new GridLayout(2, 1));
 
-        JLabel label = new JLabel("ip");
+        JLabel label = new JLabel(resourceBundle.getString("ip"));
         label.setFont(label.getFont().deriveFont((float)(gInterface.getMainWindowSize().height/11)));
 
         JPanel logPasPanel = new JPanel();
@@ -33,7 +43,7 @@ public class GIpAndPortEntering implements WindowPart, Runnable {
         JTextField ipText = new JTextField(15);
         logPasPanel.add(ipText);
 
-        label = new JLabel("port");
+        label = new JLabel(resourceBundle.getString("port"));
         label.setFont(label.getFont().deriveFont((float)(gInterface.getMainWindowSize().height/11)));
 
 
@@ -42,7 +52,7 @@ public class GIpAndPortEntering implements WindowPart, Runnable {
         logPasPanel.add(portText);
         mainPanel.add(logPasPanel);
 
-        JButton connectButton = new JButton("CONNECT");
+        JButton connectButton = new JButton(resourceBundle.getString("CONNECT"));
         connectButton.setFont(label.getFont().deriveFont((float)(gInterface.getMainWindowSize().height/11)));
 
         connectButton.addActionListener(new ActionListener() {

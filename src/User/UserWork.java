@@ -2,13 +2,15 @@ package User;
 
 
 import CommonClasses.*;
-import GraphicalUserInterface.GLogOrRegChoice;
-import GraphicalUserInterface.GLogin;
-import GraphicalUserInterface.WorkingWithGInterface;
+import GraphicalUserInterface.GPanes.GLogOrRegChoice;
+import GraphicalUserInterface.GPanes.GLogin;
+import GraphicalUserInterface.GInterface;
 import HelpingModuls.*;
+import Resources.ResourceControlCenter;
 //import CommonClasses.DataBlock;
 
 import javax.swing.*;
+import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -16,16 +18,12 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class UserWork{
 
-//    TransferCenter transferCenter;
     private User mainUser;
-//    WorkingWithGInterface gInterface;
+    private ResourceControlCenter resourceControlCenter;
 
 
-    public UserWork(/*TransferCenter transferCenter*/){
-//        this.transferCenter = transferCenter;
-//        this.gInterface = gInterface;
-//        login();
-
+    public UserWork(ResourceControlCenter resourceControlCenter){
+        this.resourceControlCenter = resourceControlCenter;
     }
 
     public User getMainUser() {
@@ -73,13 +71,13 @@ public class UserWork{
     public class CommunicateWithServerByCommands implements Runnable{
 
         TransferCenter transferCenter;
-        WorkingWithGInterface gInterface;
+        GInterface gInterface;
         String command;
         Printer printer;
         ConsoleScanner consoleScanner;
         ProcessControlCenter processControlCenter;
 
-        public CommunicateWithServerByCommands(TransferCenter transferCenter, WorkingWithGInterface gInterface, String command, Printer printer, ConsoleScanner consoleScanner, ProcessControlCenter processControlCenter){
+        public CommunicateWithServerByCommands(TransferCenter transferCenter, GInterface gInterface, String command, Printer printer, ConsoleScanner consoleScanner, ProcessControlCenter processControlCenter){
             this.transferCenter = transferCenter;
             this.gInterface = gInterface;
             this.command = command;
@@ -97,13 +95,13 @@ public class UserWork{
             try {
                 startCheckingCommands(transferCenter, gInterface, command, printer, consoleScanner);
             } catch (ConnectionException connectionException) {
-                processControlCenter.reConnect();
-                processControlCenter.working();
+//                processControlCenter.reConnect();
+
                 return;
             }
         }
 
-        public void startCheckingCommands(TransferCenter transferCenter, WorkingWithGInterface gInterface, String command, Printer printer, ConsoleScanner consoleScanner) throws  ConnectionException{
+        public void startCheckingCommands(TransferCenter transferCenter, GInterface gInterface, String command, Printer printer, ConsoleScanner consoleScanner) throws  ConnectionException{
 
             CommandCenter cc = new CommandCenter();
             CommandsData commandsDataForSendToServer = null;
@@ -143,13 +141,12 @@ public class UserWork{
         DataBlock dataBlock1;
         DataBlock dataBlock2;
 
-        public void communicateWithServerAboutCommand(Object obj,  TransferCenter transferCenter, WorkingWithGInterface gInterface, Printer printer, ConsoleScanner consoleScanner) throws ConnectionException{
+        public void communicateWithServerAboutCommand(Object obj, TransferCenter transferCenter, GInterface gInterface, Printer printer, ConsoleScanner consoleScanner) throws ConnectionException{
             CommandsData commandsData = (CommandsData) obj;
             boolean end = false;
 
             while (!end){
 //            Нужно оптимизировать так, чтобы находился вне цикла и не возникала ошибка при запуске execute_script
-//            CheckConnection checkConnection = new CheckConnection(this, gInterface);
                 dataBlock1 = new DataBlock();
 
                 if(commandsData.getCreator() != null){
@@ -192,6 +189,7 @@ public class UserWork{
                     copyFieldsFromTo(commandsData, dataBlock1);
                     dataBlock1.setCommandsData(commandsData);
                     dataBlock1.setUser(mainUser);
+                    dataBlock1.setResourceBundleName(resourceControlCenter.getMainResourceBundle().getBaseBundleName());
                     transferCenter.sendObjectToServer(dataBlock1);
 
                     new TimeLimitedCode(5, TimeUnit.SECONDS){
@@ -241,26 +239,11 @@ public class UserWork{
 
         }
 
-//        Для получения массива элементов
-//        public Flat[] getFlatArr(TransferCenter transferCenter) throws ConnectionException {
-//            dataBlock0 = new DataBlock();
-//            dataBlock0.setCommandsData(CommandsData.SHOW);
-//            dataBlock0.setUser(mainUser);
-//            transferCenter.sendObjectToServer(dataBlock0);
-//            new TimeLimitedCode(5, TimeUnit.SECONDS){
-//
-//                @Override
-//                public void codeBlock() {
-//                    dataBlock0 = (DataBlock) transferCenter.receiveObjectFromServer();
-//                }
-//            }.start();
-//            return dataBlock0.getFlats();
-//        }
-
         public DataBlock processCommand(CommandsData commandsData, TransferCenter transferCenter) throws ConnectionException{
             dataBlock2 = new DataBlock();
             dataBlock2.setUser(mainUser);
             dataBlock2.setCommandsData(commandsData);
+            dataBlock2.setResourceBundleName(resourceControlCenter.getMainResourceBundle().getBaseBundleName());
             copyFieldsFromTo(commandsData, dataBlock2);
             transferCenter.sendObjectToServer(dataBlock2);
             new TimeLimitedCode(5, TimeUnit.SECONDS){
@@ -280,15 +263,16 @@ public class UserWork{
 //        Обязательно всегда создавать новый. Вынесен отдельно, чтобы работала проверка подключения в другом потоке.
         private DataBlock dataBlock;
 
-        public void login(WorkingWithGInterface gInterface, TransferCenter transferCenter) throws ConnectionException{
+        public void login(GInterface gInterface, TransferCenter transferCenter) throws ConnectionException{
             login(gInterface, new DataBlock(), transferCenter);
         }
 
-        private void login(WorkingWithGInterface gInterface, DataBlock newDataBlock, TransferCenter transferCenter) throws ConnectionException{
+        private void login(GInterface gInterface, DataBlock newDataBlock, TransferCenter transferCenter) throws ConnectionException{
 
             GLogOrRegChoice gLogOrRegChoice = new GLogOrRegChoice(gInterface);
-            gInterface.setSpaceForInteraction(gLogOrRegChoice.getPanel());
 
+
+            gInterface.setGPane(gLogOrRegChoice);
             while (gLogOrRegChoice.getAnswer() == null){
                 try {
                     Thread.sleep(50);
@@ -298,16 +282,11 @@ public class UserWork{
             }
             String answer = gLogOrRegChoice.getAnswer();
 
-
-//        Printer.println("Необходимо авторизироваться.");
-//        Printer.println("Войти - 0, зарегестрироваться - 1.");
-//            Scanner scanner = new Scanner(System.in);
             int scan;
             try {
                 scan = Integer.valueOf(answer);
             }catch (Exception e){
-//            Printer.println("Это что-то страшное... Попробуем ещё раз!");
-                JOptionPane.showConfirmDialog(new JOptionPane(), "Это что-то страшное... Попробуем ещё раз!", "Ошибка подключения", JOptionPane.OK_CANCEL_OPTION);
+                gInterface.sendNotification("Это что-то страшное... Попробуем ещё раз!", "Ошибка подключения");
                 login(gInterface, new DataBlock(), transferCenter);
                 return;
             }
@@ -319,27 +298,25 @@ public class UserWork{
                     registering(new DataBlock(), transferCenter, gInterface);
                 }
                 else {
-//                Printer.println("Нужно выбрать один из вариантов!");
-                    JOptionPane.showConfirmDialog(new JOptionPane(), "Нужно выбрать один из вариантов!", "Ошибка подключения", JOptionPane.OK_CANCEL_OPTION);
+                    gInterface.sendNotification("Нужно выбрать один из вариантов!", "Ошибка подключения");
                     login(gInterface, transferCenter);
                     return;
                 }
             }
         }
 
-        public void entering(TransferCenter transferCenter, WorkingWithGInterface gInterface) throws ConnectionException{
+        public void entering(TransferCenter transferCenter, GInterface gInterface) throws ConnectionException{
             entering(new DataBlock(), transferCenter, gInterface);
         }
 
-        private void entering(DataBlock newDataBlock, TransferCenter transferCenter, WorkingWithGInterface gInterface) throws ConnectionException{
-//        CheckConnection checkConnection = new CheckConnection(this, gInterface);
+        private void entering(DataBlock newDataBlock, TransferCenter transferCenter, GInterface gInterface) throws ConnectionException{
             boolean end = false;
             while (!end){
                 Lock lock = new ReentrantLock();
                  lock.lock();
                  Condition condition = lock.newCondition();
                  GLogin gLogin = new GLogin(lock, condition, gInterface);
-                 gInterface.setSpaceForInteraction(gLogin.getPanel());
+                gInterface.setGPane(gLogin);
                  try {
                      condition.await();
                  } catch (InterruptedException e) { }
@@ -372,7 +349,8 @@ public class UserWork{
                      end = true;
                  }
                  else {
-                     JOptionPane.showConfirmDialog(new JOptionPane(), dataBlock.getPhrase() + "\nПробуем занова!", "Ошибка подключения", JOptionPane.OK_CANCEL_OPTION);
+                     gInterface.sendNotification(dataBlock.getPhrase(), "Ошибка подключения");
+                     gInterface.sendNotification("Попробуем снова...", "Ошибка подключения");
                      entering(transferCenter, gInterface);
                      return;
                  }
@@ -381,11 +359,11 @@ public class UserWork{
             }
         }
 
-        public void registering(TransferCenter transferCenter, WorkingWithGInterface gInterface) throws ConnectionException{
+        public void registering(TransferCenter transferCenter, GInterface gInterface) throws ConnectionException{
             registering(new DataBlock(), transferCenter, gInterface);
         }
 
-        private void registering(DataBlock newDataBlock, TransferCenter transferCenter, WorkingWithGInterface gInterface) throws ConnectionException{
+        private void registering(DataBlock newDataBlock, TransferCenter transferCenter, GInterface gInterface) throws ConnectionException{
 //        CheckConnection checkConnection = new CheckConnection(this, gInterface);
             boolean end = false;
             while (!end){
@@ -401,8 +379,9 @@ public class UserWork{
                     Lock lock = new ReentrantLock();
                     lock.lock();
                     Condition condition = lock.newCondition();
-                    GLogin GLogin = new GLogin(lock, condition, gInterface);
-                    gInterface.setSpaceForInteraction(GLogin.getPanel());
+                    GLogin gLogin = new GLogin(lock, condition, gInterface);
+                    gInterface.setGPane(gLogin);
+//                    gInterface.setSpaceForInteraction(GLogin.getPanel());
 //                mainWindow.add(login.getPanel());
 //                mainWindow.setVisible(true);
                 try {
@@ -416,8 +395,8 @@ public class UserWork{
 //                while (login.getLogin() == null | login.getPassword() == null){
 //                    Thread.sleep(50);
 //                }
-                    String name = GLogin.getLogin();
-                    String password = GLogin.getPassword();
+                    String name = gLogin.getLogin();
+                    String password = gLogin.getPassword();
 
 
 
@@ -446,14 +425,17 @@ public class UserWork{
 
                     if(dataBlock.getParameter().equals("true")){
 //                    Printer.println(dataBlock.getPhrase());
-                        JOptionPane.showConfirmDialog(new JOptionPane(), dataBlock.getPhrase(), "Ошибка подключения", JOptionPane.OK_CANCEL_OPTION);
+//                        JOptionPane.showConfirmDialog(new JOptionPane(), dataBlock.getPhrase(), "Ошибка подключения", JOptionPane.OK_CANCEL_OPTION);
+                        gInterface.sendNotification(dataBlock.getPhrase(), "Ошибка подключения");
                         mainUser = user;
                         end = true;
                     }
                     else {
 //                    Printer.println(dataBlock.getPhrase());
 //                    Printer.println("Пробуем занова!");
-                        JOptionPane.showConfirmDialog(new JOptionPane(), dataBlock.getPhrase() + "\nПробуем занова!", "Ошибка подключения", JOptionPane.OK_CANCEL_OPTION);
+//                        JOptionPane.showConfirmDialog(new JOptionPane(), dataBlock.getPhrase() + "\nПробуем занова!", "Ошибка подключения", JOptionPane.OK_CANCEL_OPTION);
+                        gInterface.sendNotification(dataBlock.getPhrase(), "Ошибка подключения");
+                        gInterface.sendNotification("Попробуем снова...", "Ошибка подключения");
                         registering(new DataBlock(), transferCenter, gInterface);
                         return;
                     }

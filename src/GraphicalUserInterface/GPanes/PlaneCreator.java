@@ -1,4 +1,4 @@
-package GraphicalUserInterface;
+package GraphicalUserInterface.GPanes;
 
 import CommonClasses.CommandsData;
 import CommonClasses.DataBlock;
@@ -14,29 +14,43 @@ import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ResourceBundle;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
+import GraphicalUserInterface.GInterface;
+import GraphicalUserInterface.GPanes.GEditTableWindow;
+import GraphicalUserInterface.InterfaceControlCenter;
+import GraphicalUserInterface.WindowPane;
 import HelpingModuls.ConnectionException;
 import User.*;
 
 public class PlaneCreator {
-    public class Table implements WindowPart{
+    public class Table implements WindowPane {
 
         private Flat[] flats;
         private String[][] rows;
         private User user;
         private TransferCenter transferCenter;
-        private WorkingWithGInterface gInterface;
-        UserWork userWork;
-        ProcessControlCenter processControlCenter;
+        private GInterface gInterface;
+        private UserWork userWork;
+        private ProcessControlCenter processControlCenter;
+        private ResourceBundle resourceBundle;
 
 
-        public Table(Flat[] flats, User user, TransferCenter transferCenter, WorkingWithGInterface gInterface, UserWork userWork, ProcessControlCenter processControlCenter){
+        public Table(Flat[] flats, User user, TransferCenter transferCenter, GInterface gInterface, UserWork userWork, ProcessControlCenter processControlCenter){
             this.user = user;
             this.flats = flats;
             this.transferCenter = transferCenter;
             this.gInterface = gInterface;
             this.userWork = userWork;
             this.processControlCenter =processControlCenter;
+        }
+
+        @Override
+        public void setLocale(ResourceBundle resourceBundle) {
+            this.resourceBundle = resourceBundle;
         }
 
         private void createRows(){
@@ -130,6 +144,7 @@ public class PlaneCreator {
                     }
                     if(rowUserName.equals(user.getLogin())){
                         gInterface.setSpaceForInteraction(new GEditTableWindow(table, transferCenter, rowCount, gInterface, userWork, processControlCenter).getPanel());
+//                        gInterface.setGPane();
                     }
                     else {
                         JOptionPane.showConfirmDialog(new JOptionPane(), "Объект принадлежит другому пльзователю!", "Уведомление", JOptionPane.OK_CANCEL_OPTION);
@@ -171,8 +186,14 @@ public class PlaneCreator {
                             userWork.new CommunicateWithServerByCommands().processCommand(commandsData, transferCenter);
                         }catch (ConnectionException connectionException){
                             JOptionPane.showConfirmDialog(new JOptionPane(), "Сервер не отвечает!", "Ошибка подключения", JOptionPane.OK_CANCEL_OPTION);
+
+
+
+//                            processControlCenter.reConnect();
+//                            processControlCenter.working();
+
+//
                             processControlCenter.reConnect();
-                            processControlCenter.working();
                             return;
                         }
                         JOptionPane.showConfirmDialog(new JOptionPane(), "Объект успешно удалён!", "Уведомление", JOptionPane.OK_CANCEL_OPTION);

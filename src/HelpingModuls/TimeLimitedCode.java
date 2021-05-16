@@ -29,6 +29,7 @@ public abstract class TimeLimitedCode {
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             executorService.shutdownNow();
             JOptionPane.showConfirmDialog(new JOptionPane(), "Закончилось время ожидания ответа от сервера!", "Ошибка подключения", JOptionPane.OK_CANCEL_OPTION);
+//            e.printStackTrace();
             throw new ConnectionException();
         }
 

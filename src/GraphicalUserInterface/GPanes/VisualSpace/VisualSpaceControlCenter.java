@@ -1,19 +1,21 @@
-package GraphicalUserInterface.VisualSpace;
+package GraphicalUserInterface.GPanes.VisualSpace;
 
 import CommonClasses.CommandsData;
 import CommonClasses.Flat;
-import GraphicalUserInterface.WindowPart;
-import GraphicalUserInterface.WorkingWithGInterface;
+import GraphicalUserInterface.WindowPane;
+import GraphicalUserInterface.GInterface;
 import HelpingModuls.ConnectionException;
 import User.ProcessControlCenter;
 import User.TransferCenter;
 import User.UserWork;
+import GraphicalUserInterface.*;
 
 import javax.swing.*;
+import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class VisualSpaceControlCenter implements  WindowPart{
+public class VisualSpaceControlCenter implements WindowPane {
 
     private UserWork userWork;
     private TransferCenter transferCenter;
@@ -23,14 +25,20 @@ public class VisualSpaceControlCenter implements  WindowPart{
     private JPanel visualSpace;
     private Flat[] flats;
     private String[][] userColourVariations;
-    private WorkingWithGInterface gInterface;
+    private GInterface gInterface;
     private DifferenceHandler differenceHandler;
+    private ResourceBundle resourceBundle;
 
-    public VisualSpaceControlCenter(UserWork userWork, TransferCenter transferCenter, ProcessControlCenter processControlCenter, WorkingWithGInterface gInterface){
+    public VisualSpaceControlCenter(UserWork userWork, TransferCenter transferCenter, ProcessControlCenter processControlCenter, GInterface gInterface){
         this.processControlCenter = processControlCenter;
         this.transferCenter = transferCenter;
         this.userWork = userWork;
         this.gInterface = gInterface;
+    }
+
+    @Override
+    public void setLocale(ResourceBundle resourceBundle) {
+        this.resourceBundle = resourceBundle;
     }
 
     private void createVisualSpace(){
@@ -40,7 +48,7 @@ public class VisualSpaceControlCenter implements  WindowPart{
             JOptionPane.showConfirmDialog(new JOptionPane(), "Сервер не отвечает!", "Ошибка подключения", JOptionPane.OK_CANCEL_OPTION);
             stopDifferenceHandler();
             processControlCenter.reConnect();
-            processControlCenter.working();
+//            processControlCenter.working();
             return;
         }
 
@@ -51,12 +59,14 @@ public class VisualSpaceControlCenter implements  WindowPart{
     private void startWork(){
 
         ExecutorService service = Executors.newSingleThreadExecutor();
-        differenceHandler = new DifferenceHandler(flats, gVisualSpace, processControlCenter, userWork, transferCenter, userColourVariations);
+        differenceHandler = new DifferenceHandler(flats, gVisualSpace, processControlCenter, userWork, transferCenter, userColourVariations, gInterface);
         service.execute(differenceHandler);
     }
 
     public void stopDifferenceHandler(){
-        differenceHandler.setStop(true);
+        if(differenceHandler != null){
+            differenceHandler.setStop(true);
+        }
     }
 
     @Override

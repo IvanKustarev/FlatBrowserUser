@@ -5,6 +5,7 @@ package User;
 
 import CommonClasses.FirstTimeConnectedData;
 import GraphicalUserInterface.*;
+import GraphicalUserInterface.GPanes.GIpAndPortEntering;
 import HelpingModuls.ConnectionException;
 import HelpingModuls.ConsolePrinter;
 import HelpingModuls.ObjectProcessing;
@@ -28,17 +29,13 @@ public class TransferCenter{
     InetSocketAddress mainServerSocketAddress;
     InetSocketAddress socketAddressReceive;
     InetSocketAddress individualServerSocketAddress;
-//    WorkingWithGInterface gInterface;
-//    MainWindow mainWindow;
 
     private final int SIZEOFBUFFER = 500;
 
-    public TransferCenter(){
-//        this.mainWindow = new MainWindow();
-//        this.gInterface = gInterface;
-    }
+    public TransferCenter() { }
 
-    public void connect(WorkingWithGInterface gInterface){
+
+    public void connect(GInterface gInterface){
         boolean isExceptions = true;
         while (isExceptions) {
             isExceptions = false;
@@ -55,22 +52,18 @@ public class TransferCenter{
 
                 }
                 if(createConnectionWithServer.isAllRight()){
-//                    Printer.println("Пользователь успешно создан!");
-//                    JOptionPane.showConfirmDialog(new JOptionPane(), "Пользователь успешно создан!", "Уведомление", JOptionPane.OK_CANCEL_OPTION);
 
                 }
                 else {
 
-                    JOptionPane.showConfirmDialog(new JOptionPane(), "Проблема с подключением к серверу. Пробуем всё заново!", "Ошибка подключения", JOptionPane.OK_CANCEL_OPTION);
-//                    Printer.println("Проблема с подключением к серверу. Пробуем всё заново!");
+                    gInterface.sendNotification("Проблема с подключением к серверу. Пробуем всё заново!", "Ошибка подключения");
                     isExceptions = true;
                 }
 //              ==============================================
 
 
             } catch (Exception e) {
-//                Printer.println("Введены некорректные данные!");
-                JOptionPane.showConfirmDialog(new JOptionPane(), "Введены некорректные данные!", "Ошибка подключения", JOptionPane.OK_CANCEL_OPTION);
+                gInterface.sendNotification("Введены некорректные данные!", "Ошибка подключения");
                 isExceptions = true;
             }
         }
@@ -80,11 +73,9 @@ public class TransferCenter{
         TransferCenter transferCenter = this;
         try {
             TimeLimitedCode timeLimitedCode = new TimeLimitedCode(5, TimeUnit.SECONDS){
-
                 @Override
                 public void codeBlock() {
                     transferCenter.createSocketAddressForReceive();
-                    transferCenter.createConnectionWithServer();
                     CreateConnectionWithServer createConnectionWithServer = new CreateConnectionWithServer(transferCenter);
 
 //                    Такая конструкция экономичнее, тк не расходуются лишние ресурсы на доп поток. При этом,
@@ -92,16 +83,17 @@ public class TransferCenter{
                     Date date = new Date();
                     while (date.getTime() + 10000 > new Date().getTime()) {
                         createConnectionWithServer.run();
-                        if (createConnectionWithServer.isAllRight() == true) {
+                        if (createConnectionWithServer.isAllRight()) {
+
                             return;
                         }
                     }
                 }
             };
             timeLimitedCode.start();
-
             return true;
         }catch (ConnectionException connectionException){
+            connectionException.printStackTrace();
             return false;
         }
 
@@ -123,8 +115,7 @@ public class TransferCenter{
         individualServerSocketAddress = (InetSocketAddress) firstTimeConnectedData.getSocketAddress();
     }
 
-    public synchronized Object receiveObjectFromServer(){
-
+    public Object receiveObjectFromServer(){
 
         Object obj = null;
         boolean endOfReceive = false;
@@ -150,15 +141,14 @@ public class TransferCenter{
                 obj = ObjectProcessing.deSerializeObject(objByteArr);
                 endOfReceive = true;
 
-            }catch (Exception e){}
+            }catch (Exception e){
+            }
         }
-
         return  obj;
     }
 
     private byte[] receiveByteArr(DatagramSocket datagramSocket) {
         final int size = SIZEOFBUFFER;
-//        ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[size]);
         byte[] bytes = new byte[size];
         DatagramPacket datagramPacket = new DatagramPacket(bytes, bytes.length);
         try {
@@ -169,48 +159,8 @@ public class TransferCenter{
         return bytes;
     }
 
-
-//    private Object deSerialize(byte[] objectByteArr){
-//        ByteArrayInputStream inputStream = new ByteArrayInputStream(objectByteArr);
-//
-//        ObjectInputStream objectInputStream = null;
-//
-//        try {
-//            objectInputStream = new ObjectInputStream(inputStream);
-//        } catch (IOException e) {
-//            System.out.println("Проблема с созданием ObjectInputStream!");
-//            e.printStackTrace();
-//        }
-//
-//        Object object = null;
-//        try {
-//            object = objectInputStream.readObject();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        } catch (ClassNotFoundException e) {
-//            e.printStackTrace();
-//        }
-//        return object;
-//    }
-
-//    public boolean checkConnection(){
-//        CheckConnection checkConnection = new CheckConnection(this);
-//        checkConnection.start();
-//        long time = new Date().getTime() + 1000;
-////        System.out.println();
-//        while((new Date().getTime() < time) & !checkConnection.connectionWorking){
-////            System.out.println(new DataBlock());
-//        }
-//        if(!checkConnection.connectionWorking){
-//            System.out.println("Нет ответа от сервера...");
-//            checkConnection();
-//        }
-//        return false;
-//    }
-
 //    /**устанавливает связь с сервером (заполняет поля datagramSocket и socketAddress)*/
-    public void createMainServerSocketAddress(WorkingWithGInterface gInterface){
-//        Scanner scanner = new Scanner(System.in);
+    public void createMainServerSocketAddress(GInterface gInterface){
         Boolean err = false;
 
 
@@ -220,7 +170,7 @@ public class TransferCenter{
             lock.lock();
             Condition condition = lock.newCondition();
             gIpAndPortEntering = new GIpAndPortEntering(lock, condition, gInterface);
-            gInterface.setSpaceForInteraction(gIpAndPortEntering.getPanel());
+            gInterface.setGPane(gIpAndPortEntering);
             condition.await();
             lock.unlock();
         }catch (Exception e){
@@ -232,24 +182,18 @@ public class TransferCenter{
         String ip = gIpAndPortEntering.getIp();
         int port = Integer.valueOf(gIpAndPortEntering.getPort());
 
-//        Printer.println("Введите ip адрес сервера: ");
-//        String ip = scanner.nextLine();
-//        Printer.println("Введите port: ");
-//        int port = scanner.nextInt();
-
-
-        //"192.168.1.135"
         mainServerSocketAddress = null;
         mainServerSocketAddress = new InetSocketAddress(ip, port);
 
         if(err == true){
-//            Printer.println("Попробуем снова...");
-            JOptionPane.showConfirmDialog(new JOptionPane(), "Попробуем снова...", "Ошибка подключения", JOptionPane.OK_CANCEL_OPTION);
+//            JOptionPane.showConfirmDialog(new JOptionPane(), "Попробуем снова...", "Ошибка подключения", JOptionPane.OK_CANCEL_OPTION);
+            gInterface.sendNotification("Попробуем снова...", "Ошибка подключения");
 
             createMainServerSocketAddress(gInterface);
         }
 
     }
+
     private int createSocketAddressForReceive(){
         Random random = new Random();
 
@@ -277,7 +221,7 @@ public class TransferCenter{
         return port;
     }
 
-    public synchronized  <T> void sendObjectToServer(T object){
+    public /*synchronized*/  <T> void sendObjectToServer(T object){
 
         byte[] serObject = ObjectProcessing.serializeObject(object);
         if(object.getClass().getName().equals("CommonClasses.FirstTimeConnectedData")){

@@ -1,32 +1,38 @@
-package GraphicalUserInterface;
+package GraphicalUserInterface.GPanes;
 
 import CommonClasses.ApartmentDescription.*;
 import CommonClasses.CommandsData;
 import CommonClasses.DataBlock;
 import CommonClasses.Flat;
+import GraphicalUserInterface.GInterface;
+import GraphicalUserInterface.WindowPane;
 import HelpingModuls.ConnectionException;
 import User.*;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.DateFormat;
 import java.util.Date;
+import java.util.ResourceBundle;
 
-public class GEditVisualSpaceWindow implements WindowPart{
+public class GEditTableWindow implements WindowPane {
 
+    private JTable table;
     private TransferCenter transferCenter;
-    private WorkingWithGInterface gInterface;
+    private int row;
+    private GInterface gInterface;
     private UserWork userWork;
     private ProcessControlCenter processControlCenter;
-    private Flat flatFirst;
+    private ResourceBundle resourceBundle;
 
-    public GEditVisualSpaceWindow(Flat flatFirst, TransferCenter transferCenter, WorkingWithGInterface gInterface, UserWork userWork, ProcessControlCenter processControlCenter){
+    public GEditTableWindow(JTable table, TransferCenter transferCenter, int row, GInterface gInterface, UserWork userWork, ProcessControlCenter processControlCenter){
+        this.table = table;
         this.transferCenter = transferCenter;
+        this.row = row;
         this.gInterface = gInterface;
         this.userWork = userWork;
         this.processControlCenter = processControlCenter;
-        this.flatFirst = flatFirst;
-
     }
 
     @Override
@@ -34,71 +40,39 @@ public class GEditVisualSpaceWindow implements WindowPart{
         return createEditPanel();
     }
 
+    @Override
+    public void setLocale(ResourceBundle resourceBundle) {
+        this.resourceBundle = resourceBundle;
+    }
+
     private JPanel createEditPanel(){
 
         JLabel nameLabel = new JLabel("Имя");
-        JTextField nameTextField = new JTextField(flatFirst.getName());
+        JTextField nameTextField = new JTextField((String) table.getValueAt(row,2), 20);
         JLabel coordinateXLabel = new JLabel("Координата x");
-        JTextField coordinateXTextField = new JTextField(String.valueOf(flatFirst.getCoordinates().getX()));
+        JTextField coordinateXTextField = new JTextField((String) table.getValueAt(row,3), 20);
         JLabel coordinateYLabel = new JLabel("Координата y");
-        JTextField coordinateYTextField = new JTextField(String.valueOf(flatFirst.getCoordinates().getY()));
+        JTextField coordinateYTextField = new JTextField((String) table.getValueAt(row,4), 20);
         JLabel areaLabel = new JLabel("Расположение");
-        JTextField areaTextField = new JTextField(String.valueOf(flatFirst.getArea()));
+        JTextField areaTextField = new JTextField((String) table.getValueAt(row,6), 20);
         JLabel numberOfRoomsLabel = new JLabel("Количество комнат");
-        JTextField numberOfRoomsTextField = new JTextField(String.valueOf(flatFirst.getNumberOfRooms()));
+        JTextField numberOfRoomsTextField = new JTextField((String) table.getValueAt(row,7), 20);
         JLabel furnishLabel = new JLabel("Мебель");
-        JTextField furnishTextField = new JTextField(String.valueOf(flatFirst.getFurnish()));
+        JTextField furnishTextField = new JTextField((String) table.getValueAt(row,8), 20);
         JLabel viewLabel = new JLabel("Вид");
-        JTextField viewTextField;
-        if(flatFirst.getView() != null){
-            viewTextField = new JTextField(flatFirst.getView().name());
-        }
-        else {
-            viewTextField = new JTextField("");
-        }
+        JTextField viewTextField = new JTextField((String) table.getValueAt(row,9), 20);
         JLabel transportLabel = new JLabel("Транспортные маршруты");
-        JTextField transportTextField;
-        if(flatFirst.getView() != null){
-            transportTextField = new JTextField(flatFirst.getTransport().name());
-        }
-        else {
-            transportTextField = new JTextField("");
-        }
-
-        JLabel houseNameLabel;
-        JTextField houseNameTextField;
-        JLabel houseYearLabel;
-        JTextField houseYearTextField;
-        JLabel houseNumberOfFloorsLabel;
-        JTextField houseNumberOfFloorsTextField;
-        JLabel houseNumberOfFlatsOnFloorLabel;
-        JTextField houseNumberOfFlatsOnFloorTextField;
-        JLabel houseNumberOfLiftsLabel;
-        JTextField houseNumberOfLiftsTextField;
-        if(flatFirst.getHouse() != null){
-            houseNameLabel = new JLabel("Имя дома");
-            houseNameTextField = new JTextField(flatFirst.getHouse().getName());
-            houseYearLabel = new JLabel("Год пострйки дома");
-            houseYearTextField = new JTextField(String.valueOf(flatFirst.getHouse().getYear()));
-            houseNumberOfFloorsLabel = new JLabel("Количество этажей в доме");
-            houseNumberOfFloorsTextField = new JTextField(String.valueOf(flatFirst.getHouse().getNumberOfFloors()));
-            houseNumberOfFlatsOnFloorLabel = new JLabel("Количество квартир на одном этаже");
-            houseNumberOfFlatsOnFloorTextField = new JTextField(flatFirst.getHouse().getNumberOfFlatsOnFloor());
-            houseNumberOfLiftsLabel = new JLabel("Количество лифтов");
-            houseNumberOfLiftsTextField = new JTextField(String.valueOf(flatFirst.getHouse().getNumberOfLifts()));
-        }
-        else {
-            houseNameLabel = new JLabel("Имя дома");
-            houseNameTextField = new JTextField("");
-            houseYearLabel = new JLabel("Год пострйки дома");
-            houseYearTextField = new JTextField("");
-            houseNumberOfFloorsLabel = new JLabel("Количество этажей в доме");
-            houseNumberOfFloorsTextField = new JTextField("");
-            houseNumberOfFlatsOnFloorLabel = new JLabel("Количество квартир на одном этаже");
-            houseNumberOfFlatsOnFloorTextField = new JTextField("");
-            houseNumberOfLiftsLabel = new JLabel("Количество лифтов");
-            houseNumberOfLiftsTextField = new JTextField("");
-        }
+        JTextField transportTextField = new JTextField((String) table.getValueAt(row,10), 20);
+        JLabel houseNameLabel = new JLabel("Имя дома");
+        JTextField houseNameTextField = new JTextField((String) table.getValueAt(row,11), 20);
+        JLabel houseYearLabel = new JLabel("Год пострйки дома");
+        JTextField houseYearTextField = new JTextField((String) table.getValueAt(row,12), 20);
+        JLabel houseNumberOfFloorsLabel = new JLabel("Количество этажей в доме");
+        JTextField houseNumberOfFloorsTextField = new JTextField((String) table.getValueAt(row,13), 20);
+        JLabel houseNumberOfFlatsOnFloorLabel = new JLabel("Количество квартир на одном этаже");
+        JTextField houseNumberOfFlatsOnFloorTextField = new JTextField((String) table.getValueAt(row,14), 20);
+        JLabel houseNumberOfLiftsLabel = new JLabel("Количество лифтов");
+        JTextField houseNumberOfLiftsTextField = new JTextField((String) table.getValueAt(row,15), 20);
 
         JButton saveEdit = new JButton("Сохранить изменения");
 
@@ -197,7 +171,7 @@ public class GEditVisualSpaceWindow implements WindowPart{
                     }
                 }
                 CommandsData commandsData = CommandsData.REMOVEBYID;
-                commandsData.setParameter(String.valueOf(flatFirst.getId()));
+                commandsData.setParameter((String) table.getValueAt(row, 1));
                 DataBlock dataBlock;
 
                 try {
@@ -205,7 +179,8 @@ public class GEditVisualSpaceWindow implements WindowPart{
                 }catch (ConnectionException connectionException){
                     JOptionPane.showConfirmDialog(new JOptionPane(), "Потеряно соединение с сервером!", "Ошибка подключения", JOptionPane.OK_CANCEL_OPTION);
                     processControlCenter.reConnect();
-                    processControlCenter.working();
+//                    processControlCenter.reConnect();
+//                    processControlCenter.working();
                     return;
                 }
 
@@ -216,7 +191,7 @@ public class GEditVisualSpaceWindow implements WindowPart{
 
                     Flat flat = new Flat();
                     flat.setUserName(userWork.getMainUser().getLogin());
-                    flat.setId(Long.valueOf(flatFirst.getId()));
+                    flat.setId(Long.valueOf((String) table.getValueAt(row, 1)));
                     flat.setName(nameTextField.getText());
                     Coordinates coordinates = new Coordinates();
                     coordinates.setX(Double.valueOf(coordinateXTextField.getText()));
@@ -257,7 +232,7 @@ public class GEditVisualSpaceWindow implements WindowPart{
                     }catch (ConnectionException connectionException){
                         JOptionPane.showConfirmDialog(new JOptionPane(), "Потеряно соединение с сервером!", "Ошибка подключения", JOptionPane.OK_CANCEL_OPTION);
                         processControlCenter.reConnect();
-                        processControlCenter.working();
+//                        processControlCenter.working();
                         return;
                     }
 
