@@ -4,6 +4,7 @@ import GraphicalUserInterface.GInterface;
 import GraphicalUserInterface.WindowPane;
 
 import javax.swing.*;
+import javax.swing.text.StyledDocument;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -41,6 +42,8 @@ public class GIpAndPortEntering implements WindowPane, Runnable {
         logPasPanel.setLayout(new GridLayout(2, 2));
         logPasPanel.add(label);
         JTextField ipText = new JTextField(15);
+        ipText.setForeground(Color.ORANGE);
+        ipText.setFont(label.getFont().deriveFont((float)(gInterface.getMainWindowSize().height/11)));
         logPasPanel.add(ipText);
 
         label = new JLabel(resourceBundle.getString("port"));
@@ -49,6 +52,10 @@ public class GIpAndPortEntering implements WindowPane, Runnable {
 
         logPasPanel.add(label);
         JTextField portText = new JTextField(15);
+//        StyledDocument styledDocument = (StyledDocument) portText.getDocument();
+//        styledDocument.
+        portText.setForeground(Color.BLUE);
+        portText.setFont(label.getFont().deriveFont((float)(gInterface.getMainWindowSize().height/11)));
         logPasPanel.add(portText);
         mainPanel.add(logPasPanel);
 

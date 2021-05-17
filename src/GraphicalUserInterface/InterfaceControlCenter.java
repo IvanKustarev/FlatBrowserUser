@@ -40,18 +40,11 @@ public class InterfaceControlCenter implements GInterface {
         JPanel jPanel = nowPane.getPanel();
         setSpaceForInteraction(jPanel);
         jPanel.setVisible(true);
-
-//        JFrame jFrame = new JFrame();
-//        jFrame.add(jPanel);
-//        jFrame.setVisible(true);
     }
 
     @Override
     public void clearSpaceForInteraction() {
-
         abstractSpaceForInteraction.removeAll();
-
-//        repaint();
     }
 
 
@@ -115,6 +108,7 @@ public class InterfaceControlCenter implements GInterface {
         mainWindow.add(abstractSpaceForInteraction, constraints2);
 
         mainWindow.setVisible(true);
+        mainWindow.setExtendedState(Frame.MAXIMIZED_BOTH);
         mainWindow.repaint();
     }
 
