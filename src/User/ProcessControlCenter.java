@@ -59,7 +59,7 @@ public class ProcessControlCenter{
     }
 
     private void toVisualSpace(){
-        VisualSpaceControlCenter visualSpaceControlCenter = new VisualSpaceControlCenter(userWork, transferCenter, this, gInterface);
+        VisualSpaceControlCenter visualSpaceControlCenter = new VisualSpaceControlCenter(userWork, transferCenter, this, gInterface, resourceControlCenter.getMainResourceBundle());
         createUserNameAndBackTopPartForVisualSpace(visualSpaceControlCenter);
         gInterface.setGPane(visualSpaceControlCenter);
     }
@@ -101,11 +101,13 @@ public class ProcessControlCenter{
 
     private void createOnlyUserNameTopPart(){
 
+        gInterface.setSizeForLanguagePale(new Dimension(500, 40));
         OnlyUserNameCreator onlyUserNameCreator = new OnlyUserNameCreator();
         gInterface.setTopPartOfWindow(onlyUserNameCreator);
     }
 
     private void createUserNameAndBackTopPart(){
+        gInterface.setSizeForLanguagePale(new Dimension(500, 40));
         UserNameAndBackCreator userNameAndBackCreator = new UserNameAndBackCreator();
         gInterface.setTopPartOfWindow(userNameAndBackCreator);
     }
@@ -117,34 +119,6 @@ public class ProcessControlCenter{
 
     }
 
-//    public void reConnect(){
-//        boolean end = false;
-//        Lock lock = new ReentrantLock();
-//        Condition condition = lock.newCondition();
-//        GReConnect gReConnect = new GReConnect(lock, condition);
-//
-//        gInterface.setGPane(gReConnect);
-//
-//        while (!end) {
-//            lock.lock();
-//            try {
-//                condition.await();
-//            } catch (InterruptedException e) {
-//            }
-//            lock.unlock();
-//
-//            boolean tryConnect = gReConnect.getTryConnect();
-//
-//
-//            if (tryConnect == false) {
-//                gInterface.sendNotification("Завершаем работу!", "Уведомление");
-//                System.exit(0);
-//            } else {
-//                end = transferCenter.reConnect();
-//            }
-//        }
-//        working();
-//    }
 
     private void connect(){
         transferCenter.connect(gInterface);
@@ -160,11 +134,14 @@ public class ProcessControlCenter{
         private ResourceBundle resourceBundle;
 
         private JPanel createVariants() {
-            JPanel jPanel = new JPanel();
-            jPanel.setLayout(new GridLayout(3, 1));
+            JPanel mainPanel = new JPanel();
+            mainPanel.setPreferredSize(new Dimension(500, 400));
+            JPanel abstractMainPanel = new JPanel();
+            mainPanel.setLayout(new GridLayout(3, 1));
 
             JButton consoleWork = new JButton(resourceBundle.getString("Консольная работа с командами"));
-            consoleWork.setFont(consoleWork.getFont().deriveFont((float) (gInterface.getMainWindowSize().height / 11)));
+            consoleWork.setFont(new Font("Dialog", Font.PLAIN, 25));
+            consoleWork.setBackground(new Color(0xFFD9ECEF, true));
             consoleWork.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -174,8 +151,8 @@ public class ProcessControlCenter{
 
 
             JButton tableWork = new JButton(resourceBundle.getString("Табличная работа с элементами"));
-            tableWork.setFont(tableWork.getFont().deriveFont((float) (gInterface.getMainWindowSize().height / 11)));
-
+            tableWork.setFont(new Font("Dialog", Font.PLAIN, 25));
+            tableWork.setBackground(new Color(0xFFD9ECEF, true));
             tableWork.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -185,9 +162,8 @@ public class ProcessControlCenter{
 
 
             JButton visualWork = new JButton(resourceBundle.getString("Область визуализации"));
-            visualWork.setFont(visualWork.getFont().deriveFont((float) (gInterface.getMainWindowSize().height / 11)));
-
-
+            visualWork.setFont(new Font("Dialog", Font.PLAIN, 25));
+            visualWork.setBackground(new Color(0xFFD9ECEF, true));
             visualWork.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -195,11 +171,12 @@ public class ProcessControlCenter{
                 }
             });
 
-            jPanel.add(consoleWork);
-            jPanel.add(tableWork);
-            jPanel.add(visualWork);
+            mainPanel.add(consoleWork);
+            mainPanel.add(tableWork);
+            mainPanel.add(visualWork);
+            abstractMainPanel.add(mainPanel);
 
-            return jPanel;
+            return abstractMainPanel;
         }
 
         @Override
@@ -218,33 +195,28 @@ public class ProcessControlCenter{
         private ResourceBundle resourceBundle;
 
         private JPanel createPane(){
-            JPanel jPanel = new JPanel();
-            jPanel.setLayout(new GridBagLayout());
-            GridBagConstraints constraints = new GridBagConstraints();
-            constraints.weightx = 0;
-            constraints.weighty = 0;
-            constraints.gridx = 1;
-            constraints.gridy = 0;
-            constraints.gridheight = 1;
-            constraints.gridwidth = 1;
+            JPanel mainPain = new JPanel();
+            mainPain.setPreferredSize(new Dimension(500, 40));
+            mainPain.setLayout(new GridLayout(1,2));
 
             JLabel jLabel = new JLabel(resourceBundle.getString("User:") + userWork.getMainUser().getLogin());
-            jLabel.setFont(jLabel.getFont().deriveFont((float)(gInterface.getMainWindowSize().height/11)));
+            jLabel.setFont(new Font("Dialog", Font.PLAIN, 20));
+            jLabel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
 
             JButton changeUser = new JButton(resourceBundle.getString("Сменить пользователя"));
+            changeUser.setBackground(new Color(0xFFD9ECEF, true));
             changeUser.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     changeUser();
                 }
             });
-            jPanel.add(changeUser);
+            changeUser.setFont(new Font("Dialog", Font.PLAIN, 20));
 
-            jPanel.add(jLabel, constraints);
+            mainPain.add(jLabel);
+            mainPain.add(changeUser);
 
-
-//            gInterface.setTopPartOfWindow(jPanel);
-            return  jPanel;
+            return  mainPain;
         }
 
 
@@ -264,35 +236,21 @@ public class ProcessControlCenter{
         private ResourceBundle resourceBundle;
 
         private JPanel createPanel(){
-            JPanel jPanel = new JPanel();
-            jPanel.setLayout(new GridBagLayout());
-            GridBagConstraints constraints = new GridBagConstraints();
-            constraints.weightx = 0;
-            constraints.weighty = 0;
-            constraints.gridx = 1;
-            constraints.gridy = 0;
-            constraints.gridheight = 1;
-            constraints.gridwidth = 1;
+            JPanel mainPanel = new JPanel();
+            mainPanel.setPreferredSize(new Dimension(500, 80));
+            mainPanel.setLayout(new GridLayout(2, 1));
 
-            GridBagConstraints constraints1 = new GridBagConstraints();
-            constraints1.weightx = 0;
-            constraints1.weighty = 0;
-            constraints1.gridx = 0;
-            constraints1.gridy = 0;
-            constraints1.gridheight = 1;
-            constraints1.gridwidth = 1;
+            JPanel abstractUserNamePane = new JPanel();
+            abstractUserNamePane.setLayout(new GridLayout(1, 2));
 
-            GridBagConstraints constraints2 = new GridBagConstraints();
-            constraints1.weightx = 0;
-            constraints1.weighty = 0;
-            constraints1.gridx = 2;
-            constraints1.gridy = 0;
-            constraints1.gridheight = 1;
-            constraints1.gridwidth = 1;
+            JLabel userName = new JLabel(resourceBundle.getString("User:") +userWork.getMainUser().getLogin());
+            userName.setFont(new Font("Dialog", Font.PLAIN, 20));
+            userName.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
 
-            JLabel jLabel = new JLabel(resourceBundle.getString("User:") +userWork.getMainUser().getLogin());
-            JButton jButton = new JButton(resourceBundle.getString("НАЗАД"));
-            jButton.addActionListener(new ActionListener() {
+            JButton mainMenuButton = new JButton(resourceBundle.getString("В главное меню"));
+            mainMenuButton.setBackground(new Color(0xFFD9ECEF, true));
+            mainMenuButton.setFont(new Font("Dialog", Font.PLAIN, 20));
+            mainMenuButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     toMainMenu();
@@ -300,19 +258,23 @@ public class ProcessControlCenter{
             });
 
             JButton changeUser = new JButton(resourceBundle.getString("Сменить пользователя"));
+            changeUser.setBackground(new Color(0xFFD9ECEF, true));
             changeUser.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
+                    gInterface.setSizeForLanguagePale(new Dimension(350, 40));
                     changeUser();
                 }
             });
+            changeUser.setFont(new Font("Dialog", Font.PLAIN, 20));
 
-            jPanel.add(jLabel, constraints);
-            jPanel.add(jButton, constraints1);
-            jPanel.add(changeUser, constraints2);
+            abstractUserNamePane.add(userName);
+            abstractUserNamePane.add(changeUser);
 
-//            gInterface.setTopPartOfWindow(jPanel);
-            return jPanel;
+            mainPanel.add(abstractUserNamePane);
+            mainPanel.add(mainMenuButton);
+
+            return mainPanel;
         }
 
         @Override
@@ -336,44 +298,22 @@ public class ProcessControlCenter{
         }
 
         private JPanel createPane(){
-            JPanel jPanel = new JPanel();
-            jPanel.setLayout(new GridBagLayout());
-            GridBagConstraints constraints = new GridBagConstraints();
-            constraints.weightx = 0;
-            constraints.weighty = 0;
-            constraints.gridx = 1;
-            constraints.gridy = 0;
-            constraints.gridheight = 1;
-            constraints.gridwidth = 1;
 
-            GridBagConstraints constraints1 = new GridBagConstraints();
-            constraints1.weightx = 0;
-            constraints1.weighty = 0;
-            constraints1.gridx = 0;
-            constraints1.gridy = 0;
-            constraints1.gridheight = 1;
-            constraints1.gridwidth = 1;
+            JPanel mainPanel = new JPanel();
+            mainPanel.setPreferredSize(new Dimension(500, 80));
+            mainPanel.setLayout(new GridLayout(2, 1));
 
-            GridBagConstraints constraints2 = new GridBagConstraints();
-            constraints1.weightx = 0;
-            constraints1.weighty = 0;
-            constraints1.gridx = 2;
-            constraints1.gridy = 0;
-            constraints1.gridheight = 1;
-            constraints1.gridwidth = 1;
+            JPanel abstractUserNamePane = new JPanel();
+            abstractUserNamePane.setLayout(new GridLayout(1, 2));
 
+            JLabel userName = new JLabel(resourceBundle.getString("User:") +userWork.getMainUser().getLogin());
+            userName.setFont(new Font("Dialog", Font.PLAIN, 20));
+            userName.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
 
-            JButton changeUser = new JButton(resourceBundle.getString("Сменить пользователя"));
-            changeUser.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    changeUser();
-                }
-            });
-
-            JLabel jLabel = new JLabel(resourceBundle.getString("User:")+userWork.getMainUser().getLogin());
-            JButton jButton = new JButton(resourceBundle.getString("НАЗАД"));
-            jButton.addActionListener(new ActionListener() {
+            JButton mainMenuButton = new JButton(resourceBundle.getString("В главное меню"));
+            mainMenuButton.setBackground(new Color(0xFFD9ECEF, true));
+            mainMenuButton.setFont(new Font("Dialog", Font.PLAIN, 20));
+            mainMenuButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     visualSpaceControlCenter.stopDifferenceHandler();
@@ -381,12 +321,76 @@ public class ProcessControlCenter{
                 }
             });
 
-            jPanel.add(jLabel, constraints);
-            jPanel.add(jButton, constraints1);
-            jPanel.add(changeUser, constraints2);
+            JButton changeUser = new JButton(resourceBundle.getString("Сменить пользователя"));
+            changeUser.setBackground(new Color(0xFFD9ECEF, true));
+            changeUser.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    visualSpaceControlCenter.stopDifferenceHandler();
+                    gInterface.setSizeForLanguagePale(new Dimension(350, 40));
+                    changeUser();
+                }
+            });
+            changeUser.setFont(new Font("Dialog", Font.PLAIN, 20));
 
-//            gInterface.setTopPartOfWindow(jPanel);
-            return jPanel;
+            abstractUserNamePane.add(userName);
+            abstractUserNamePane.add(changeUser);
+
+            mainPanel.add(abstractUserNamePane);
+            mainPanel.add(mainMenuButton);
+
+            return mainPanel;
+
+//            JPanel jPanel = new JPanel();
+//            jPanel.setLayout(new GridBagLayout());
+//            GridBagConstraints constraints = new GridBagConstraints();
+//            constraints.weightx = 0;
+//            constraints.weighty = 0;
+//            constraints.gridx = 1;
+//            constraints.gridy = 0;
+//            constraints.gridheight = 1;
+//            constraints.gridwidth = 1;
+//
+//            GridBagConstraints constraints1 = new GridBagConstraints();
+//            constraints1.weightx = 0;
+//            constraints1.weighty = 0;
+//            constraints1.gridx = 0;
+//            constraints1.gridy = 0;
+//            constraints1.gridheight = 1;
+//            constraints1.gridwidth = 1;
+//
+//            GridBagConstraints constraints2 = new GridBagConstraints();
+//            constraints1.weightx = 0;
+//            constraints1.weighty = 0;
+//            constraints1.gridx = 2;
+//            constraints1.gridy = 0;
+//            constraints1.gridheight = 1;
+//            constraints1.gridwidth = 1;
+//
+//
+//            JButton changeUser = new JButton(resourceBundle.getString("Сменить пользователя"));
+//            changeUser.addActionListener(new ActionListener() {
+//                @Override
+//                public void actionPerformed(ActionEvent e) {
+//                    changeUser();
+//                }
+//            });
+//
+//            JLabel jLabel = new JLabel(resourceBundle.getString("User:")+userWork.getMainUser().getLogin());
+//            JButton jButton = new JButton(resourceBundle.getString("НАЗАД"));
+//            jButton.addActionListener(new ActionListener() {
+//                @Override
+//                public void actionPerformed(ActionEvent e) {
+//                    visualSpaceControlCenter.stopDifferenceHandler();
+//                    toMainMenu();
+//                }
+//            });
+//
+//            jPanel.add(jLabel, constraints);
+//            jPanel.add(jButton, constraints1);
+//            jPanel.add(changeUser, constraints2);
+//
+//            return jPanel;
         }
 
         @Override

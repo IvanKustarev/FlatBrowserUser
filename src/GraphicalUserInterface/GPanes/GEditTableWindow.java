@@ -46,6 +46,18 @@ public class GEditTableWindow implements WindowPane {
     }
 
     private JPanel createEditPanel(){
+        JPanel mainPanel = new JPanel();
+
+        JButton back = new JButton("НАЗАД");
+        back.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                table.setVisible(true);
+                mainPanel.setVisible(false);
+            }
+        });
+        mainPanel.add(back);
+
 
         JLabel nameLabel = new JLabel("Имя");
         JTextField nameTextField = new JTextField((String) table.getValueAt(row,2), 20);
@@ -79,34 +91,33 @@ public class GEditTableWindow implements WindowPane {
 
 
 
-        JPanel jPanel = new JPanel();
-        jPanel.add(saveEdit);
-        jPanel.add(nameLabel);
-        jPanel.add(nameTextField);
-        jPanel.add(coordinateXLabel);
-        jPanel.add(coordinateXTextField);
-        jPanel.add(coordinateYLabel);
-        jPanel.add(coordinateYTextField);
-        jPanel.add(areaLabel);
-        jPanel.add(areaTextField);
-        jPanel.add(numberOfRoomsLabel);
-        jPanel.add(numberOfRoomsTextField);
-        jPanel.add(furnishLabel);
-        jPanel.add(furnishTextField);
-        jPanel.add(viewLabel);
-        jPanel.add(viewTextField);
-        jPanel.add(transportLabel);
-        jPanel.add(transportTextField);
-        jPanel.add(houseNameLabel);
-        jPanel.add(houseNameTextField);
-        jPanel.add(houseYearLabel);
-        jPanel.add(houseYearTextField);
-        jPanel.add(houseNumberOfFloorsLabel);
-        jPanel.add(houseNumberOfFloorsTextField);
-        jPanel.add(houseNumberOfFlatsOnFloorLabel);
-        jPanel.add(houseNumberOfFlatsOnFloorTextField);
-        jPanel.add(houseNumberOfLiftsLabel);
-        jPanel.add(houseNumberOfLiftsTextField);
+        mainPanel.add(saveEdit);
+        mainPanel.add(nameLabel);
+        mainPanel.add(nameTextField);
+        mainPanel.add(coordinateXLabel);
+        mainPanel.add(coordinateXTextField);
+        mainPanel.add(coordinateYLabel);
+        mainPanel.add(coordinateYTextField);
+        mainPanel.add(areaLabel);
+        mainPanel.add(areaTextField);
+        mainPanel.add(numberOfRoomsLabel);
+        mainPanel.add(numberOfRoomsTextField);
+        mainPanel.add(furnishLabel);
+        mainPanel.add(furnishTextField);
+        mainPanel.add(viewLabel);
+        mainPanel.add(viewTextField);
+        mainPanel.add(transportLabel);
+        mainPanel.add(transportTextField);
+        mainPanel.add(houseNameLabel);
+        mainPanel.add(houseNameTextField);
+        mainPanel.add(houseYearLabel);
+        mainPanel.add(houseYearTextField);
+        mainPanel.add(houseNumberOfFloorsLabel);
+        mainPanel.add(houseNumberOfFloorsTextField);
+        mainPanel.add(houseNumberOfFlatsOnFloorLabel);
+        mainPanel.add(houseNumberOfFlatsOnFloorTextField);
+        mainPanel.add(houseNumberOfLiftsLabel);
+        mainPanel.add(houseNumberOfLiftsTextField);
 
 
 
@@ -243,6 +254,6 @@ public class GEditTableWindow implements WindowPane {
         });
 
 
-        return jPanel;
+        return mainPanel;
     }
 }

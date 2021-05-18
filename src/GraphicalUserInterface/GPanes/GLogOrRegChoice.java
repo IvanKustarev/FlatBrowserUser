@@ -26,16 +26,25 @@ public class GLogOrRegChoice implements WindowPane {
     }
 
     private JPanel createChoicePanel(){
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(1,2));
+        JPanel mainPanel = new JPanel();
+        JPanel abstractMainPanel = new JPanel();
+        mainPanel.setPreferredSize(new Dimension(350, 400));
+        mainPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
+
+        mainPanel.setLayout(new GridLayout(2,1));
+
         JButton log = new JButton(resourceBundle.getString("LOGIN"));
-        log.setFont(log.getFont().deriveFont((float)(gInterface.getMainWindowSize().height/11)));
+        log.setFont(new Font("Dialog", Font.PLAIN, 25));
+        log.setBackground(new Color(0xFFD9ECEF, true));
 
         JButton reg = new JButton(resourceBundle.getString("REGISTER"));
-        reg.setFont(reg.getFont().deriveFont((float)(gInterface.getMainWindowSize().height/11)));
+        reg.setFont(new Font("Dialog", Font.PLAIN, 25));
+        reg.setBackground(new Color(0xFFD9ECEF, true));
 
-        panel.add(log);
-        panel.add(reg);
+
+        mainPanel.add(log);
+        mainPanel.add(reg);
+        abstractMainPanel.add(mainPanel);
 
         log.addActionListener(new ActionListener() {
             @Override
@@ -50,7 +59,7 @@ public class GLogOrRegChoice implements WindowPane {
             }
         });
 
-        return panel;
+        return abstractMainPanel;
     }
 
     public String getAnswer() {

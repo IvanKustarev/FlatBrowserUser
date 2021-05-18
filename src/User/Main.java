@@ -9,6 +9,9 @@ import HelpingModuls.LocaleGetter;
 import Resources.ResourceControlCenter;
 import javafx.scene.input.DataFormat;
 
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.*;
 import java.text.DateFormat;
 import java.util.Date;
@@ -24,8 +27,6 @@ public class Main {
         ResourceBundle[] resourceBundles = new ResourceBundle[]{bundleRu, bundleDE};
 
         ResourceControlCenter resourceControlCenter = new ResourceControlCenter(bundleRu, resourceBundles);
-
-
 
         TransferCenter transferCenter = new TransferCenter();
         UserWork user = new UserWork(resourceControlCenter);

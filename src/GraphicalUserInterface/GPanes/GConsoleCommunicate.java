@@ -12,6 +12,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -31,19 +33,53 @@ public class GConsoleCommunicate implements WindowPane {
     }
 
     private JPanel createPane(){
-        JPanel jPanel = new JPanel();
+        JPanel mainPanel = new JPanel();
+        mainPanel.setPreferredSize(new Dimension(700, 700));
         ConsoleScanner consoleScanner = new ConsoleScanner();
 //        ProcessControlCenter processControlCenter = this;
 
-        JLabel commandLabel = new JLabel("Введите команду сюда: ");
+        JPanel commandEnterSpace = new JPanel();
+        commandEnterSpace.setPreferredSize(new Dimension(500, 40));
+        commandEnterSpace.setMinimumSize(new Dimension(400, 40));
+
         JTextField textField = new JTextField(15);
-        JButton jButton = new JButton("Исполнить");
+        textField.setText("Введите команду сюда");
+        textField.setForeground(Color.GRAY);
+        textField.setFont(new Font("Dialog", Font.PLAIN, 20));
+        textField.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if(!textField.getText().equals("Введите команду сюда")){
+                }
+                else {
+                    textField.setText(null);
+                    textField.setForeground(Color.BLACK);
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if(textField.getText().length() == 0){
+                    textField.setText("Введите команду сюда");
+                    textField.setForeground(Color.GRAY);
+                }
+            }
+        });
+
+        JButton execute = new JButton("Исполнить");
+        execute.setBackground(new Color(0xFFD9ECEF, true));
+        execute.setFont(new Font("Dialog", Font.PLAIN, 20));
+
+        commandEnterSpace.add(textField);
+        commandEnterSpace.add(execute);
+
+
         JEditorPane editorPane = new JEditorPane();
         editorPane.setContentType("text/plain");
         editorPane.setText("Для просмотра списка команд необходимо ввести \"help\"");
+        editorPane.setFont(new Font("Dialog", Font.PLAIN, 20));
 
-
-        jButton.addActionListener(new ActionListener(){
+        execute.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(consoleScanner.isNeeded()){
@@ -66,49 +102,48 @@ public class GConsoleCommunicate implements WindowPane {
             }
         });
 
-        jPanel.setLayout(new GridBagLayout());
+        mainPanel.setLayout(new GridBagLayout());
 
-        GridBagConstraints constraints = new GridBagConstraints();
-        constraints.weightx = 0;
-        constraints.weighty = 0;
-        constraints.gridx = 0;
-        constraints.gridy = 0;
-        constraints.gridheight = 1;
-        constraints.gridwidth = 1;
+//        GridBagConstraints constraints = new GridBagConstraints();
+//        constraints.weightx = 0;
+//        constraints.weighty = 0;
+//        constraints.gridx = 0;
+//        constraints.gridy = 0;
+//        constraints.gridheight = 1;
+//        constraints.gridwidth = 1;
+//        GridBagConstraints constraints1 = new GridBagConstraints();
+//        constraints1.weightx = 0;
+//        constraints1.weighty = 0;
+//        constraints1.gridx = 1;
+//        constraints1.gridy = 0;
+//        constraints1.gridheight = 1;
+//        constraints1.gridwidth = 1;
+        GridBagConstraints constraints0 = new GridBagConstraints();
+        constraints0.weightx = 0;
+        constraints0.weighty = 0;
+        constraints0.gridx = 0;
+        constraints0.gridy = 0;
+        constraints0.gridheight = 1;
+        constraints0.gridwidth = 1;
         GridBagConstraints constraints1 = new GridBagConstraints();
         constraints1.weightx = 0;
         constraints1.weighty = 0;
-        constraints1.gridx = 1;
-        constraints1.gridy = 0;
-        constraints1.gridheight = 1;
+        constraints1.gridx = 0;
+        constraints1.gridy = 1;
+        constraints1.gridheight = 5;
         constraints1.gridwidth = 1;
-        GridBagConstraints constraints2 = new GridBagConstraints();
-        constraints2.weightx = 0;
-        constraints2.weighty = 0;
-        constraints2.gridx = 2;
-        constraints2.gridy = 0;
-        constraints2.gridheight = 1;
-        constraints2.gridwidth = 1;
-        GridBagConstraints constraints3 = new GridBagConstraints();
-        constraints3.weightx = 0;
-        constraints3.weighty = 0;
-        constraints3.gridx = 0;
-        constraints3.gridy = 1;
-        constraints3.gridheight = 7;
-        constraints3.gridwidth = 3;
 
-        jPanel.add(commandLabel, constraints);
-        jPanel.add(textField, constraints1);
-        jPanel.add(jButton, constraints2);
+        mainPanel.add(commandEnterSpace, constraints0);
+
         JScrollPane scrollPane = new JScrollPane(editorPane);
         editorPane.setSize(new Dimension(500, 500));
         scrollPane.setSize(new Dimension(500, 500));
-        scrollPane.setMinimumSize(new Dimension(500, 500));
-        scrollPane.setPreferredSize(new Dimension(500, 500));
-        jPanel.add(scrollPane, constraints3);
-        jPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
+        scrollPane.setMinimumSize(new Dimension(500, 400));
+        scrollPane.setPreferredSize(new Dimension(700, 700));
+        mainPanel.add(scrollPane, constraints1);
+        mainPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
 
-        return jPanel;
+        return mainPanel;
     }
 
     @Override

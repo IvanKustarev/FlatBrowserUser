@@ -143,7 +143,16 @@ public class PlaneCreator {
                         rowUserName = (String) table.getValueAt(rowCount, 0);
                     }
                     if(rowUserName.equals(user.getLogin())){
-                        gInterface.setSpaceForInteraction(new GEditTableWindow(table, transferCenter, rowCount, gInterface, userWork, processControlCenter).getPanel());
+                        JPanel abstractMainPanel = new JPanel();
+                        //!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//                        abstractMainPanel.setPreferredSize(new Dimension(1000, 1000));
+                        JPanel editTable = new GEditTableWindow(table, transferCenter, rowCount, gInterface, userWork, processControlCenter).getPanel();
+//                        editTable.setPreferredSize(new Dimension(1000, 1000));
+                                //=======
+                        abstractMainPanel.add(table);
+                        abstractMainPanel.add(editTable);
+                        table.setVisible(false);
+                        gInterface.setSpaceForInteraction(abstractMainPanel);
 //                        gInterface.setGPane();
                     }
                     else {

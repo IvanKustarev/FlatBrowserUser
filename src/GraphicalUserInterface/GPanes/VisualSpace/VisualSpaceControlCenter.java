@@ -29,11 +29,12 @@ public class VisualSpaceControlCenter implements WindowPane {
     private DifferenceHandler differenceHandler;
     private ResourceBundle resourceBundle;
 
-    public VisualSpaceControlCenter(UserWork userWork, TransferCenter transferCenter, ProcessControlCenter processControlCenter, GInterface gInterface){
+    public VisualSpaceControlCenter(UserWork userWork, TransferCenter transferCenter, ProcessControlCenter processControlCenter, GInterface gInterface, ResourceBundle resourceBundle){
         this.processControlCenter = processControlCenter;
         this.transferCenter = transferCenter;
         this.userWork = userWork;
         this.gInterface = gInterface;
+        this.resourceBundle = resourceBundle;
     }
 
     @Override
@@ -52,7 +53,7 @@ public class VisualSpaceControlCenter implements WindowPane {
             return;
         }
 
-        GVisualSpace gVisualSpace = new GVisualSpace(flats, processControlCenter, userColourVariations, gInterface, userWork, this, transferCenter);
+        GVisualSpace gVisualSpace = new GVisualSpace(flats, processControlCenter, userColourVariations, gInterface, userWork, this, transferCenter, resourceBundle);
         visualSpace = gVisualSpace.getPanel();
     }
 

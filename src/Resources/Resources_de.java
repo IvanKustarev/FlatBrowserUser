@@ -39,8 +39,13 @@ public class Resources_de extends ListResourceBundle implements Naming{
 
                     {"Неверный пароль!", "НFalsches Passwort!"},
                     {"Сменить пользователя", "Benutzer ändern"},
-
-
+                    {"Подключение", "Anschluß"},
+                    {"Ввод данных", "Dateneingabe"},
+                    {"Пользователь с таким логином уже существует.", "Ein Benutzer mit einem solchen Login existiert bereits."},
+                    {"OK", "Gut"},
+                    {"Пользователь успешно добавлен", "Benutzer erfolgreich hinzugefügt"},
+                    {"В главное меню", "Im Hauptmenü"},
+                    {"Пользователя с таким логином не существует!", "Ein Benutzer mit einem solchen Login existiert nicht!"},
             };
 
     @Override

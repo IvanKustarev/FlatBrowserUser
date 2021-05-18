@@ -21,6 +21,7 @@ public class GVisualSpace implements WindowPane {
     private JPanel abstractPanel = new JPanel();
     private JPanel dekartSK = new JPanel();
     private JPanel columnPanel;
+    private JPanel flatInfoPale = new JPanel();
     private ProcessControlCenter processControlCenter;
 //    private int nulX;
 //    private int nulY;
@@ -37,7 +38,7 @@ public class GVisualSpace implements WindowPane {
     private ResourceBundle resourceBundle;
 
 
-    public GVisualSpace(Flat[] flatsHere, ProcessControlCenter processControlCenter, String[][] userColourVariations, GInterface gInterface, UserWork userWork, VisualSpaceControlCenter visualSpaceControlCenter, TransferCenter transferCenter){
+    public GVisualSpace(Flat[] flatsHere, ProcessControlCenter processControlCenter, String[][] userColourVariations, GInterface gInterface, UserWork userWork, VisualSpaceControlCenter visualSpaceControlCenter, TransferCenter transferCenter, ResourceBundle resourceBundle){
         this.flatsHere = flatsHere;
         this.transferCenter = transferCenter;
         this.processControlCenter = processControlCenter;
@@ -45,6 +46,7 @@ public class GVisualSpace implements WindowPane {
         this.gInterface = gInterface;
         this.userWork = userWork;
         this.visualSpaceControlCenter = visualSpaceControlCenter;
+        this.resourceBundle = resourceBundle;
 
 //        abstractPanel.setSize((int) (gInterface.getMainWindowSize().getWidth()) - 100, gInterface.getMainWindowSize().height/11 * 9 - 100);
         abstractPanel.setSize(800, 800);
@@ -170,13 +172,13 @@ public class GVisualSpace implements WindowPane {
 
         Flat [] flatsWithThisCoordinates = this.flatsWithThisCoordinates;
 
-        JPanel abstractColumnPanel = new JPanel();
-        abstractColumnPanel.setSize(800, 800);
-        int sizeX = abstractColumnPanel.getWidth();
-        int sizeY = abstractColumnPanel.getHeight();
+        columnPanel = new JPanel();
+        columnPanel.setSize(800, 800);
+        int sizeX = columnPanel.getWidth();
+        int sizeY = columnPanel.getHeight();
 
 
-        abstractColumnPanel.setLayout(new GridBagLayout());
+        columnPanel.setLayout(new GridBagLayout());
 
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.weightx = 0;
@@ -193,13 +195,14 @@ public class GVisualSpace implements WindowPane {
         constraints2.gridwidth = 1;
 
 
-        columnPanel = new JPanel();
         JButton backToDek = new JButton("Назад");
         backToDek.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                abstractPanel.removeAll();
-                abstractPanel.add(dekartSK);
+//                abstractPanel.removeAll();
+                dekartSK.setVisible(true);
+                columnPanel.setVisible(false);
+//                abstractPanel.add(dekartSK);
                 gInterface.setSpaceForInteraction(abstractPanel);
             }
         });
@@ -253,28 +256,29 @@ public class GVisualSpace implements WindowPane {
 
         column.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
 
-        abstractColumnPanel.add(backToDek, constraints);
-        abstractColumnPanel.add(column, constraints2);
+        columnPanel.removeAll();
+        columnPanel.add(backToDek, constraints);
+        columnPanel.add(column, constraints2);
+        abstractPanel.add(columnPanel);
 
-        abstractPanel.removeAll();
-        abstractPanel.add(abstractColumnPanel);
+//        abstractPanel.removeAll();
+//        abstractPanel.add(columnPanel);
         gInterface.setSpaceForInteraction(abstractPanel);
+
+        dekartSK.setVisible(false);
+        columnPanel.setVisible(true);
     }
 
     private void createFlatInfoPale(Flat flat){
-
-        Component[] oldAbstractPaleComponents = abstractPanel.getComponents();
-        abstractPanel.removeAll();
+        columnPanel.setVisible(false);
 
         JButton back = new JButton("Назад");
+
         back.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                abstractPanel.removeAll();
-                for(Component c : oldAbstractPaleComponents){
-                    abstractPanel.add(c);
-                    gInterface.setSpaceForInteraction(abstractPanel);
-                }
+                flatInfoPale.setVisible(false);
+                columnPanel.setVisible(true);
             }
         });
 
@@ -282,18 +286,25 @@ public class GVisualSpace implements WindowPane {
         GInfoFlat gInfoFlat = new GInfoFlat(flat, abstractPanel.getSize(), this);
         JPanel infoPale = gInfoFlat.getPanel();
 
-        abstractPanel.add(back);
-        abstractPanel.add(infoPale);
+        flatInfoPale.removeAll();
+
+        flatInfoPale.add(back);
+        flatInfoPale.add(infoPale);
+        abstractPanel.add(flatInfoPale);
         gInterface.setSpaceForInteraction(abstractPanel);
+        flatInfoPale.setVisible(true);
     }
 
     public void startEdit(Flat flat){
         if(flat.getUserName().equals(userWork.getMainUser().getLogin())){
             visualSpaceControlCenter.stopDifferenceHandler();
-            GEditVisualSpaceWindow gEditVisualSpaceWindow = new GEditVisualSpaceWindow(flat, transferCenter, gInterface, userWork, processControlCenter);
-            abstractPanel.removeAll();
+            GEditVisualSpaceWindow gEditVisualSpaceWindow = new GEditVisualSpaceWindow(flat, transferCenter, gInterface, userWork, processControlCenter, flatInfoPale, resourceBundle);
+//            Необходимо для очистки при повторном использовании
+            flatInfoPale.setVisible(false);
+//            abstractPanel.removeAll();
+            abstractPanel.add(flatInfoPale);
             abstractPanel.add(gEditVisualSpaceWindow.getPanel());
-            gInterface.setSpaceForInteraction(abstractPanel);
+//            gInterface.setSpaceForInteraction(abstractPanel);
         }
         else {
             JOptionPane.showConfirmDialog(new JOptionPane(), "Объект принадлежит другому пользователю!", "Уведомление", JOptionPane.OK_CANCEL_OPTION);

@@ -16,6 +16,7 @@ public class InterfaceControlCenter implements GInterface {
     private JPanel menuTopMainWindowPart;
     private WindowPane nowPane;
     private WindowPane topPane;
+    private JComboBox languages;
 
     ResourceControlCenter resourceControlCenter;
 
@@ -68,9 +69,11 @@ public class InterfaceControlCenter implements GInterface {
     @Override
     public void creatingWindow(){
 
-        Dimension sSize = Toolkit.getDefaultToolkit ().getScreenSize ();
+        Dimension sSize = Toolkit.getDefaultToolkit().getScreenSize();
 
         mainWindow = new MainWindow();
+
+        mainWindow.setMinimumSize(new Dimension(500, 650));
 
         mainWindow.setBounds(0,0, sSize.width, sSize.height);
 
@@ -120,7 +123,29 @@ public class InterfaceControlCenter implements GInterface {
     @Override
     public void sendNotification(String string, String title) {
         JOptionPane.showConfirmDialog(new JOptionPane(), resourceControlCenter.getMainResourceBundle().getString(string), resourceControlCenter.getMainResourceBundle().getString(title), JOptionPane.OK_CANCEL_OPTION);
+
+
+
+//        JFrame jFrame = new JFrame(resourceControlCenter.getMainResourceBundle().getString(title));
+//        jFrame.setBounds(mainWindow.getX(), mainWindow.getY(), 100, 100);
+//        jFrame.setLayout(new GridLayout(2, 1));
+//
+//        JLabel textLabel = new JLabel(resourceControlCenter.getMainResourceBundle().getString(string));
+//        textLabel.setFont(new Font("Dialog", Font.PLAIN, 20));
+//        jFrame.add(textLabel);
+//
+//        JButton okButton = new JButton(resourceControlCenter.getMainResourceBundle().getString("OK"));
+//        okButton.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                jFrame.setVisible(false);
+//            }
+//        });
+//        jFrame.add(okButton);
+//
+//        jFrame.setVisible(true);
     }
+
 
         @Override
     public void setTopPartOfWindow(WindowPane topPane) {
@@ -136,6 +161,11 @@ public class InterfaceControlCenter implements GInterface {
 //        repaint();
     }
 
+    @Override
+    public void setSizeForLanguagePale(Dimension dimension){
+        menuTopMainWindowPart.setPreferredSize(dimension);
+    }
+
     private void createMenuTopMainWindowPart(){
 
         String[] languagesNames = new String[resourceControlCenter.getResourceBundles().length];
@@ -143,7 +173,7 @@ public class InterfaceControlCenter implements GInterface {
             Naming naming = (Naming) resourceControlCenter.getResourceBundles()[i];
             languagesNames[i] = naming.getName();
         }
-        JComboBox languages = new JComboBox(languagesNames);
+        languages = new JComboBox(languagesNames);
         languages.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -159,15 +189,23 @@ public class InterfaceControlCenter implements GInterface {
             }
         });
         menuTopMainWindowPart = new JPanel();
+        menuTopMainWindowPart.setLayout(new GridLayout(1,1));
+        menuTopMainWindowPart.setPreferredSize(new Dimension(350, 40));
+        languages.setBackground(new Color(0xFFD9ECEF, true));
+        languages.setFont(new Font("Dialog", Font.PLAIN, 20));
         menuTopMainWindowPart.add(languages);
     }
     private void createAbstractSpaceForInteraction(){
         abstractSpaceForInteraction = new JPanel();
+
+//        abstractSpaceForInteraction.setPreferredSize(new Dimension(700, 700));
+//        abstractSpaceForInteraction.setBackground(Color.magenta);
+
         abstractSpaceForInteraction.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
 
         abstractSpaceForInteraction.setPreferredSize(new Dimension(mainWindow.getWidth()-20, (mainWindow.getHeight()/11 * 9)));
 
-
+        abstractSpaceForInteraction.setMinimumSize(new Dimension(500, 500));
 
         abstractSpaceForInteraction.setLayout(new GridLayout(1,1));
         abstractTopMainWindowPart = new JPanel();

@@ -23,4 +23,6 @@ public interface GInterface {
     public void sendNotification(String string, String title);
 
     public void clearSpaceForInteraction();
+
+    public void setSizeForLanguagePale(Dimension dimension);
 }
