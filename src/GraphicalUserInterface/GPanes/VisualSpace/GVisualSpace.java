@@ -49,9 +49,14 @@ public class GVisualSpace implements WindowPane {
         this.resourceBundle = resourceBundle;
 
 //        abstractPanel.setSize((int) (gInterface.getMainWindowSize().getWidth()) - 100, gInterface.getMainWindowSize().height/11 * 9 - 100);
-        abstractPanel.setSize(800, 800);
-        abstractPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
-        dekartSK.setSize(abstractPanel.getWidth(), abstractPanel.getHeight());
+        abstractPanel.setSize(new Dimension(800, 800));
+        gInterface.setMinimumSpaceForInteractionSize(new Dimension(810, 810));
+        gInterface.setMinimalSizeForMainWindow(new Dimension(850, 820));
+//        abstractPanel.setBorder(BorderFactory.createLineBorder(Color.BLUE, 2));
+        dekartSK.setSize(800, 800);
+//        dekartSK.setPreferredSize(new Dimension(500, 500));
+
+//        dekartSK.setSize(new Dimension(800, 800));
         dekartSK.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
         printObjectsOnDekSK();
         abstractPanel.add(dekartSK);
@@ -75,6 +80,33 @@ public class GVisualSpace implements WindowPane {
         int nulX = (int)dekartSK.getWidth()/(2);
         int nulY = (int)dekartSK.getHeight()/(2);
 
+//        JPanel XYLines = new JPanel() {
+//            @Override
+//            protected void paintComponent(Graphics g){
+//                for (Flat flat : flatsHere){
+//
+////                    int x = nulX + (int)flat.getCoordinates().getX()*sizeOfOneObjectX - sizeOfOneObjectX/2;
+////                    int y = nulY - (int)flat.getCoordinates().getY()*sizeOfOneObjectY - sizeOfOneObjectY/2;
+////                    Color color = null;
+////
+////                    for(int i =0; i< userColourVariations.length; i++){
+////                        if(flat.getUserName().equals(userColourVariations[i][0])){
+////                            color = new Color(Integer.valueOf(userColourVariations[i][1]));
+////                        }
+////                    }
+//                    g.setColor(Color.GRAY);
+//
+//                    g.fillRect(0, nulY, dekartSK.getWidth(), 1);
+//                    g.fillRect(nulX, 0, 1, dekartSK.getHeight());
+//                }
+//            }
+//            @Override
+//            public Dimension getPreferredSize(){
+//                return new Dimension(dekartSK.getWidth(), dekartSK.getHeight());
+//            }
+//        };
+//        dekartSK.add(XYLines);
+
         JPanel flatsOnDEK = new JPanel() {
             @Override
             protected void paintComponent(Graphics g){
@@ -92,7 +124,15 @@ public class GVisualSpace implements WindowPane {
                         g.setColor(color);
 
                         g.fillRect(x, y, sizeOfOneObjectX, sizeOfOneObjectY);
+
+                        g.setColor(Color.GRAY);
+
+                        g.fillRect(nulX, y + sizeOfOneObjectY/2, (x + sizeOfOneObjectX/2) - nulX, 1);
+
+                        g.fillRect(x + sizeOfOneObjectX/2, nulY,  1, (y + sizeOfOneObjectY/2) - nulY);
                     }
+
+                paintXY(g, nulX, nulY);
             }
             @Override
             public Dimension getPreferredSize(){
@@ -129,6 +169,31 @@ public class GVisualSpace implements WindowPane {
             }
         });
         dekartSK.add(flatsOnDEK);
+    }
+
+    private void paintXY(Graphics g, int nulX, int nulY){
+        g.setColor(Color.GRAY);
+
+        g.fillRect(0, nulY, dekartSK.getWidth(), 1);
+        g.fillRect(nulX, 0, 1, dekartSK.getHeight());
+
+        int counter = 0;
+        while(0 < nulX-counter*sizeOfOneObjectX){
+
+            g.fillRect(nulX-counter*sizeOfOneObjectX, nulY-2, 1, 5);
+//            System.out.println(dekartSK.getWidth() + "   " + (nulX-counter*sizeOfOneObjectX));
+            g.fillRect(nulX+counter*sizeOfOneObjectX, nulY-2, 1, 5);
+            counter++;
+        }
+
+        counter = 0;
+        while(0 < nulY-counter*sizeOfOneObjectY){
+
+            g.fillRect( nulX-2,nulY-counter*sizeOfOneObjectY, 5, 1);
+//            System.out.println(dekartSK.getWidth() + "   " + (nulX-counter*sizeOfOneObjectX));
+            g.fillRect( nulX-2,nulY+counter*sizeOfOneObjectY, 5, 1);
+            counter++;
+        }
     }
 
     private int whatIsFlatCoordinateX(int objectSizeX, int mouseX){
@@ -200,10 +265,14 @@ public class GVisualSpace implements WindowPane {
             @Override
             public void actionPerformed(ActionEvent e) {
 //                abstractPanel.removeAll();
-                dekartSK.setVisible(true);
                 columnPanel.setVisible(false);
+//                abstractPanel.removeAll();
+                dekartSK.setSize(800, 800);
 //                abstractPanel.add(dekartSK);
-                gInterface.setSpaceForInteraction(abstractPanel);
+                dekartSK.setVisible(true);
+
+//                abstractPanel.add(dekartSK);
+//                gInterface.setSpaceForInteraction(abstractPanel);
             }
         });
 
@@ -263,7 +332,7 @@ public class GVisualSpace implements WindowPane {
 
 //        abstractPanel.removeAll();
 //        abstractPanel.add(columnPanel);
-        gInterface.setSpaceForInteraction(abstractPanel);
+//        gInterface.setSpaceForInteraction(abstractPanel);
 
         dekartSK.setVisible(false);
         columnPanel.setVisible(true);

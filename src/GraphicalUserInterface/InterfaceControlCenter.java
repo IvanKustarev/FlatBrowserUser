@@ -46,6 +46,11 @@ public class InterfaceControlCenter implements GInterface {
     @Override
     public void clearSpaceForInteraction() {
         abstractSpaceForInteraction.removeAll();
+//        Component[] components = abstractSpaceForInteraction.getComponents();
+//        for(Component component : components){
+//            component.setVisible(false);
+//            component.setPreferredSize(new Dimension(0,0));
+//        }
     }
 
 
@@ -164,6 +169,16 @@ public class InterfaceControlCenter implements GInterface {
     @Override
     public void setSizeForLanguagePale(Dimension dimension){
         menuTopMainWindowPart.setPreferredSize(dimension);
+    }
+
+    @Override
+    public void setMinimalSizeForMainWindow(Dimension dimension) {
+        mainWindow.setMinimumSize(dimension);
+    }
+
+    @Override
+    public void setMinimumSpaceForInteractionSize(Dimension dimension) {
+        abstractSpaceForInteraction.setMinimumSize(dimension);
     }
 
     private void createMenuTopMainWindowPart(){

@@ -31,7 +31,7 @@ public class Flat implements Serializable, Comparable<Flat>{
         str += String.format("%-30s %s \n", "userName", userName);
         str += String.format("%-30s %s \n", "id", id);
         str += String.format("%-30s %s \n", "name", name);
-        str += String.format("coordinates:");
+        str += String.format("coordinates:\n");
         str += coordinates.show();
         str += String.format("%-30s %s \n", "creationDate", creationDate);
         str += String.format("%-30s %s \n", "area", area);
@@ -43,18 +43,18 @@ public class Flat implements Serializable, Comparable<Flat>{
         try {
             str += String.format("%-30s %s \n", "view", view.name());
         }catch (Exception e){
-            str += String.format("view - пустое поле");
+            str += String.format("view - пустое поле\n");
         }
         try {
             str += String.format("%-30s %s \n", "transport", transport.name());
         }catch (Exception e){
-            str += String.format("transport - пустое поле");
+            str += String.format("transport - пустое поле \n");
         }
         try {
-            str += String.format("house:");
-            str += house.getFields();
+            str += String.format("house:\n" + house.getFields());
+//            str += house.getFields();
         }catch (Exception e){
-            str += String.format("house - пустое поле");
+            str += String.format("house - пустое поле\n");
         }
 
 

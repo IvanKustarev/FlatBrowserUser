@@ -82,10 +82,14 @@ public class GConsoleCommunicate implements WindowPane {
         execute.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
+                if(textField.getText().equals("Введите команду сюда")){
+                    textField.setText("");
+                }
                 if(consoleScanner.isNeeded()){
                     consoleScanner.setNeeded(false);
                     consoleScanner.setStr(textField.getText());
-                    textField.setText("");
+                    textField.setText("Введите команду сюда");
+                    textField.setForeground(Color.GRAY);
                     synchronized (consoleScanner) {
                         consoleScanner.notify();
                     }
@@ -96,7 +100,8 @@ public class GConsoleCommunicate implements WindowPane {
                                     new GInterfaceConsolePrinter(editorPane), consoleScanner, processControlCenter);
                     Thread thread = new Thread(communicateWithServerByCommands);
                     thread.start();
-                    textField.setText("");
+                    textField.setText("Введите команду сюда");
+                    textField.setForeground(Color.GRAY);
                 }
 
             }

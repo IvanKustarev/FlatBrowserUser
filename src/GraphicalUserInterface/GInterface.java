@@ -25,4 +25,8 @@ public interface GInterface {
     public void clearSpaceForInteraction();
 
     public void setSizeForLanguagePale(Dimension dimension);
+
+    public void setMinimalSizeForMainWindow(Dimension dimension);
+
+    public void setMinimumSpaceForInteractionSize(Dimension dimension);
 }

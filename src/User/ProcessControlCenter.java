@@ -88,6 +88,7 @@ public class ProcessControlCenter{
             reConnect();
             return;
         }
+
         gInterface.setGPane(table);
 
         createUserNameAndBackTopPart();
