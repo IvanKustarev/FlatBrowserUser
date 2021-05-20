@@ -5,7 +5,9 @@ package CommonClasses;
 import CommonClasses.ApartmentDescription.*;
 
 import java.io.Serializable;
+import java.text.DateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class Flat implements Serializable, Comparable<Flat>{
 
@@ -24,7 +26,8 @@ public class Flat implements Serializable, Comparable<Flat>{
     private Transport transport; //Поле может быть null
     private House house; //Поле может быть null
 
-    public String show(){
+    public String show(Locale locale){
+
 
         String str = new String();
 
@@ -33,7 +36,7 @@ public class Flat implements Serializable, Comparable<Flat>{
         str += String.format("%-30s %s \n", "name", name);
         str += String.format("coordinates:\n");
         str += coordinates.show();
-        str += String.format("%-30s %s \n", "creationDate", creationDate);
+        str += String.format("%-30s %s \n", "creationDate", DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL, locale).format(creationDate));
         str += String.format("%-30s %s \n", "area", area);
         str += String.format("%-30s %s \n", "numberOfRooms", numberOfRooms);
         str += String.format("%-30s %s \n", "furnish", furnish.name());

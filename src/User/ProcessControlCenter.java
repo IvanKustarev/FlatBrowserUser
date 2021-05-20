@@ -60,6 +60,7 @@ public class ProcessControlCenter{
 
     private void toVisualSpace(){
         VisualSpaceControlCenter visualSpaceControlCenter = new VisualSpaceControlCenter(userWork, transferCenter, this, gInterface, resourceControlCenter.getMainResourceBundle());
+        gInterface.setVisualSpaceControlCenter(visualSpaceControlCenter);
         createUserNameAndBackTopPartForVisualSpace(visualSpaceControlCenter);
         gInterface.setGPane(visualSpaceControlCenter);
     }

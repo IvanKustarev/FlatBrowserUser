@@ -1,5 +1,7 @@
 package GraphicalUserInterface;
 
+import GraphicalUserInterface.GPanes.VisualSpace.VisualSpaceControlCenter;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -31,4 +33,6 @@ public interface GInterface {
     public void setMinimumSpaceForInteractionSize(Dimension dimension);
 
     public MainWindow getMainWindow();
+
+    public void setVisualSpaceControlCenter(VisualSpaceControlCenter visualSpaceControlCenter);
 }

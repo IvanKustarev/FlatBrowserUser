@@ -182,43 +182,43 @@ public class GEditVisualSpaceWindow implements WindowPane {
         abstractFields.setPreferredSize(new Dimension(500, 560));
 
 
-        JLabel nameLabel = new JLabel("Имя");
+        JLabel nameLabel = new JLabel(resourceBundle.getString("Имя"));
         nameLabel.setFont(new Font("Dialog", Font.PLAIN, 15));
 
         JTextField nameTextField = new JTextField(flatFirst.getName());
         nameTextField.setFont(new Font("Dialog", Font.PLAIN, 15));
 
-        JLabel coordinateXLabel = new JLabel("Координата x");
+        JLabel coordinateXLabel = new JLabel(resourceBundle.getString("Координата x"));
         coordinateXLabel.setFont(new Font("Dialog", Font.PLAIN, 15));
 
         JTextField coordinateXTextField = new JTextField(flatFirst.getCoordinates().getX() + "");
         coordinateXTextField.setFont(new Font("Dialog", Font.PLAIN, 15));
 
-        JLabel coordinateYLabel = new JLabel("Координата y");
+        JLabel coordinateYLabel = new JLabel(resourceBundle.getString("Координата y"));
         coordinateYLabel.setFont(new Font("Dialog", Font.PLAIN, 15));
 
         JTextField coordinateYTextField = new JTextField(flatFirst.getCoordinates().getY() + "");
         coordinateYTextField.setFont(new Font("Dialog", Font.PLAIN, 15));
 
-        JLabel areaLabel = new JLabel("Расположение");
+        JLabel areaLabel = new JLabel(resourceBundle.getString("Расположение"));
         areaLabel.setFont(new Font("Dialog", Font.PLAIN, 15));
 
         JTextField areaTextField = new JTextField(flatFirst.getArea() + "");
         areaTextField.setFont(new Font("Dialog", Font.PLAIN, 15));
 
-        JLabel numberOfRoomsLabel = new JLabel("Количество комнат");
+        JLabel numberOfRoomsLabel = new JLabel(resourceBundle.getString("Количество комнат"));
         numberOfRoomsLabel.setFont(new Font("Dialog", Font.PLAIN, 15));
 
         JTextField numberOfRoomsTextField = new JTextField(flatFirst.getNumberOfRooms() + "");
         numberOfRoomsTextField.setFont(new Font("Dialog", Font.PLAIN, 15));
 
-        JLabel furnishLabel = new JLabel("Мебель");
+        JLabel furnishLabel = new JLabel(resourceBundle.getString("Мебель"));
         furnishLabel.setFont(new Font("Dialog", Font.PLAIN, 15));
 
         JTextField furnishTextField = new JTextField(flatFirst.getFurnish().name());
         furnishTextField.setFont(new Font("Dialog", Font.PLAIN, 15));
 
-        JLabel viewLabel = new JLabel("Вид");
+        JLabel viewLabel = new JLabel(resourceBundle.getString("Вид"));
         viewLabel.setFont(new Font("Dialog", Font.PLAIN, 15));
 
         JTextField viewTextField;
@@ -230,7 +230,7 @@ public class GEditVisualSpaceWindow implements WindowPane {
         }
         viewTextField.setFont(new Font("Dialog", Font.PLAIN, 15));
 
-        JLabel transportLabel = new JLabel("Транспортные маршруты");
+        JLabel transportLabel = new JLabel(resourceBundle.getString("Транспортные маршруты"));
         transportLabel.setFont(new Font("Dialog", Font.PLAIN, 15));
 
         JTextField transportTextField;
@@ -254,62 +254,62 @@ public class GEditVisualSpaceWindow implements WindowPane {
         JTextField houseNumberOfLiftsTextField;
 
         if(flatFirst.getHouse() != null) {
-            houseNameLabel = new JLabel("Имя дома");
+            houseNameLabel = new JLabel(resourceBundle.getString("Имя дома"));
             houseNameLabel.setFont(new Font("Dialog", Font.PLAIN, 15));
 
             houseNameTextField = new JTextField(flatFirst.getHouse().getName());
             houseNameTextField.setFont(new Font("Dialog", Font.PLAIN, 15));
 
-             houseYearLabel = new JLabel("Год пострйки дома");
+             houseYearLabel = new JLabel(resourceBundle.getString("Год пострйки дома"));
             houseYearLabel.setFont(new Font("Dialog", Font.PLAIN, 15));
 
              houseYearTextField = new JTextField(flatFirst.getHouse().getYear() + "");
             houseYearTextField.setFont(new Font("Dialog", Font.PLAIN, 15));
 
-             houseNumberOfFloorsLabel = new JLabel("Количество этажей в доме");
+             houseNumberOfFloorsLabel = new JLabel(resourceBundle.getString("Количество этажей в доме"));
             houseNumberOfFloorsLabel.setFont(new Font("Dialog", Font.PLAIN, 15));
 
              houseNumberOfFloorsTextField = new JTextField(flatFirst.getHouse().getNumberOfFloors() + "");
             houseNumberOfFloorsTextField.setFont(new Font("Dialog", Font.PLAIN, 15));
 
-             houseNumberOfFlatsOnFloorLabel = new JLabel("Количество квартир на одном этаже");
+             houseNumberOfFlatsOnFloorLabel = new JLabel(resourceBundle.getString("Количество квартир на одном этаже"));
             houseNumberOfFlatsOnFloorLabel.setFont(new Font("Dialog", Font.PLAIN, 15));
 
              houseNumberOfFlatsOnFloorTextField = new JTextField(flatFirst.getHouse().getNumberOfFlatsOnFloor() + "");
             houseNumberOfFlatsOnFloorTextField.setFont(new Font("Dialog", Font.PLAIN, 15));
 
-             houseNumberOfLiftsLabel = new JLabel("Количество лифтов");
+             houseNumberOfLiftsLabel = new JLabel(resourceBundle.getString("Количество лифтов"));
             houseNumberOfLiftsLabel.setFont(new Font("Dialog", Font.PLAIN, 15));
 
              houseNumberOfLiftsTextField = new JTextField(flatFirst.getHouse().getNumberOfLifts() + "");
             houseNumberOfLiftsTextField.setFont(new Font("Dialog", Font.PLAIN, 15));
         }
         else {
-             houseNameLabel = new JLabel("Имя дома");
+             houseNameLabel = new JLabel(resourceBundle.getString("Имя дома"));
             houseNameLabel.setFont(new Font("Dialog", Font.PLAIN, 15));
 
             houseNameTextField = new JTextField("");
             houseNameTextField.setFont(new Font("Dialog", Font.PLAIN, 15));
 
-             houseYearLabel = new JLabel("");
+             houseYearLabel = new JLabel(resourceBundle.getString("Год пострйки дома"));
             houseYearLabel.setFont(new Font("Dialog", Font.PLAIN, 15));
 
              houseYearTextField = new JTextField("");
             houseYearTextField.setFont(new Font("Dialog", Font.PLAIN, 15));
 
-             houseNumberOfFloorsLabel = new JLabel("");
+             houseNumberOfFloorsLabel = new JLabel(resourceBundle.getString("Количество этажей в доме"));
             houseNumberOfFloorsLabel.setFont(new Font("Dialog", Font.PLAIN, 15));
 
              houseNumberOfFloorsTextField = new JTextField("");
             houseNumberOfFloorsTextField.setFont(new Font("Dialog", Font.PLAIN, 15));
 
-             houseNumberOfFlatsOnFloorLabel = new JLabel("Количество квартир на одном этаже");
+             houseNumberOfFlatsOnFloorLabel = new JLabel(resourceBundle.getString("Количество квартир на одном этаже"));
             houseNumberOfFlatsOnFloorLabel.setFont(new Font("Dialog", Font.PLAIN, 15));
 
              houseNumberOfFlatsOnFloorTextField = new JTextField("");
             houseNumberOfFlatsOnFloorTextField.setFont(new Font("Dialog", Font.PLAIN, 15));
 
-             houseNumberOfLiftsLabel = new JLabel("Количество лифтов");
+             houseNumberOfLiftsLabel = new JLabel(resourceBundle.getString("Количество лифтов"));
             houseNumberOfLiftsLabel.setFont(new Font("Dialog", Font.PLAIN, 15));
 
              houseNumberOfLiftsTextField = new JTextField("");
@@ -318,7 +318,7 @@ public class GEditVisualSpaceWindow implements WindowPane {
 
 
 
-        JButton saveEdit = new JButton("Сохранить изменения");
+        JButton saveEdit = new JButton(resourceBundle.getString("Сохранить изменения"));
         saveEdit.setFont(new Font("Dialog", Font.PLAIN, 20));
         saveEdit.setBackground(new Color(0xFFD9ECEF, true));
 
@@ -362,27 +362,27 @@ public class GEditVisualSpaceWindow implements WindowPane {
             public void actionPerformed(ActionEvent e){
 
                 if(nameTextField.getText().equals("")){
-                    JOptionPane.showConfirmDialog(new JOptionPane(), "У квартиры обязательно должно быть имя", "Уведомление", JOptionPane.OK_CANCEL_OPTION);
+                    JOptionPane.showConfirmDialog(new JOptionPane(), resourceBundle.getString("У квартиры обязательно должно быть имя"), resourceBundle.getString("Уведомление"), JOptionPane.OK_CANCEL_OPTION);
                     return;
                 }
                 if(coordinateXTextField.getText().equals("")){
-                    JOptionPane.showConfirmDialog(new JOptionPane(), "У квартиры обязательно должна быть координата по X", "Уведомление", JOptionPane.OK_CANCEL_OPTION);
+                    JOptionPane.showConfirmDialog(new JOptionPane(), resourceBundle.getString("У квартиры обязательно должна быть координата по X"), resourceBundle.getString("Уведомление"), JOptionPane.OK_CANCEL_OPTION);
                     return;
                 }
                 if(coordinateYTextField.getText().equals("")){
-                    JOptionPane.showConfirmDialog(new JOptionPane(), "У квартиры обязательно должно быть координата по Y", "Уведомление", JOptionPane.OK_CANCEL_OPTION);
+                    JOptionPane.showConfirmDialog(new JOptionPane(), resourceBundle.getString("У квартиры обязательно должно быть координата по Y"), resourceBundle.getString("Уведомление"), JOptionPane.OK_CANCEL_OPTION);
                     return;
                 }
                 if(areaTextField.getText().equals("")){
-                    JOptionPane.showConfirmDialog(new JOptionPane(), "У квартиры обязательно должно быть расположение", "Уведомление", JOptionPane.OK_CANCEL_OPTION);
+                    JOptionPane.showConfirmDialog(new JOptionPane(), resourceBundle.getString("У квартиры обязательно должно быть расположение"), resourceBundle.getString("Уведомление"), JOptionPane.OK_CANCEL_OPTION);
                     return;
                 }
                 if(numberOfRoomsTextField.getText().equals("")){
-                    JOptionPane.showConfirmDialog(new JOptionPane(), "У квартиры обязательно должно быть количество комнат", "Уведомление", JOptionPane.OK_CANCEL_OPTION);
+                    JOptionPane.showConfirmDialog(new JOptionPane(), resourceBundle.getString("У квартиры обязательно должно быть количество комнат"), resourceBundle.getString("Уведомление"), JOptionPane.OK_CANCEL_OPTION);
                     return;
                 }
                 if(furnishTextField.getText().equals("")){
-                    JOptionPane.showConfirmDialog(new JOptionPane(), "У квартиры обязательно должна быть мебель", "Уведомление", JOptionPane.OK_CANCEL_OPTION);
+                    JOptionPane.showConfirmDialog(new JOptionPane(), resourceBundle.getString("У квартиры обязательно должна быть мебель"), resourceBundle.getString("Уведомление"), JOptionPane.OK_CANCEL_OPTION);
                     return;
                 }
                 if((!houseNameTextField.getText().equals("") | !houseYearTextField.getText().equals("") |
@@ -390,14 +390,14 @@ public class GEditVisualSpaceWindow implements WindowPane {
                         (houseNameTextField.getText().equals("") | houseYearTextField.getText().equals("") | houseNumberOfFloorsTextField.getText().equals("") |
                                 houseNumberOfFlatsOnFloorTextField.getText().equals("") | houseNumberOfLiftsTextField.getText().equals(""))){
 
-                    JOptionPane.showConfirmDialog(new JOptionPane(), "Все поля связанные с домом либо пустые, либо заполненные", "Уведомление", JOptionPane.OK_CANCEL_OPTION);
+                    JOptionPane.showConfirmDialog(new JOptionPane(), resourceBundle.getString("Все поля связанные с домом либо пустые, либо заполненные"), resourceBundle.getString("Уведомление"), JOptionPane.OK_CANCEL_OPTION);
                     return;
                 }
                 if(!furnishTextField.getText().equals("")) {
                     try {
                         Furnish.valueOf(furnishTextField.getText());
                     } catch (IllegalArgumentException illegalArgumentException) {
-                        JOptionPane.showConfirmDialog(new JOptionPane(), "Мебель задана некорректно!", "Уведомление", JOptionPane.OK_CANCEL_OPTION);
+                        JOptionPane.showConfirmDialog(new JOptionPane(), resourceBundle.getString("Мебель задана некорректно!"), resourceBundle.getString("Уведомление"), JOptionPane.OK_CANCEL_OPTION);
                         return;
                     }
                 }
@@ -405,7 +405,7 @@ public class GEditVisualSpaceWindow implements WindowPane {
                     try {
                         Transport.valueOf(transportTextField.getText());
                     } catch (IllegalArgumentException illegalArgumentException) {
-                        JOptionPane.showConfirmDialog(new JOptionPane(), "Транспорт задан некорректно!", "Уведомление", JOptionPane.OK_CANCEL_OPTION);
+                        JOptionPane.showConfirmDialog(new JOptionPane(), resourceBundle.getString("Транспорт задан некорректно!"), resourceBundle.getString("Уведомление"), JOptionPane.OK_CANCEL_OPTION);
                         return;
                     }
                 }
@@ -413,7 +413,7 @@ public class GEditVisualSpaceWindow implements WindowPane {
                     try {
                         View.valueOf(viewTextField.getText());
                     } catch (IllegalArgumentException illegalArgumentException) {
-                        JOptionPane.showConfirmDialog(new JOptionPane(), "Вид задан некорректно!", "Уведомление", JOptionPane.OK_CANCEL_OPTION);
+                        JOptionPane.showConfirmDialog(new JOptionPane(), resourceBundle.getString("Вид задан некорректно!"), resourceBundle.getString("Уведомление"), JOptionPane.OK_CANCEL_OPTION);
                         return;
                     }
                 }
@@ -424,13 +424,13 @@ public class GEditVisualSpaceWindow implements WindowPane {
                 try {
                     dataBlock = userWork.new CommunicateWithServerByCommands().processCommand(commandsData, transferCenter);
                 }catch (ConnectionException connectionException){
-                    JOptionPane.showConfirmDialog(new JOptionPane(), "Потеряно соединение с сервером!", "Ошибка подключения", JOptionPane.OK_CANCEL_OPTION);
+                    JOptionPane.showConfirmDialog(new JOptionPane(), resourceBundle.getString("Потеряно соединение с сервером!"), resourceBundle.getString("Ошибка подключения"), JOptionPane.OK_CANCEL_OPTION);
                     processControlCenter.reConnect();
                     processControlCenter.working();
                     return;
                 }
 
-                if(dataBlock.getPhrase().equals("Удаление прошло успешно.")){
+                if(dataBlock.getPhrase().equals(resourceBundle.getString("Удаление прошло успешно."))){
 //                    System.out.println("Удаление прошло успешно.");
                     commandsData = CommandsData.ADD;
 
@@ -476,13 +476,13 @@ public class GEditVisualSpaceWindow implements WindowPane {
                     try {
                         userWork.new CommunicateWithServerByCommands().processCommand(commandsData, transferCenter);
                     }catch (ConnectionException connectionException){
-                        JOptionPane.showConfirmDialog(new JOptionPane(), "Потеряно соединение с сервером!", "Ошибка подключения", JOptionPane.OK_CANCEL_OPTION);
+                        JOptionPane.showConfirmDialog(new JOptionPane(), resourceBundle.getString("Потеряно соединение с сервером!"), resourceBundle.getString("Ошибка подключения"), JOptionPane.OK_CANCEL_OPTION);
                         processControlCenter.reConnect();
                         processControlCenter.working();
                         return;
                     }
 
-                    JOptionPane.showConfirmDialog(new JOptionPane(), "Объект успешно обновлён", "Уведомление", JOptionPane.OK_CANCEL_OPTION);
+                    JOptionPane.showConfirmDialog(new JOptionPane(), resourceBundle.getString("Объект успешно обновлён"), resourceBundle.getString("Уведомление"), JOptionPane.OK_CANCEL_OPTION);
                 }
 
             }

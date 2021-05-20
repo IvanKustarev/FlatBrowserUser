@@ -54,6 +54,7 @@ public class GVisualSpace implements WindowPane {
         this.resourceBundle = resourceBundle;
 
 //        abstractPanel.setSize((int) (gInterface.getMainWindowSize().getWidth()) - 100, gInterface.getMainWindowSize().height/11 * 9 - 100);
+
         abstractPanel.setSize(new Dimension(800, 800));
         gInterface.setMinimumSpaceForInteractionSize(new Dimension(810, 810));
         gInterface.setMinimalSizeForMainWindow(new Dimension(850, 820));
@@ -173,7 +174,7 @@ public class GVisualSpace implements WindowPane {
                     createColumnPanel(flatsWithThisCoordinates.toArray());
                 }
                 else {
-                    JOptionPane.showConfirmDialog(new JOptionPane(), "В этих координатах нет квартир!", "Уведомление", JOptionPane.OK_CANCEL_OPTION);
+                    JOptionPane.showConfirmDialog(new JOptionPane(), resourceBundle.getString("В этих координатах нет квартир!"), resourceBundle.getString("Уведомление"), JOptionPane.OK_CANCEL_OPTION);
                 }
             }
         });
@@ -273,7 +274,7 @@ public class GVisualSpace implements WindowPane {
         constraints2.gridwidth = 1;
 
 
-        JButton backToDek = new JButton("Назад");
+        JButton backToDek = new JButton(resourceBundle.getString("НАЗАД"));
         backToDek.setPreferredSize(new Dimension(250, 40));
         backToDek.setFont(new Font("Dialog", Font.PLAIN, 20));
         backToDek.setBackground(new Color(0xFFD9ECEF, true));
@@ -357,7 +358,7 @@ public class GVisualSpace implements WindowPane {
     private void createFlatInfoPale(Flat flat){
         columnPanel.setVisible(false);
 
-        JButton back = new JButton("Назад");
+        JButton back = new JButton(resourceBundle.getString("НАЗАД"));
         back.setFont(new Font("Dialog", Font.PLAIN, 20));
         back.setBackground(new Color(0xFFD9ECEF, true));
 
@@ -370,7 +371,7 @@ public class GVisualSpace implements WindowPane {
         });
 
 
-        GInfoFlat gInfoFlat = new GInfoFlat(flat, abstractPanel.getSize(), this, back);
+        GInfoFlat gInfoFlat = new GInfoFlat(flat, abstractPanel.getSize(), this, back, resourceBundle);
         JPanel infoPale = gInfoFlat.getPanel();
 
         flatInfoPale.removeAll();
@@ -394,7 +395,7 @@ public class GVisualSpace implements WindowPane {
 //            gInterface.setSpaceForInteraction(abstractPanel);
         }
         else {
-            JOptionPane.showConfirmDialog(new JOptionPane(), "Объект принадлежит другому пользователю!", "Уведомление", JOptionPane.OK_CANCEL_OPTION);
+            JOptionPane.showConfirmDialog(new JOptionPane(), resourceBundle.getString("Объект принадлежит другому пользователю!"), resourceBundle.getString("Уведомление"), JOptionPane.OK_CANCEL_OPTION);
         }
     }
 }

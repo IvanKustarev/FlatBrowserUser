@@ -231,7 +231,7 @@ public class UserWork{
 
                 if(commandsData.isUserNeedToShowFlatArr()){
                     for(int i =0;i<commandsData.getFlats().length;i++){
-                        String str = commandsData.getFlats()[i].show() + "\n";
+                        String str = commandsData.getFlats()[i].show(Main.getLocaleByResourceName(resourceControlCenter.getMainResourceBundle().getBaseBundleName())) + "\n";
                         printer.println(str);
                     }
                 }

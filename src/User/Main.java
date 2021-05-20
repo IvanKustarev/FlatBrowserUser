@@ -35,4 +35,16 @@ public class Main {
         ProcessControlCenter processControlCenter = new ProcessControlCenter(transferCenter, user, gInterface, resourceControlCenter);
         processControlCenter.start();
     }
+
+    public static Locale getLocaleByResourceName(String resourceName){
+        if(resourceName != null) {
+            if (resourceName.equals("Resources.Resources_ru")) {
+                return new Locale("ru", "Ru");
+            }
+            if (resourceName.equals("Resources.Resources_de")) {
+                return new Locale("de", "GR");
+            }
+        }
+        return new Locale("ru", "Ru");
+    }
 }

@@ -16,6 +16,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.text.DateFormat;
 import java.util.ResourceBundle;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -63,7 +64,7 @@ public class PlaneCreator {
                 rows[i][2] = flats[i].getName();
                 rows[i][3] = String.valueOf(flats[i].getCoordinates().getX());
                 rows[i][4] = String.valueOf(flats[i].getCoordinates().getY());
-                rows[i][5] = String.valueOf(flats[i].getCreationDate());
+                rows[i][5] = String.valueOf(DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL, Main.getLocaleByResourceName(resourceBundle.getBaseBundleName())).format(flats[i].getCreationDate()));
                 rows[i][6] = String.valueOf(flats[i].getArea());
                 rows[i][7] = String.valueOf(flats[i].getNumberOfRooms());
                 rows[i][8] = flats[i].getFurnish().name();
@@ -112,14 +113,14 @@ public class PlaneCreator {
 
             JTextField filterTextField = new JTextField(20);
             filterTextField.setFont(new Font("Dialog", Font.PLAIN, 20));
-            filterTextField.setText("Введите фильтр");
+            filterTextField.setText(resourceBundle.getString("Введите фильтр"));
             filterTextField.setFont(new Font("Dialog", Font.ITALIC, 20));
             filterTextField.setForeground(Color.GRAY);
 
             filterTextField.addFocusListener(new FocusListener() {
                 @Override
                 public void focusGained(FocusEvent e) {
-                    if(filterTextField.getText().equals("Введите фильтр")){
+                    if(filterTextField.getText().equals(resourceBundle.getString("Введите фильтр"))){
                         filterTextField.setFont(new Font("Dialog", Font.PLAIN, 20));
                         filterTextField.setForeground(Color.BLACK);
                         filterTextField.setText("");
@@ -129,7 +130,7 @@ public class PlaneCreator {
                 @Override
                 public void focusLost(FocusEvent e) {
                     if(filterTextField.getText().equals("")){
-                        filterTextField.setText("Введите фильтр");
+                        filterTextField.setText(resourceBundle.getString("Введите фильтр"));
                         filterTextField.setFont(new Font("Dialog", Font.ITALIC, 20));
                         filterTextField.setForeground(Color.GRAY);
                     }
@@ -166,7 +167,7 @@ public class PlaneCreator {
             JScrollPane scrollPane = new JScrollPane(table);
 
 
-            JButton edit = new JButton("Изменить");
+            JButton edit = new JButton(resourceBundle.getString("Изменить"));
             edit.setFont(new Font("Dialog", Font.PLAIN, 20));
             edit.setBackground(new Color(0xFFD9ECEF, true));
 
@@ -176,7 +177,7 @@ public class PlaneCreator {
                     int rowCount = table.getSelectedRow();
                     String rowUserName = null;
                     if(rowCount == -1){
-                        JOptionPane.showConfirmDialog(new JOptionPane(), "Выберете строку!", "Уведомление", JOptionPane.OK_CANCEL_OPTION);
+                        JOptionPane.showConfirmDialog(new JOptionPane(), resourceBundle.getString("Выберете строку!"), resourceBundle.getString("Уведомление"), JOptionPane.OK_CANCEL_OPTION);
                         return;
                     }
                     else {
@@ -186,7 +187,7 @@ public class PlaneCreator {
                         JPanel abstractMainPanel = new JPanel();
                         //!!!!!!!!!!!!!!!!!!!!!!!!!!!
                         abstractMainPanel.setPreferredSize(new Dimension(1000, 1000));
-                        JPanel editTable = new GEditTableWindow(abstractMainPanel, table, transferCenter, rowCount, gInterface, userWork, processControlCenter, mainPanel).getPanel();
+                        JPanel editTable = new GEditTableWindow(abstractMainPanel, table, transferCenter, rowCount, gInterface, userWork, processControlCenter, mainPanel, resourceBundle).getPanel();
 //                        editTable.setPreferredSize(new Dimension(1000, 1000));
                                 //=======
                         abstractMainPanel.add(editTable);
@@ -196,7 +197,7 @@ public class PlaneCreator {
 //                        gInterface.setGPane();
                     }
                     else {
-                        JOptionPane.showConfirmDialog(new JOptionPane(), "Объект принадлежит другому пльзователю!", "Уведомление", JOptionPane.OK_CANCEL_OPTION);
+                        JOptionPane.showConfirmDialog(new JOptionPane(), resourceBundle.getString("Объект принадлежит другому пльзователю!"), resourceBundle.getString("Уведомление"), JOptionPane.OK_CANCEL_OPTION);
                     }
                 }
             });
@@ -218,7 +219,7 @@ public class PlaneCreator {
                 }
             });
 
-            JButton del = new JButton("Удалить");
+            JButton del = new JButton(resourceBundle.getString("Удалить"));
             del.setFont(new Font("Dialog", Font.PLAIN, 20));
             del.setBackground(new Color(0xFFD9ECEF, true));
             del.addActionListener(new ActionListener() {
@@ -226,7 +227,7 @@ public class PlaneCreator {
                 public void actionPerformed(ActionEvent e) {
                     int rowNumber = table.getSelectedRow();
                     if(rowNumber == -1){
-                        JOptionPane.showConfirmDialog(new JOptionPane(), "Необходимо выбрать строку!", "Уведомление", JOptionPane.OK_CANCEL_OPTION);
+                        JOptionPane.showConfirmDialog(new JOptionPane(), resourceBundle.getString("Необходимо выбрать строку!"), resourceBundle.getString("Уведомление"), JOptionPane.OK_CANCEL_OPTION);
                         return;
                     }
                     if(table.getValueAt(rowNumber, 0).equals(user.getLogin())){
@@ -236,7 +237,7 @@ public class PlaneCreator {
                         try {
                             userWork.new CommunicateWithServerByCommands().processCommand(commandsData, transferCenter);
                         }catch (ConnectionException connectionException){
-                            JOptionPane.showConfirmDialog(new JOptionPane(), "Сервер не отвечает!", "Ошибка подключения", JOptionPane.OK_CANCEL_OPTION);
+                            JOptionPane.showConfirmDialog(new JOptionPane(), resourceBundle.getString("Сервер не отвечает!"), resourceBundle.getString("Ошибка подключения"), JOptionPane.OK_CANCEL_OPTION);
 
 
 
@@ -247,11 +248,11 @@ public class PlaneCreator {
                             processControlCenter.reConnect();
                             return;
                         }
-                        JOptionPane.showConfirmDialog(new JOptionPane(), "Объект успешно удалён!", "Уведомление", JOptionPane.OK_CANCEL_OPTION);
+                        JOptionPane.showConfirmDialog(new JOptionPane(), resourceBundle.getString("Объект успешно удалён!"), resourceBundle.getString("Уведомление"), JOptionPane.OK_CANCEL_OPTION);
                         update();
                     }
                     else {
-                        JOptionPane.showConfirmDialog(new JOptionPane(), "Объект принадлежит другому пльзователю!", "Уведомление", JOptionPane.OK_CANCEL_OPTION);
+                        JOptionPane.showConfirmDialog(new JOptionPane(), resourceBundle.getString("Объект принадлежит другому пльзователю!"), resourceBundle.getString("Уведомление"), JOptionPane.OK_CANCEL_OPTION);
                         return;
                     }
                 }
@@ -307,7 +308,7 @@ public class PlaneCreator {
             try {
                 dataBlock = userWork.new CommunicateWithServerByCommands().processCommand(CommandsData.SHOW, transferCenter);
             }catch (ConnectionException connectionException){
-                JOptionPane.showConfirmDialog(new JOptionPane(), "Сервер не отвечает!", "Ошибка подключения", JOptionPane.OK_CANCEL_OPTION);
+                JOptionPane.showConfirmDialog(new JOptionPane(), resourceBundle.getString("Сервер не отвечает!"), resourceBundle.getString("Ошибка подключения"), JOptionPane.OK_CANCEL_OPTION);
                 processControlCenter.reConnect();
                 processControlCenter.working();
                 return;
@@ -338,7 +339,7 @@ public class PlaneCreator {
             }
 
             public String getRealText(){
-                if(textField.getText().equals("Введите фильтр")){
+                if(textField.getText().equals(resourceBundle.getString("Введите фильтр"))){
                     return null;
                 }
                 else {
@@ -350,7 +351,7 @@ public class PlaneCreator {
 
                 TableRowSorter tableRowSorter = (TableRowSorter<TableModel>) table.getRowSorter();
 
-                if(!textField.getText().equals("Введите фильтр")) {
+                if(!textField.getText().equals(resourceBundle.getString("Введите фильтр"))) {
                     text = new String(textField.getText());
                 }
 

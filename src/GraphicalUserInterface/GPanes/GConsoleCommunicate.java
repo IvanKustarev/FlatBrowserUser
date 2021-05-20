@@ -43,14 +43,13 @@ public class GConsoleCommunicate implements WindowPane {
         commandEnterSpace.setMinimumSize(new Dimension(400, 40));
 
         JTextField textField = new JTextField(15);
-        textField.setText("Введите команду сюда");
+        textField.setText(resourceBundle.getString("Введите команду сюда"));
         textField.setForeground(Color.GRAY);
         textField.setFont(new Font("Dialog", Font.PLAIN, 20));
         textField.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
-                if(!textField.getText().equals("Введите команду сюда")){
-                }
+                if(!textField.getText().equals(resourceBundle.getString("Введите команду сюда"))){ }
                 else {
                     textField.setText(null);
                     textField.setForeground(Color.BLACK);
@@ -60,13 +59,13 @@ public class GConsoleCommunicate implements WindowPane {
             @Override
             public void focusLost(FocusEvent e) {
                 if(textField.getText().length() == 0){
-                    textField.setText("Введите команду сюда");
+                    textField.setText(resourceBundle.getString("Введите команду сюда"));
                     textField.setForeground(Color.GRAY);
                 }
             }
         });
 
-        JButton execute = new JButton("Исполнить");
+        JButton execute = new JButton(resourceBundle.getString("Исполнить"));
         execute.setBackground(new Color(0xFFD9ECEF, true));
         execute.setFont(new Font("Dialog", Font.PLAIN, 20));
 
@@ -76,19 +75,19 @@ public class GConsoleCommunicate implements WindowPane {
 
         JEditorPane editorPane = new JEditorPane();
         editorPane.setContentType("text/plain");
-        editorPane.setText("Для просмотра списка команд необходимо ввести \"help\"");
+        editorPane.setText(resourceBundle.getString("Для просмотра списка команд необходимо ввести \"help\""));
         editorPane.setFont(new Font("Dialog", Font.PLAIN, 20));
 
         execute.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(textField.getText().equals("Введите команду сюда")){
+                if(textField.getText().equals(resourceBundle.getString("Введите команду сюда"))){
                     textField.setText("");
                 }
                 if(consoleScanner.isNeeded()){
                     consoleScanner.setNeeded(false);
                     consoleScanner.setStr(textField.getText());
-                    textField.setText("Введите команду сюда");
+                    textField.setText(resourceBundle.getString("Введите команду сюда"));
                     textField.setForeground(Color.GRAY);
                     synchronized (consoleScanner) {
                         consoleScanner.notify();
@@ -100,7 +99,7 @@ public class GConsoleCommunicate implements WindowPane {
                                     new GInterfaceConsolePrinter(editorPane), consoleScanner, processControlCenter);
                     Thread thread = new Thread(communicateWithServerByCommands);
                     thread.start();
-                    textField.setText("Введите команду сюда");
+                    textField.setText(resourceBundle.getString("Введите команду сюда"));
                     textField.setForeground(Color.GRAY);
                 }
 

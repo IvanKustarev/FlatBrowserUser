@@ -1,5 +1,6 @@
 package GraphicalUserInterface;
 
+import GraphicalUserInterface.GPanes.VisualSpace.VisualSpaceControlCenter;
 import Resources.Naming;
 import Resources.ResourceControlCenter;
 import User.UserWork;
@@ -17,6 +18,12 @@ public class InterfaceControlCenter implements GInterface {
     private WindowPane nowPane;
     private WindowPane topPane;
     private JComboBox languages;
+    private VisualSpaceControlCenter visualSpaceControlCenter;
+
+    @Override
+    public void setVisualSpaceControlCenter(VisualSpaceControlCenter visualSpaceControlCenter) {
+        this.visualSpaceControlCenter = visualSpaceControlCenter;
+    }
 
     ResourceControlCenter resourceControlCenter;
 
@@ -203,6 +210,10 @@ public class InterfaceControlCenter implements GInterface {
                     try {
                         topPane.setLocale(resourceControlCenter.getMainResourceBundle());
                         setTopPartOfWindow(topPane);
+                        if(visualSpaceControlCenter!=null){
+                            visualSpaceControlCenter.stopDifferenceHandler();
+                        }
+
                     }catch (NullPointerException nullPointerException){ }
                     setSpaceForInteraction(nowPane.getPanel());
                 }

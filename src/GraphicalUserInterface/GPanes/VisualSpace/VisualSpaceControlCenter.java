@@ -46,7 +46,7 @@ public class VisualSpaceControlCenter implements WindowPane {
         try {
             flats = userWork.new CommunicateWithServerByCommands().processCommand(CommandsData.SHOW, transferCenter).getFlats();
         } catch (ConnectionException e) {
-            JOptionPane.showConfirmDialog(new JOptionPane(), "Сервер не отвечает!", "Ошибка подключения", JOptionPane.OK_CANCEL_OPTION);
+            JOptionPane.showConfirmDialog(new JOptionPane(), resourceBundle.getString("Сервер не отвечает!"), resourceBundle.getString("Ошибка подключения"), JOptionPane.OK_CANCEL_OPTION);
             stopDifferenceHandler();
             processControlCenter.reConnect();
 //            processControlCenter.working();
@@ -60,7 +60,7 @@ public class VisualSpaceControlCenter implements WindowPane {
     private void startWork(){
 
         ExecutorService service = Executors.newSingleThreadExecutor();
-        differenceHandler = new DifferenceHandler(flats, gVisualSpace, processControlCenter, userWork, transferCenter, userColourVariations, gInterface);
+        differenceHandler = new DifferenceHandler(flats, gVisualSpace, processControlCenter, userWork, transferCenter, userColourVariations, gInterface, resourceBundle);
         service.execute(differenceHandler);
     }
 

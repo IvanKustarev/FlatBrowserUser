@@ -11,6 +11,7 @@ import User.UserWork;
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.ResourceBundle;
 
 public class DifferenceHandler implements Runnable{
 
@@ -23,8 +24,9 @@ public class DifferenceHandler implements Runnable{
     private String[][] userColourVariations;
     private Boolean stop = false;
     private GInterface gInterface;
+    private ResourceBundle resourceBundle;
 
-    public DifferenceHandler(Flat[] flats, GVisualSpace gVisualSpace, ProcessControlCenter processControlCenter, UserWork userWork, TransferCenter transferCenter, String[][] userColourVariations, GInterface gInterface){
+    public DifferenceHandler(Flat[] flats, GVisualSpace gVisualSpace, ProcessControlCenter processControlCenter, UserWork userWork, TransferCenter transferCenter, String[][] userColourVariations, GInterface gInterface, ResourceBundle resourceBundle){
         this.gInterface = gInterface;
         this.flatsHear = flats;
         this.gVisualSpace = gVisualSpace;
@@ -32,6 +34,7 @@ public class DifferenceHandler implements Runnable{
         this.transferCenter = transferCenter;
         this.userColourVariations = userColourVariations;
         this.processControlCenter = processControlCenter;
+        this.resourceBundle = resourceBundle;
     }
 
     public void setStop(Boolean stop) {
@@ -47,7 +50,7 @@ public class DifferenceHandler implements Runnable{
             try {
                 flatsFromDB = communicateWithServerByCommands.processCommand(CommandsData.SHOW, transferCenter).getFlats();
             } catch (ConnectionException e) {
-                JOptionPane.showConfirmDialog(new JOptionPane(), "Сервер не отвечает!", "Ошибка подключения", JOptionPane.OK_CANCEL_OPTION);
+                JOptionPane.showConfirmDialog(new JOptionPane(), resourceBundle.getString("Сервер не отвечает!"), resourceBundle.getString("Ошибка подключения"), JOptionPane.OK_CANCEL_OPTION);
                 processControlCenter.reConnect();
 //                processControlCenter.working();
                 return;
