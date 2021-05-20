@@ -7,7 +7,7 @@ import GraphicalUserInterface.InterfaceControlCenter;
 import GraphicalUserInterface.GInterface;
 import HelpingModuls.LocaleGetter;
 import Resources.ResourceControlCenter;
-import javafx.scene.input.DataFormat;
+//import javafx.scene.input.DataFormat;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -23,14 +23,17 @@ public class Main {
 
         ResourceBundle bundleRu = ResourceBundle.getBundle("Resources.Resources_ru", new Locale("ru", "RU"));
         ResourceBundle bundleDE = ResourceBundle.getBundle("Resources.Resources_de", new Locale("de", "GR"));
+        ResourceBundle bundleLV = ResourceBundle.getBundle("Resources.Resources_lv", new Locale("lv", "LV"));
+        ResourceBundle bundleES = ResourceBundle.getBundle("Resources.Resources_es", new Locale("es", "ES"));
 
-        ResourceBundle[] resourceBundles = new ResourceBundle[]{bundleRu, bundleDE};
+        ResourceBundle[] resourceBundles = new ResourceBundle[]{bundleRu, bundleDE, bundleLV, bundleES};
 
         ResourceControlCenter resourceControlCenter = new ResourceControlCenter(bundleRu, resourceBundles);
 
         TransferCenter transferCenter = new TransferCenter();
         UserWork user = new UserWork(resourceControlCenter);
         GInterface gInterface = new InterfaceControlCenter(resourceControlCenter);
+
 
         ProcessControlCenter processControlCenter = new ProcessControlCenter(transferCenter, user, gInterface, resourceControlCenter);
         processControlCenter.start();
@@ -43,6 +46,12 @@ public class Main {
             }
             if (resourceName.equals("Resources.Resources_de")) {
                 return new Locale("de", "GR");
+            }
+            if (resourceName.equals("Resources.Resources_lv")) {
+                return new Locale("lv", "LV");
+            }
+            if (resourceName.equals("Resources.Resources_es")) {
+                return new Locale("es", "ES");
             }
         }
         return new Locale("ru", "Ru");

@@ -1,6 +1,6 @@
 package GraphicalUserInterface;
 
-import javafx.scene.layout.StackPane;
+//import javafx.scene.layout.StackPane;
 
 import javax.swing.*;
 import java.awt.*;
