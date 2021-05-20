@@ -105,7 +105,7 @@ public class PlaneCreator {
             createRows();
 
 
-            JComboBox comboBox = new JComboBox(new Object[]{"NOTHING", "user name", "id","name","coordinate x","coordinate y","creation date",
+            JComboBox comboBox = new JComboBox(new Object[]{/*"NOTHING", */"user name", "id","name","coordinate x","coordinate y","creation date",
                     "area","number of rooms","furnish","view","transport","house name","house year","house number of floors","house number of flats on floor","house number of lifts"});
             comboBox.setFont(new Font("Dialog", Font.PLAIN, 15));
             comboBox.setBackground(new Color(0xFFD9ECEF, true));
@@ -155,9 +155,16 @@ public class PlaneCreator {
             comboBox.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    filter.filter();
+//                    if(comboBox.getSelectedIndex() != 0){
+                        filter.filter();
+//                    }
                 }
             });
+
+
+            JPanel mainPanel = new JPanel();
+            JScrollPane scrollPane = new JScrollPane(table);
+
 
             JButton edit = new JButton("Изменить");
             edit.setFont(new Font("Dialog", Font.PLAIN, 20));
@@ -178,13 +185,13 @@ public class PlaneCreator {
                     if(rowUserName.equals(user.getLogin())){
                         JPanel abstractMainPanel = new JPanel();
                         //!!!!!!!!!!!!!!!!!!!!!!!!!!!
-//                        abstractMainPanel.setPreferredSize(new Dimension(1000, 1000));
-                        JPanel editTable = new GEditTableWindow(table, transferCenter, rowCount, gInterface, userWork, processControlCenter).getPanel();
+                        abstractMainPanel.setPreferredSize(new Dimension(1000, 1000));
+                        JPanel editTable = new GEditTableWindow(abstractMainPanel, table, transferCenter, rowCount, gInterface, userWork, processControlCenter, mainPanel).getPanel();
 //                        editTable.setPreferredSize(new Dimension(1000, 1000));
                                 //=======
-                        abstractMainPanel.add(table);
                         abstractMainPanel.add(editTable);
-                        table.setVisible(false);
+//                        abstractMainPanel.add(editTable);
+//                        table.setVisible(false);
                         gInterface.setSpaceForInteraction(abstractMainPanel);
 //                        gInterface.setGPane();
                     }
@@ -251,21 +258,32 @@ public class PlaneCreator {
             });
 
             table.getColumnModel().getColumn(0).setPreferredWidth(50);
-            table.getColumnModel().getColumn(1).setPreferredWidth(100);
+            table.getColumnModel().getColumn(1).setPreferredWidth(150);
             table.getColumnModel().getColumn(2).setPreferredWidth(50);
             table.getColumnModel().getColumn(3).setPreferredWidth(25);
             table.getColumnModel().getColumn(4).setPreferredWidth(25);
-            table.getColumnModel().getColumn(5).setPreferredWidth(150);
+            table.getColumnModel().getColumn(5).setPreferredWidth(200);
             table.getColumnModel().getColumn(6).setPreferredWidth(25);
             table.getColumnModel().getColumn(7).setPreferredWidth(25);
             table.getColumnModel().getColumn(8).setPreferredWidth(25);
+            table.getColumnModel().getColumn(9).setPreferredWidth(25);
+            table.getColumnModel().getColumn(10).setPreferredWidth(25);
+            table.getColumnModel().getColumn(11).setPreferredWidth(25);
+            table.getColumnModel().getColumn(12).setPreferredWidth(25);
+            table.getColumnModel().getColumn(13).setPreferredWidth(25);
+            table.getColumnModel().getColumn(14).setPreferredWidth(25);
+            table.getColumnModel().getColumn(15).setPreferredWidth(25);
 
             table.setRowSorter(sorter);
-            JScrollPane scrollPane = new JScrollPane(table);
+//            JScrollPane scrollPane = new JScrollPane(table);
+
+            gInterface.setMinimalSizeForMainWindow(new Dimension(800, 700));
+            gInterface.setMinimumSpaceForInteractionSize(new Dimension(800, 700));
+            scrollPane.setMinimumSize(new Dimension(750, 500));
 //            scrollPane.setPreferredSize(new Dimension(gInterface.getMainWindowSize().width, gInterface.getMainWindowSize().height));
 
 //            gInterface.setMinimalSizeForMainWindow(new Dimension(1000, 1200));
-            JPanel mainPanel = new JPanel();
+//            JPanel mainPanel = new JPanel();
             mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
             JPanel controlElements = new JPanel();
@@ -311,6 +329,7 @@ public class PlaneCreator {
             JTable table;
             JTextField textField;
             JComboBox comboBox;
+            String text = new String();
 
             public Filter(JTextField textField, JComboBox comboBox, JTable table){
                 this.table = table;
@@ -318,20 +337,35 @@ public class PlaneCreator {
                 this.comboBox = comboBox;
             }
 
+            public String getRealText(){
+                if(textField.getText().equals("Введите фильтр")){
+                    return null;
+                }
+                else {
+                    return textField.getText();
+                }
+            }
+
             private void filter(){
 
                 TableRowSorter tableRowSorter = (TableRowSorter<TableModel>) table.getRowSorter();
 
-                if(comboBox.getSelectedIndex() == 0){
-                    table.setRowSorter(null);
+                if(!textField.getText().equals("Введите фильтр")) {
+                    text = new String(textField.getText());
                 }
-                else {
-                    if(!textField.getText().equals("") & !(textField.getText().equals(null))){
-                        System.out.println(textField.getText() + "   1");
-                        System.out.println(comboBox.getSelectedIndex() -1);
-                        tableRowSorter.setRowFilter(RowFilter.regexFilter(textField.getText(), comboBox.getSelectedIndex() -1));
-                    }
-                }
+
+//                if(comboBox.getSelectedIndex() == 0){
+//                    table.setRowSorter(null);
+//                }
+//                else {
+//                    if(!textField.getText().equals("") & !(textField.getText().equals(null)) & comboBox.getSelectedIndex() != 0){
+
+                    System.out.println(comboBox.getSelectedIndex() -1);
+                    int index = comboBox.getSelectedIndex();
+                    tableRowSorter.setRowFilter(RowFilter.regexFilter(text, index));
+                    System.out.println("t");
+//                    }
+//                }
             }
         }
     }

@@ -29,4 +29,6 @@ public interface GInterface {
     public void setMinimalSizeForMainWindow(Dimension dimension);
 
     public void setMinimumSpaceForInteractionSize(Dimension dimension);
+
+    public MainWindow getMainWindow();
 }

@@ -37,6 +37,11 @@ public class GVisualSpace implements WindowPane {
     private TransferCenter transferCenter;
     private ResourceBundle resourceBundle;
 
+    private Integer animationCounter = 5;
+
+    public void setAnimationCounter(Integer animationCounter) {
+        this.animationCounter = animationCounter;
+    }
 
     public GVisualSpace(Flat[] flatsHere, ProcessControlCenter processControlCenter, String[][] userColourVariations, GInterface gInterface, UserWork userWork, VisualSpaceControlCenter visualSpaceControlCenter, TransferCenter transferCenter, ResourceBundle resourceBundle){
         this.flatsHere = flatsHere;
@@ -107,10 +112,13 @@ public class GVisualSpace implements WindowPane {
 //        };
 //        dekartSK.add(XYLines);
 
+        int i = 0;
         JPanel flatsOnDEK = new JPanel() {
             @Override
             protected void paintComponent(Graphics g){
                     for (Flat flat : flatsHere){
+
+
 
                         int x = nulX + (int)flat.getCoordinates().getX()*sizeOfOneObjectX - sizeOfOneObjectX/2;
                         int y = nulY - (int)flat.getCoordinates().getY()*sizeOfOneObjectY - sizeOfOneObjectY/2;
@@ -123,13 +131,14 @@ public class GVisualSpace implements WindowPane {
                         }
                         g.setColor(color);
 
-                        g.fillRect(x, y, sizeOfOneObjectX, sizeOfOneObjectY);
+                        g.fillRect(x+animationCounter, y+animationCounter, sizeOfOneObjectX-animationCounter*2, sizeOfOneObjectY-animationCounter*2);
 
                         g.setColor(Color.GRAY);
 
                         g.fillRect(nulX, y + sizeOfOneObjectY/2, (x + sizeOfOneObjectX/2) - nulX, 1);
 
                         g.fillRect(x + sizeOfOneObjectX/2, nulY,  1, (y + sizeOfOneObjectY/2) - nulY);
+
                     }
 
                 paintXY(g, nulX, nulY);
@@ -168,7 +177,11 @@ public class GVisualSpace implements WindowPane {
                 }
             }
         });
+
         dekartSK.add(flatsOnDEK);
+
+        new Thread(new Animation(animationCounter, flatsOnDEK, gInterface, this, dekartSK)).start();
+
     }
 
     private void paintXY(Graphics g, int nulX, int nulY){
@@ -261,6 +274,9 @@ public class GVisualSpace implements WindowPane {
 
 
         JButton backToDek = new JButton("Назад");
+        backToDek.setPreferredSize(new Dimension(250, 40));
+        backToDek.setFont(new Font("Dialog", Font.PLAIN, 20));
+        backToDek.setBackground(new Color(0xFFD9ECEF, true));
         backToDek.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -342,6 +358,8 @@ public class GVisualSpace implements WindowPane {
         columnPanel.setVisible(false);
 
         JButton back = new JButton("Назад");
+        back.setFont(new Font("Dialog", Font.PLAIN, 20));
+        back.setBackground(new Color(0xFFD9ECEF, true));
 
         back.addActionListener(new ActionListener() {
             @Override
@@ -352,12 +370,12 @@ public class GVisualSpace implements WindowPane {
         });
 
 
-        GInfoFlat gInfoFlat = new GInfoFlat(flat, abstractPanel.getSize(), this);
+        GInfoFlat gInfoFlat = new GInfoFlat(flat, abstractPanel.getSize(), this, back);
         JPanel infoPale = gInfoFlat.getPanel();
 
         flatInfoPale.removeAll();
 
-        flatInfoPale.add(back);
+//        flatInfoPale.add(back);
         flatInfoPale.add(infoPale);
         abstractPanel.add(flatInfoPale);
         gInterface.setSpaceForInteraction(abstractPanel);

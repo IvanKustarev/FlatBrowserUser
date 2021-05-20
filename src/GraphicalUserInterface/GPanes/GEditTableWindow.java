@@ -10,6 +10,7 @@ import HelpingModuls.ConnectionException;
 import User.*;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.DateFormat;
@@ -25,14 +26,21 @@ public class GEditTableWindow implements WindowPane {
     private UserWork userWork;
     private ProcessControlCenter processControlCenter;
     private ResourceBundle resourceBundle;
+//    private JPanel abstractMainPanel;
+    private JPanel generalPanel;
+    private JPanel abstractMainPanel;
 
-    public GEditTableWindow(JTable table, TransferCenter transferCenter, int row, GInterface gInterface, UserWork userWork, ProcessControlCenter processControlCenter){
+    public GEditTableWindow(JPanel abstractMainPanel, JTable table, TransferCenter transferCenter, int row, GInterface gInterface, UserWork userWork, ProcessControlCenter processControlCenter, JPanel mainPanel){
         this.table = table;
         this.transferCenter = transferCenter;
         this.row = row;
         this.gInterface = gInterface;
         this.userWork = userWork;
         this.processControlCenter = processControlCenter;
+        this.abstractMainPanel = abstractMainPanel;
+
+//        this.abstractMainPanel = abstractMainPanel;
+        this.generalPanel = mainPanel;
     }
 
     @Override
@@ -47,77 +55,150 @@ public class GEditTableWindow implements WindowPane {
 
     private JPanel createEditPanel(){
         JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
         JButton back = new JButton("НАЗАД");
         back.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                table.setVisible(true);
-                mainPanel.setVisible(false);
+//                mainPanel.setVisible(false);
+//                table.setVisible(true);
+//                table.setPreferredSize(new Dimension(1000, 1000));
+//                table.setSize(new Dimension(1000, 1000));
+//                abstractMainPanel.remove(table);
+//                abstractMainPanel.add(table);
+//                abstractMainPanel.remove(mainPanel);
+//                abstractMainPanel.setVisible(false);
+
+                generalPanel.setVisible(true);
+                abstractMainPanel.setVisible(false);
+                gInterface.setSpaceForInteraction(generalPanel);
             }
         });
+
+        back.setFont(new Font("Dialog", Font.PLAIN, 20));
+        back.setBackground(new Color(0xFFD9ECEF, true));
         mainPanel.add(back);
 
 
+        JPanel abstractFields = new JPanel();
+        abstractFields.add(back);
+        abstractFields.setLayout(new GridLayout(14, 2));
+        abstractFields.setPreferredSize(new Dimension(500, 560));
+
+
         JLabel nameLabel = new JLabel("Имя");
+        nameLabel.setFont(new Font("Dialog", Font.PLAIN, 15));
+
         JTextField nameTextField = new JTextField((String) table.getValueAt(row,2), 20);
+        nameTextField.setFont(new Font("Dialog", Font.PLAIN, 15));
+
         JLabel coordinateXLabel = new JLabel("Координата x");
+        coordinateXLabel.setFont(new Font("Dialog", Font.PLAIN, 15));
+
         JTextField coordinateXTextField = new JTextField((String) table.getValueAt(row,3), 20);
+        coordinateXTextField.setFont(new Font("Dialog", Font.PLAIN, 15));
+
         JLabel coordinateYLabel = new JLabel("Координата y");
+        coordinateYLabel.setFont(new Font("Dialog", Font.PLAIN, 15));
+
         JTextField coordinateYTextField = new JTextField((String) table.getValueAt(row,4), 20);
+        coordinateYTextField.setFont(new Font("Dialog", Font.PLAIN, 15));
+
         JLabel areaLabel = new JLabel("Расположение");
+        areaLabel.setFont(new Font("Dialog", Font.PLAIN, 15));
+
         JTextField areaTextField = new JTextField((String) table.getValueAt(row,6), 20);
+        areaTextField.setFont(new Font("Dialog", Font.PLAIN, 15));
+
         JLabel numberOfRoomsLabel = new JLabel("Количество комнат");
+        numberOfRoomsLabel.setFont(new Font("Dialog", Font.PLAIN, 15));
+
         JTextField numberOfRoomsTextField = new JTextField((String) table.getValueAt(row,7), 20);
+        numberOfRoomsTextField.setFont(new Font("Dialog", Font.PLAIN, 15));
+
         JLabel furnishLabel = new JLabel("Мебель");
+        furnishLabel.setFont(new Font("Dialog", Font.PLAIN, 15));
+
         JTextField furnishTextField = new JTextField((String) table.getValueAt(row,8), 20);
+        furnishTextField.setFont(new Font("Dialog", Font.PLAIN, 15));
+
         JLabel viewLabel = new JLabel("Вид");
+        viewLabel.setFont(new Font("Dialog", Font.PLAIN, 15));
+
         JTextField viewTextField = new JTextField((String) table.getValueAt(row,9), 20);
+        viewTextField.setFont(new Font("Dialog", Font.PLAIN, 15));
+
         JLabel transportLabel = new JLabel("Транспортные маршруты");
+        transportLabel.setFont(new Font("Dialog", Font.PLAIN, 15));
+
         JTextField transportTextField = new JTextField((String) table.getValueAt(row,10), 20);
+        transportTextField.setFont(new Font("Dialog", Font.PLAIN, 15));
+
         JLabel houseNameLabel = new JLabel("Имя дома");
+        houseNameLabel.setFont(new Font("Dialog", Font.PLAIN, 15));
+
         JTextField houseNameTextField = new JTextField((String) table.getValueAt(row,11), 20);
+        houseNameTextField.setFont(new Font("Dialog", Font.PLAIN, 15));
+
         JLabel houseYearLabel = new JLabel("Год пострйки дома");
+        houseYearLabel.setFont(new Font("Dialog", Font.PLAIN, 15));
+
         JTextField houseYearTextField = new JTextField((String) table.getValueAt(row,12), 20);
+        houseYearTextField.setFont(new Font("Dialog", Font.PLAIN, 15));
+
         JLabel houseNumberOfFloorsLabel = new JLabel("Количество этажей в доме");
+        houseNumberOfFloorsLabel.setFont(new Font("Dialog", Font.PLAIN, 15));
+
         JTextField houseNumberOfFloorsTextField = new JTextField((String) table.getValueAt(row,13), 20);
+        houseNumberOfFloorsTextField.setFont(new Font("Dialog", Font.PLAIN, 15));
+
         JLabel houseNumberOfFlatsOnFloorLabel = new JLabel("Количество квартир на одном этаже");
+        houseNumberOfFlatsOnFloorLabel.setFont(new Font("Dialog", Font.PLAIN, 15));
+
         JTextField houseNumberOfFlatsOnFloorTextField = new JTextField((String) table.getValueAt(row,14), 20);
+        houseNumberOfFlatsOnFloorTextField.setFont(new Font("Dialog", Font.PLAIN, 15));
+
         JLabel houseNumberOfLiftsLabel = new JLabel("Количество лифтов");
+        houseNumberOfLiftsLabel.setFont(new Font("Dialog", Font.PLAIN, 15));
+
         JTextField houseNumberOfLiftsTextField = new JTextField((String) table.getValueAt(row,15), 20);
+        houseNumberOfLiftsTextField.setFont(new Font("Dialog", Font.PLAIN, 15));
 
         JButton saveEdit = new JButton("Сохранить изменения");
+        saveEdit.setFont(new Font("Dialog", Font.PLAIN, 20));
+        saveEdit.setBackground(new Color(0xFFD9ECEF, true));
 
 
+        abstractFields.add(saveEdit);
+        abstractFields.add(nameLabel);
+        abstractFields.add(nameTextField);
+        abstractFields.add(coordinateXLabel);
+        abstractFields.add(coordinateXTextField);
+        abstractFields.add(coordinateYLabel);
+        abstractFields.add(coordinateYTextField);
+        abstractFields.add(areaLabel);
+        abstractFields.add(areaTextField);
+        abstractFields.add(numberOfRoomsLabel);
+        abstractFields.add(numberOfRoomsTextField);
+        abstractFields.add(furnishLabel);
+        abstractFields.add(furnishTextField);
+        abstractFields.add(viewLabel);
+        abstractFields.add(viewTextField);
+        abstractFields.add(transportLabel);
+        abstractFields.add(transportTextField);
+        abstractFields.add(houseNameLabel);
+        abstractFields.add(houseNameTextField);
+        abstractFields.add(houseYearLabel);
+        abstractFields.add(houseYearTextField);
+        abstractFields.add(houseNumberOfFloorsLabel);
+        abstractFields.add(houseNumberOfFloorsTextField);
+        abstractFields.add(houseNumberOfFlatsOnFloorLabel);
+        abstractFields.add(houseNumberOfFlatsOnFloorTextField);
+        abstractFields.add(houseNumberOfLiftsLabel);
+        abstractFields.add(houseNumberOfLiftsTextField);
 
-
-        mainPanel.add(saveEdit);
-        mainPanel.add(nameLabel);
-        mainPanel.add(nameTextField);
-        mainPanel.add(coordinateXLabel);
-        mainPanel.add(coordinateXTextField);
-        mainPanel.add(coordinateYLabel);
-        mainPanel.add(coordinateYTextField);
-        mainPanel.add(areaLabel);
-        mainPanel.add(areaTextField);
-        mainPanel.add(numberOfRoomsLabel);
-        mainPanel.add(numberOfRoomsTextField);
-        mainPanel.add(furnishLabel);
-        mainPanel.add(furnishTextField);
-        mainPanel.add(viewLabel);
-        mainPanel.add(viewTextField);
-        mainPanel.add(transportLabel);
-        mainPanel.add(transportTextField);
-        mainPanel.add(houseNameLabel);
-        mainPanel.add(houseNameTextField);
-        mainPanel.add(houseYearLabel);
-        mainPanel.add(houseYearTextField);
-        mainPanel.add(houseNumberOfFloorsLabel);
-        mainPanel.add(houseNumberOfFloorsTextField);
-        mainPanel.add(houseNumberOfFlatsOnFloorLabel);
-        mainPanel.add(houseNumberOfFlatsOnFloorTextField);
-        mainPanel.add(houseNumberOfLiftsLabel);
-        mainPanel.add(houseNumberOfLiftsTextField);
+        mainPanel.add(abstractFields);
 
 
 
@@ -157,7 +238,7 @@ public class GEditTableWindow implements WindowPane {
                     JOptionPane.showConfirmDialog(new JOptionPane(), "Все поля связанные с домом либо пустые, либо заполненные", "Уведомление", JOptionPane.OK_CANCEL_OPTION);
                     return;
                 }
-                if(furnishTextField.getText() == "") {
+                if(!furnishTextField.getText().equals("")) {
                     try {
                         Furnish.valueOf(furnishTextField.getText());
                     } catch (IllegalArgumentException illegalArgumentException) {
@@ -165,7 +246,7 @@ public class GEditTableWindow implements WindowPane {
                         return;
                     }
                 }
-                if(transportTextField.getText() == "") {
+                if(!transportTextField.getText().equals("")) {
                     try {
                         Transport.valueOf(transportTextField.getText());
                     } catch (IllegalArgumentException illegalArgumentException) {
@@ -173,7 +254,7 @@ public class GEditTableWindow implements WindowPane {
                         return;
                     }
                 }
-                if(viewTextField.getText() == "") {
+                if(!viewTextField.getText().equals("")) {
                     try {
                         View.valueOf(viewTextField.getText());
                     } catch (IllegalArgumentException illegalArgumentException) {

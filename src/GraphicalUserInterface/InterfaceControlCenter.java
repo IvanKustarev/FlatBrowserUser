@@ -181,6 +181,11 @@ public class InterfaceControlCenter implements GInterface {
         abstractSpaceForInteraction.setMinimumSize(dimension);
     }
 
+    @Override
+    public MainWindow getMainWindow() {
+        return mainWindow;
+    }
+
     private void createMenuTopMainWindowPart(){
 
         String[] languagesNames = new String[resourceControlCenter.getResourceBundles().length];
