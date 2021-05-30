@@ -4,6 +4,7 @@ package User;
 //import L6User.Commands.*;
 
 import CommonClasses.CommandsData;
+import HelpingModuls.ConsolePrinter;
 
 import java.util.Scanner;
 
@@ -168,7 +169,7 @@ public class CommandCenter {
             break;
         }
         if(comWords.length < 2){
-            Printer.println("Для этой команды необходим параметр!");
+            ConsolePrinter.println("Для этой команды необходим параметр!");
             String par = new Scanner(System.in).nextLine();
             command = command + " " + par;
             processingParameter(commandObject, command, commands);

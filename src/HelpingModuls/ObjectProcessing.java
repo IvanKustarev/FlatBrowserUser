@@ -1,4 +1,6 @@
-package User;
+package HelpingModuls;
+
+import HelpingModuls.ConsolePrinter;
 
 import java.io.*;
 
@@ -9,7 +11,7 @@ public class ObjectProcessing {
             try {
                 objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
             } catch (IOException e) {
-                Printer.println("Проблема с созданием потока для серилизации объектов!");
+                ConsolePrinter.println("Проблема с созданием потока для серилизации объектов!");
             }
             byte[] serObj = null;
 
@@ -17,7 +19,7 @@ public class ObjectProcessing {
                 objectOutputStream.writeObject(obj);
                 serObj = byteArrayOutputStream.toByteArray();
             } catch (IOException e) {
-                Printer.println("Проблема с серелизацией объекта для отправки на сервер!");
+                ConsolePrinter.println("Проблема с серелизацией объекта для отправки на сервер!");
                 e.printStackTrace();
             }
 
@@ -33,7 +35,7 @@ public class ObjectProcessing {
         try {
             objectInputStream = new ObjectInputStream(inputStream);
         } catch (IOException e) {
-            Printer.println("Проблема с созданием ObjectInputStream!");
+            ConsolePrinter.println("Проблема с созданием ObjectInputStream!");
             e.printStackTrace();
         }
 

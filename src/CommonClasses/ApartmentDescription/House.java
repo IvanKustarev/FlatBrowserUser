@@ -1,7 +1,5 @@
 package CommonClasses.ApartmentDescription;
 
-import User.Printer;
-
 import java.io.Serializable;
 
 public class House implements Attractive , Serializable {
@@ -11,12 +9,14 @@ public class House implements Attractive , Serializable {
     private int numberOfFlatsOnFloor; //Значение поля должно быть больше 0
     private long numberOfLifts; //Значение поля должно быть больше 0
 
-    public void getFields(){
-        Printer.printf("%-30s %s \n", "   house name", name);
-        Printer.printf("%-30s %s \n", "   house year", year);
-        Printer.printf("%-30s %s \n", "   house numberOfFloors", numberOfFloors);
-        Printer.printf("%-30s %s \n", "   house numberOfFlatsOnFloor", numberOfFlatsOnFloor);
-        Printer.printf("%-30s %s \n", "   house numberOfLifts", numberOfLifts);
+    public String getFields(){
+        String str = new String();
+        str += String.format("%-30s %s \n", "   house name", name);
+        str += String.format("%-30s %s \n", "   house year", year);
+        str += String.format("%-30s %s \n", "   house numberOfFloors", numberOfFloors);
+        str += String.format("%-30s %s \n", "   house numberOfFlatsOnFloor", numberOfFlatsOnFloor);
+        str += String.format("%-30s %s \n", "   house numberOfLifts", numberOfLifts);
+        return str;
     }
 
     @Override

@@ -1,8 +1,8 @@
-package User;
+package HelpingModuls;
 
 import CommonClasses.User;
 
-public class Printer{
+public class ConsolePrinter {
     public static <T> void print(T phrase){
         System.out.print(phrase);
     }
